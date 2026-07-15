@@ -16,7 +16,6 @@ fun SetupNavGraph(navController: NavHostController) {
             PokemonListScreen()
         }
         composable(route = Screen.PokemonDetail.route) {
-            // TODO: Add Pokemon Detail Screen
         }
     }
 }
