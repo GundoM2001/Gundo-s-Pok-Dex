@@ -14,5 +14,6 @@ fun PokemonListScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(text = "Pokemon List Screen")
+
     }
 }
