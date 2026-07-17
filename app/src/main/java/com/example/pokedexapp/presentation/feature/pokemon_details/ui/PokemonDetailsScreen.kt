@@ -31,6 +31,7 @@ fun PokemonDetailsScreen(
             CircularProgressIndicator()
         } else if (error != null) {
             Text(text = "Error: $error", color = MaterialTheme.colorScheme.error)
+
         } else {
             pokemonDetails?.let { details ->
                 Column(
