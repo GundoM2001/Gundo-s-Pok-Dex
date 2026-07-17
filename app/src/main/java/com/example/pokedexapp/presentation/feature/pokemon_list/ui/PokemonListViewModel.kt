@@ -18,6 +18,12 @@ class PokemonListViewModel @Inject constructor(private val repository: PokemonRe
     private val _pokemonList = MutableStateFlow<List<PokemonResults>?>(null)
     val pokemonList = _pokemonList.asStateFlow()
 
+    private val _nextUrl = MutableStateFlow<String?>(null)
+    val nextUrl = _nextUrl.asStateFlow()
+
+    private val _previousUrl = MutableStateFlow<String?>(null)
+    val previousUrl = _previousUrl.asStateFlow()
+
     private val _loading = MutableStateFlow<Boolean>(false)
     val loading = _loading.asStateFlow()
 
@@ -25,16 +31,16 @@ class PokemonListViewModel @Inject constructor(private val repository: PokemonRe
         fetchPokemonData()
     }
 
-    fun fetchPokemonData() {
+    fun fetchPokemonData(url: String? = null) {
         viewModelScope.launch {
             try {
                 _loading.value = true
-                val response = repository.getAllPokemon()
-                Log.d("DATA", "fetchPokemonData: " + response.results)
+                val response = repository.getAllPokemon(url)
                 _pokemonList.value = response.results
-
+                _nextUrl.value = response.next
+                _previousUrl.value = response.previous
             } catch (e: Exception) {
-
+                Log.e("VM", "Error fetching data", e)
             } finally {
                 _loading.value = false
             }

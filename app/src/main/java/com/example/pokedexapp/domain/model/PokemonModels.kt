@@ -25,7 +25,9 @@ data class PokemonResults(
     @SerializedName("name")
     val name: String,
     @SerializedName("url")
-    val url: String
+    val url: String,
+    val imageUrl: String? = null,
+    val types: List<String>? = null
 )
 
 // --- Core Detail Model ---
