@@ -22,11 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.pokedexapp.domain.model.PokemonDetails
+import com.example.pokedexapp.presentation.mock.MockData
 
 @Composable
 fun PokemonDetailsHeader(
@@ -89,5 +91,17 @@ fun PokemonDetailsHeader(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokemonDetailsHeaderPreview() {
+    com.example.pokedexapp.presentation.theme.PokeDexAppTheme {
+        PokemonDetailsHeader(
+            activeDetails = MockData.mockDetails,
+            variants = listOf(MockData.mockDetails),
+            onVariantChanged = {}
+        )
     }
 }

@@ -11,9 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.pokedexapp.domain.model.PokemonSpecies
+import com.example.pokedexapp.presentation.mock.MockData
 import com.example.pokedexapp.utils.PokemonVersionUtils
 
 @Composable
@@ -64,5 +66,13 @@ fun PokedexEntriesTab(species: PokemonSpecies?) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokedexEntriesTabPreview() {
+    com.example.pokedexapp.presentation.theme.PokeDexAppTheme {
+        PokedexEntriesTab(species = MockData.mockSpecies)
     }
 }
