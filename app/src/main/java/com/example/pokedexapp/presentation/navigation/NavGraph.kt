@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.pokedexapp.presentation.feature.favourite_pokemon.ui.FavoritePokemonScreen
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.PokemonDetailsScreen
 import com.example.pokedexapp.presentation.feature.pokemon_list.ui.PokemonListScreen
 
@@ -19,7 +20,8 @@ fun SetupNavGraph(navController: NavHostController) {
             PokemonListScreen(
                 onPokemonClick = { url ->
                     navController.navigate(Screen.PokemonDetail.passUrl(url))
-                }
+                },
+                onFavoritesClick = { navController.navigate(Screen.Favorites.route) },
             )
         }
         composable(
@@ -31,6 +33,9 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         ) {
             PokemonDetailsScreen()
+        }
+        composable(route = Screen.Favorites.route) {
+            FavoritePokemonScreen(onHomeClick = { navController.navigate(Screen.PokemonList.route)})
         }
     }
 }
