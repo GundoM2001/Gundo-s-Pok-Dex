@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonResults
+import com.example.pokedexapp.utils.PokemonNameFormatter
 
 @Composable
 fun PokemonItem(
@@ -87,7 +88,7 @@ fun PokemonItem(
             ) {
                 // The name gets the entire card width.
                 Text(
-                    text = pokemon.name.toDisplayName(),
+                    text = PokemonNameFormatter.format(pokemon.name),
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 18.sp,
@@ -211,7 +212,7 @@ fun PokemonTypePill(
             )
     ) {
         Text(
-            text = type.toDisplayName(),
+            text = type.replaceFirstChar { it.uppercase() },
             color = Color.Black,
             fontSize = 11.sp,
             lineHeight = 13.sp,
@@ -219,20 +220,6 @@ fun PokemonTypePill(
             maxLines = 1
         )
     }
-}
-
-private fun String.toDisplayName(): String {
-    return replace("-", " ")
-        .split(" ")
-        .joinToString(" ") { word ->
-            word.replaceFirstChar { character ->
-                if (character.isLowerCase()) {
-                    character.titlecase()
-                } else {
-                    character.toString()
-                }
-            }
-        }
 }
 
 @Preview(

@@ -1,10 +1,12 @@
 package com.example.pokedexapp.data.repository
 
 import com.example.pokedexapp.data.remote.api.PokemonApiService
+import com.example.pokedexapp.domain.model.AbilityDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.domain.model.PokemonSpecies
+import com.example.pokedexapp.domain.model.TypeDetails
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -85,6 +87,24 @@ class PokemonRepositoryImpl @Inject constructor(
 
     override suspend fun getPokemonSpecies(url: String): PokemonSpecies {
         val response = service.getPokemonSpecies(url)
+        if (response.isSuccessful) {
+            return response.body() ?: throw Exception("Response body is null")
+        } else {
+            throw Exception("API Error: ${response.code()} ${response.message()}")
+        }
+    }
+
+    override suspend fun getTypeDetails(url: String): TypeDetails {
+        val response = service.getTypeDetails(url)
+        if (response.isSuccessful) {
+            return response.body() ?: throw Exception("Response body is null")
+        } else {
+            throw Exception("API Error: ${response.code()} ${response.message()}")
+        }
+    }
+
+    override suspend fun getAbilityDetails(url: String): AbilityDetails {
+        val response = service.getAbilityDetails(url)
         if (response.isSuccessful) {
             return response.body() ?: throw Exception("Response body is null")
         } else {

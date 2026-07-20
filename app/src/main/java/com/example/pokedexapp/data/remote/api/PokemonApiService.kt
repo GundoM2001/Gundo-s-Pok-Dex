@@ -1,8 +1,10 @@
 package com.example.pokedexapp.data.remote.api
 
+import com.example.pokedexapp.domain.model.AbilityDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonSpecies
+import com.example.pokedexapp.domain.model.TypeDetails
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -23,4 +25,10 @@ interface PokemonApiService {
 
     @GET
     suspend fun getPokemonSpecies(@Url url: String): Response<PokemonSpecies>
+
+    @GET
+    suspend fun getTypeDetails(@Url url: String): Response<TypeDetails>
+
+    @GET
+    suspend fun getAbilityDetails(@Url url: String): Response<AbilityDetails>
 }
