@@ -15,4 +15,5 @@ interface PokemonRepository {
     suspend fun getPokemonSpecies(url: String): PokemonSpecies
     suspend fun getTypeDetails(url: String): TypeDetails
     suspend fun getAbilityDetails(url: String): AbilityDetails
+    suspend fun addFavourite(pokemon: PokemonResults)
 }

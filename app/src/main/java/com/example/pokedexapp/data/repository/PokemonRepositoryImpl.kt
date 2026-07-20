@@ -1,5 +1,6 @@
 package com.example.pokedexapp.data.repository
 
+import com.example.pokedexapp.data.local.dao.FavouritePokemonDao
 import com.example.pokedexapp.data.remote.api.PokemonApiService
 import com.example.pokedexapp.domain.model.AbilityDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
@@ -14,7 +15,8 @@ import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class PokemonRepositoryImpl @Inject constructor(
-    private val service: PokemonApiService
+    private val service: PokemonApiService,
+    private val dao : FavouritePokemonDao
 ) : PokemonRepository {
 
     override suspend fun getAllPokemon(url: String?): PokemonListResponse {
@@ -110,5 +112,9 @@ class PokemonRepositoryImpl @Inject constructor(
         } else {
             throw Exception("API Error: ${response.code()} ${response.message()}")
         }
+    }
+
+    override suspend fun addFavourite(pokemon: PokemonResults) {
+
     }
 }
