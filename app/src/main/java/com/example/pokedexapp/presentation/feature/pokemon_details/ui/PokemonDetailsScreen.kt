@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonSpecies
-import com.example.pokedexapp.presentation.components.ModernTabRow
+import com.example.pokedexapp.presentation.components.TabRow
 import com.example.pokedexapp.presentation.components.PokemonTypeBadge
 import com.example.pokedexapp.presentation.components.PokemonTypeUtils
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components.AbilitiesTab
@@ -211,7 +211,7 @@ fun PokemonDetailsContent(
                                     )
                                 }
 
-                                ModernTabRow(
+                                TabRow(
                                     selectedTabIndex = selectedTabIndex,
                                     onTabSelected = onTabSelected,
                                     activeColor = backgroundColor

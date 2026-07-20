@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ModernTabRow(
+fun TabRow(
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit,
     activeColor: Color,
