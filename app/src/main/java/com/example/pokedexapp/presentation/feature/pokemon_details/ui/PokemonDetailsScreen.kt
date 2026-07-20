@@ -46,7 +46,6 @@ fun PokemonDetailsScreen(
                         text = "ID: #${details.id}",
                         style = MaterialTheme.typography.bodyLarge
                     )
-                    // No design as requested, just confirming data fetch
                 }
             }
         }

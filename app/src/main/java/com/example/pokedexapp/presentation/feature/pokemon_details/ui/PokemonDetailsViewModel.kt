@@ -20,6 +20,8 @@ class PokemonDetailsViewModel @Inject constructor(
     private val _pokemonDetails = MutableStateFlow<PokemonDetails?>(null)
     val pokemonDetails = _pokemonDetails.asStateFlow()
 
+    private val species
+
     private val _loading = MutableStateFlow<Boolean>(false)
     val loading = _loading.asStateFlow()
 

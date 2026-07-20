@@ -2,6 +2,7 @@ package com.example.pokedexapp.data.remote.api
 
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonListResponse
+import com.example.pokedexapp.domain.model.PokemonSpecies
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -19,4 +20,7 @@ interface PokemonApiService {
 
     @GET
     suspend fun getPokemonDetails(@Url url: String): Response<PokemonDetails>
+
+    @GET
+    suspend fun getPokemonSpecies(@Url url: String): Response<PokemonSpecies>
 }

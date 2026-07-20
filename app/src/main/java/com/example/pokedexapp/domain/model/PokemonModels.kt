@@ -352,3 +352,17 @@ data class NamedApiResource(
     @SerializedName("url")
     val url: String
 )
+
+//Pokemon Species and Variants
+
+data class PokemonSpecies(
+    @SerializedName("varieties")
+    val varieties: List<PokemonVariety>
+)
+
+data class PokemonVariety(
+    @SerializedName("is_default")
+    val isDefault: Boolean,
+    @SerializedName("pokemon")
+    val pokemon: NamedApiResource
+)

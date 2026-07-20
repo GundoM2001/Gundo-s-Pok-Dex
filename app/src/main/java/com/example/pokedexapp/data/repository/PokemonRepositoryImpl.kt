@@ -4,6 +4,7 @@ import com.example.pokedexapp.data.remote.api.PokemonApiService
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonResults
+import com.example.pokedexapp.domain.model.PokemonSpecies
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -75,6 +76,15 @@ class PokemonRepositoryImpl @Inject constructor(
 
     override suspend fun getPokemonDetails(url: String): PokemonDetails {
         val response = service.getPokemonDetails(url)
+        if (response.isSuccessful) {
+            return response.body() ?: throw Exception("Response body is null")
+        } else {
+            throw Exception("API Error: ${response.code()} ${response.message()}")
+        }
+    }
+
+    override suspend fun getPokemonSpecies(url: String): PokemonSpecies {
+        val response = service.getPokemonSpecies(url)
         if (response.isSuccessful) {
             return response.body() ?: throw Exception("Response body is null")
         } else {
