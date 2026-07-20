@@ -25,7 +25,9 @@ data class PokemonResults(
     @SerializedName("name")
     val name: String,
     @SerializedName("url")
-    val url: String
+    val url: String,
+    val imageUrl: String? = null,
+    val types: List<String>? = null
 )
 
 // --- Core Detail Model ---
@@ -349,4 +351,88 @@ data class NamedApiResource(
     val name: String,
     @SerializedName("url")
     val url: String
+)
+
+//Pokemon Species and Variants
+
+data class PokemonSpecies(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("flavor_text_entries")
+    val flavorTextEntries: List<FlavorTextEntry>,
+    @SerializedName("genera")
+    val genera: List<Genus>,
+    @SerializedName("varieties")
+    val varieties: List<PokemonVariety>
+)
+
+data class FlavorTextEntry(
+    @SerializedName("flavor_text")
+    val flavorText: String,
+    @SerializedName("language")
+    val language: NamedApiResource,
+    @SerializedName("version")
+    val version: NamedApiResource
+)
+
+data class Genus(
+    @SerializedName("genus")
+    val genus: String,
+    @SerializedName("language")
+    val language: NamedApiResource
+)
+
+data class PokemonVariety(
+    @SerializedName("is_default")
+    val isDefault: Boolean,
+    @SerializedName("pokemon")
+    val pokemon: NamedApiResource
+)
+
+// --- Type Details ---
+
+data class TypeDetails(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("damage_relations")
+    val damageRelations: DamageRelations
+)
+
+data class DamageRelations(
+    @SerializedName("no_damage_to")
+    val noDamageTo: List<NamedApiResource>,
+    @SerializedName("half_damage_to")
+    val halfDamageTo: List<NamedApiResource>,
+    @SerializedName("double_damage_to")
+    val doubleDamageTo: List<NamedApiResource>,
+    @SerializedName("no_damage_from")
+    val noDamageFrom: List<NamedApiResource>,
+    @SerializedName("half_damage_from")
+    val halfDamageFrom: List<NamedApiResource>,
+    @SerializedName("double_damage_from")
+    val doubleDamageFrom: List<NamedApiResource>
+)
+
+// --- Ability Details ---
+
+data class AbilityDetails(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("effect_entries")
+    val effectEntries: List<EffectEntry>
+)
+
+data class EffectEntry(
+    @SerializedName("effect")
+    val effect: String,
+    @SerializedName("short_effect")
+    val shortEffect: String,
+    @SerializedName("language")
+    val language: NamedApiResource
 )
