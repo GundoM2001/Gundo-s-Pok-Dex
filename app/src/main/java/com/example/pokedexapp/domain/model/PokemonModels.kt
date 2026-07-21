@@ -30,11 +30,10 @@ data class PokemonResults(
     val types: List<String>? = null
 ) {
     val id: Int
-        get() = try {
-            url.trimEnd('/').split('/').last().toInt()
-        } catch (e: Exception) {
-            0
-        }
+        get() = url
+            .trimEnd('/')
+            .substringAfterLast('/')
+            .toIntOrNull() ?: 0
 }
 
 // --- Core Detail Model ---

@@ -17,8 +17,8 @@ interface FavouritePokemonDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavourite(pokemon: FavouritePokemonEntity)
 
-    @Delete
-    suspend fun deleteFavourite(pokemon: FavouritePokemonEntity)
+    @Query("DELETE FROM favorite_pokemon WHERE id = :pokemonId")
+    suspend fun deleteFavouriteById(pokemonId: Int)
 
     @Query("SELECT EXISTS (SELECT 1 FROM favorite_pokemon WHERE id = :pokemonId)")
     fun isFavourite(pokemonId: Int): Flow<Boolean>

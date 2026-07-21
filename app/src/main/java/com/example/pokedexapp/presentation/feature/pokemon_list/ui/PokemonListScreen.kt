@@ -68,12 +68,14 @@ fun PokemonListScreen(
     val isLoading by viewModel.loading.collectAsState()
     val isEnriching by viewModel.isEnriching.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
+    val favouriteIds by viewModel.favouriteIds.collectAsState()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     PokemonListContent(
         pokemonList = pokemonList,
+        favouriteIds = favouriteIds,
         nextUrl = nextUrl,
         previousUrl = previousUrl,
         isLoading = isLoading,
@@ -89,6 +91,9 @@ fun PokemonListScreen(
         },
         onHomeClick = onHomeClick,
         onFavoritesClick = onFavoritesClick,
+        onToggleFavourite = { pokemon ->
+            viewModel.toggleFavourite(pokemon)
+        },
         drawerState = drawerState
     )
 }
@@ -97,6 +102,7 @@ fun PokemonListScreen(
 @Composable
 fun PokemonListContent(
     pokemonList: List<PokemonResults>?,
+    favouriteIds:Set<Int>,
     nextUrl: String?,
     previousUrl: String?,
     isLoading: Boolean,
@@ -108,7 +114,8 @@ fun PokemonListContent(
     onMenuClick: () -> Unit,
     onHomeClick: () -> Unit,
     onFavoritesClick: () -> Unit,
-    drawerState: androidx.compose.material3.DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    drawerState: androidx.compose.material3.DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
+    onToggleFavourite: (PokemonResults) -> Unit
 ) {
     var isSearchExpanded by remember { mutableStateOf(false) }
 
@@ -218,7 +225,13 @@ fun PokemonListContent(
                             items(pokemonList ?: emptyList()) { pokemon ->
                                 PokemonItem(
                                     pokemon = pokemon,
-                                    onClick = { onPokemonClick(pokemon.url) }
+                                    isFavorite = favouriteIds.contains(pokemon.id),
+                                    onFavouriteClick = {
+                                        onToggleFavourite(pokemon)
+                                    },
+                                    onClick = {
+                                        onPokemonClick(pokemon.url)
+                                    }
                                 )
                             }
                         }
@@ -283,10 +296,20 @@ fun PaginationPager(
 fun PokemonListContentPreview() {
     PokemonListContent(
         pokemonList = listOf(
-            PokemonResults(name = "Bulbasaur", url = ""),
-            PokemonResults(name = "Ivysaur", url = ""),
-            PokemonResults(name = "Venusaur", url = "")
+            PokemonResults(
+                name = "Bulbasaur",
+                url = "https://pokeapi.co/api/v2/pokemon/1/"
+            ),
+            PokemonResults(
+                name = "Ivysaur",
+                url = "https://pokeapi.co/api/v2/pokemon/2/"
+            ),
+            PokemonResults(
+                name = "Venusaur",
+                url = "https://pokeapi.co/api/v2/pokemon/3/"
+            )
         ),
+        favouriteIds = setOf(1, 3),
         nextUrl = "next",
         previousUrl = null,
         isLoading = false,
@@ -297,6 +320,10 @@ fun PokemonListContentPreview() {
         onPokemonClick = {},
         onMenuClick = {},
         onHomeClick = {},
-        onFavoritesClick = {}
+        onFavoritesClick = {},
+        onToggleFavourite = {},
+        drawerState = rememberDrawerState(
+            initialValue = DrawerValue.Closed
+        )
     )
 }

@@ -53,13 +53,13 @@ import com.example.pokedexapp.utils.PokemonNameFormatter
 fun PokemonItem(
     pokemon: PokemonResults,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    isFavorite: Boolean,
+    onFavouriteClick: () -> Unit = {}
 ) {
     val gradient = PokemonTypeUtils.getGradientForType(
         pokemon.types?.firstOrNull()
     )
-
-    var isFavorite by remember { mutableStateOf(false) }
 
     Card(
         onClick = onClick,
@@ -101,7 +101,7 @@ fun PokemonItem(
                 )
 
                 IconButton(
-                    onClick = { isFavorite = !isFavorite },
+                    onClick = { onFavouriteClick() },
                     modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
@@ -275,6 +275,7 @@ private fun PokemonItemPreview() {
                 "dragon",
             )
         ),
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
+        isFavorite = true
     )
 }

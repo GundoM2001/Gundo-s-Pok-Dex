@@ -137,6 +137,7 @@ fun FavoritePokemonContent(
                             items(favouritePokemon) { pokemon ->
                                 PokemonItem(
                                     pokemon = pokemon,
+                                    isFavorite = true,
                                     onClick = { onPokemonClick(pokemon.url) }
                                 )
                             }
