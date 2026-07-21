@@ -7,4 +7,5 @@ sealed class Screen(val route: String) {
             return "pokemon_detail_screen/${java.net.URLEncoder.encode(url, "UTF-8")}"
         }
     }
+    object Favorites : Screen("favorites_screen")
 }

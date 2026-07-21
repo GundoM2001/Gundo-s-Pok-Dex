@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -87,5 +88,19 @@ fun StatBar(
                     .background(color)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun StatBarPreview() {
+    MaterialTheme {
+        StatBar(
+            statName = "HP",
+            statValue = 100,
+            maxStat = 255,
+            color = Color.Green,
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }

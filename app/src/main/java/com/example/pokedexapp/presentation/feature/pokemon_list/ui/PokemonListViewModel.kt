@@ -75,6 +75,14 @@ class PokemonListViewModel @Inject constructor(private val repository: PokemonRe
         initialValue = null
     )
 
+    val favouriteIds = repository
+        .getFavouritePokemonIds()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptySet()
+        )
+
     init {
         fetchPokemonData()
         fetchMasterList()
@@ -106,6 +114,16 @@ class PokemonListViewModel @Inject constructor(private val repository: PokemonRe
                 Log.e("VM", "Error fetching data", e)
             } finally {
                 _loading.value = false
+            }
+        }
+    }
+
+    fun toggleFavourite(pokemon: PokemonResults) {
+        viewModelScope.launch {
+            if (favouriteIds.value.contains(pokemon.id)) {
+                repository.removeFavourite(pokemon.id)
+            } else {
+                repository.addFavourite(pokemon)
             }
         }
     }

@@ -16,11 +16,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,7 +53,9 @@ import com.example.pokedexapp.utils.PokemonNameFormatter
 fun PokemonItem(
     pokemon: PokemonResults,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    isFavorite: Boolean,
+    onFavouriteClick: () -> Unit = {}
 ) {
     val gradient = PokemonTypeUtils.getGradientForType(
         pokemon.types?.firstOrNull()
@@ -75,6 +86,32 @@ fun PokemonItem(
             PokemonWatermark(
                 modifier = Modifier.align(Alignment.BottomEnd)
             )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(end = 4.dp, top = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "#${pokemon.id.toString().padStart(3, '0')}",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black.copy(alpha = 0.4f)
+                )
+
+                IconButton(
+                    onClick = { onFavouriteClick() },
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) Color.Red else Color.Black.copy(alpha = 0.4f),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
 
             Column(
                 modifier = Modifier
@@ -238,6 +275,7 @@ private fun PokemonItemPreview() {
                 "dragon",
             )
         ),
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
+        isFavorite = true
     )
 }

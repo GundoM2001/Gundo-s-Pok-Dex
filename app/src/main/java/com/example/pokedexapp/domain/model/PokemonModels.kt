@@ -28,7 +28,13 @@ data class PokemonResults(
     val url: String,
     val imageUrl: String? = null,
     val types: List<String>? = null
-)
+) {
+    val id: Int
+        get() = url
+            .trimEnd('/')
+            .substringAfterLast('/')
+            .toIntOrNull() ?: 0
+}
 
 // --- Core Detail Model ---
 
