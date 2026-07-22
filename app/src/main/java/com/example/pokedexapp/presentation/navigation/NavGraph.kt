@@ -11,7 +11,7 @@ import com.example.pokedexapp.presentation.feature.pokemon_details.ui.PokemonDet
 import com.example.pokedexapp.presentation.feature.pokemon_list.ui.PokemonListScreen
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screen.PokemonList.route

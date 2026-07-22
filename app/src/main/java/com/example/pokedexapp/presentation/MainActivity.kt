@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.pokedexapp.presentation.navigation.SetupNavGraph
+import com.example.pokedexapp.presentation.navigation.NavGraph
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        SetupNavGraph(navController = navController)
+                        NavGraph(navController = navController)
                     }
                 }
             }
