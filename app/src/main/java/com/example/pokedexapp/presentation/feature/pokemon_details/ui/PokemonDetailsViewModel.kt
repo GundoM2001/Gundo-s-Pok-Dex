@@ -5,6 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedexapp.domain.model.AbilityDetails
+import com.example.pokedexapp.domain.model.MachineDetails
+import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonSpecies
 import com.example.pokedexapp.domain.repository.PokemonRepository
@@ -14,6 +16,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,6 +41,12 @@ class PokemonDetailsViewModel @Inject constructor(
     private val _abilityDetails = MutableStateFlow<List<AbilityDetails>>(emptyList())
     val abilityDetails = _abilityDetails.asStateFlow()
 
+    private val _moveDetails = MutableStateFlow<Map<String, MoveDetails>>(emptyMap())
+    val moveDetails = _moveDetails.asStateFlow()
+
+    private val _machineDetails = MutableStateFlow<Map<String, MachineDetails>>(emptyMap())
+    val machineDetails = _machineDetails.asStateFlow()
+
     private val _selectedTabIndex = MutableStateFlow(0)
     val selectedTabIndex = _selectedTabIndex.asStateFlow()
 
@@ -54,13 +63,68 @@ class PokemonDetailsViewModel @Inject constructor(
     }
 
     fun onTabSelected(index: Int) {
-        _selectedTabIndex.value = index
+        _selectedTabIndex.update { index }
+        if (index == 1) {
+            _pokemonDetails.value?.let { 
+                viewModelScope.launch {
+                    fetchMoveDetails(it, essentialOnly = false) 
+                }
+            }
+        }
     }
 
     fun onVariantChanged(details: PokemonDetails) {
-        _pokemonDetails.value = details
+        _pokemonDetails.update { details }
         fetchTypeAdvantages(details)
         fetchAbilityDetails(details)
+        if (_selectedTabIndex.value == 1) {
+            viewModelScope.launch {
+                fetchMoveDetails(details, essentialOnly = false)
+            }
+        }
+    }
+
+    private suspend fun fetchMoveDetails(details: PokemonDetails, essentialOnly: Boolean) {
+        try {
+            val methods = if (essentialOnly) {
+                listOf("level-up")
+            } else {
+                listOf("level-up", "machine", "tutor", "evolution")
+            }
+
+            val movesToFetch = details.moves.filter { move ->
+                move.versionGroupDetails.any { it.moveLearnMethod.name in methods }
+            }
+
+            coroutineScope {
+                movesToFetch.map { moveEntry ->
+                    async {
+                        if (!_moveDetails.value.containsKey(moveEntry.move.name)) {
+                            try {
+                                val moveInfo = pokemonRepository.getMoveDetails(moveEntry.move.url)
+                                _moveDetails.update { it + (moveEntry.move.name to moveInfo) }
+
+                                // Also fetch machine details if applicable
+                                moveInfo.machines.forEach { machineVer ->
+                                    if (!_machineDetails.value.containsKey(machineVer.machine.url)) {
+                                        try {
+                                            val machine = pokemonRepository.getMachineDetails(machineVer.machine.url)
+                                            _machineDetails.update { it + (machineVer.machine.url to machine) }
+                                        } catch (e: Exception) {
+                                            Log.e("VM", "Error fetching machine details", e)
+                                        }
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e("VM", "Error fetching move details for ${moveEntry.move.name}", e)
+                            }
+                        }
+                    }
+                }.awaitAll()
+            }
+        } catch (e: Exception) {
+            Log.e("VM", "Error in fetchMoveDetails", e)
+        }
     }
 
     private fun fetchAbilityDetails(details: PokemonDetails) {
@@ -71,7 +135,7 @@ class PokemonDetailsViewModel @Inject constructor(
                         async { pokemonRepository.getAbilityDetails(ability.ability.url) }
                     }.awaitAll()
                 }
-                _abilityDetails.value = abilities
+                _abilityDetails.update { abilities }
             } catch (e: Exception) {
                 Log.e("VM", "Error fetching ability details", e)
             }
@@ -107,7 +171,7 @@ class PokemonDetailsViewModel @Inject constructor(
                         advantages[it.name] = (advantages[it.name] ?: 1.0) * 0.0 
                     }
                 }
-                _typeAdvantages.value = advantages
+                _typeAdvantages.update { advantages }
             } catch (e: Exception) {
                 Log.e("VM", "Error calculating type advantages", e)
             }
@@ -117,8 +181,8 @@ class PokemonDetailsViewModel @Inject constructor(
     private fun fetchPokemonDetails(url: String) {
         viewModelScope.launch {
             try {
-                _loading.value = true
-                _error.value = null
+                _loading.update { true }
+                _error.update { null }
 
                 val initialDetails = pokemonRepository.getPokemonDetails(url)
                 
@@ -147,19 +211,27 @@ class PokemonDetailsViewModel @Inject constructor(
                         }
                 }
 
-                _pokemonDetails.value = initialDetails
-                _pokemonSpecies.value = species
-                _pokemonVariants.value = variantDetails
+                _pokemonDetails.update { initialDetails }
+                _pokemonSpecies.update { species }
+                _pokemonVariants.update { variantDetails }
                 
                 fetchTypeAdvantages(initialDetails)
                 fetchAbilityDetails(initialDetails)
 
-                Log.d("DETAILS", "fetchPokemonDetails: Variants loaded: ${variantDetails.map { "${it.name} (ID: ${it.id})" }}")
+                // Wait for essential moves (Level Up) before showing the screen
+                fetchMoveDetails(initialDetails, essentialOnly = true)
+
+                // Load the rest of the moves in the background
+                viewModelScope.launch {
+                    fetchMoveDetails(initialDetails, essentialOnly = false)
+                }
+
+                Log.d("DETAILS", "fetchPokemonDetails: Variants and essential moves loaded.")
 
             } catch (e: Exception) {
-                _error.value = e.message ?: "An unknown error occurred"
+                _error.update { e.message ?: "An unknown error occurred" }
             } finally {
-                _loading.value = false
+                _loading.update { false }
             }
         }
     }

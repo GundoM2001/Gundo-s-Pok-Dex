@@ -1,7 +1,12 @@
 package com.example.pokedexapp.presentation.navigation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,7 +20,31 @@ import com.example.pokedexapp.presentation.feature.pokemon_list.ui.PokemonListSc
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.PokemonList.route
+        startDestination = Screen.PokemonList.route,
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { 1000 },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeIn(animationSpec = tween(400))
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -1000 },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeOut(animationSpec = tween(400))
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -1000 },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeIn(animationSpec = tween(400))
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { 1000 },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeOut(animationSpec = tween(400))
+        }
     ) {
         composable(route = Screen.PokemonList.route) {
             PokemonListScreen(

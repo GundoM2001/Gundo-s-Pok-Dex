@@ -106,4 +106,33 @@ object MockData {
         "steel" to 0.5,
         "electric" to 0.5
     )
+
+    val mockMoveDetails = mapOf(
+        "thunder-shock" to MoveDetails(
+            id = 84,
+            name = "thunder-shock",
+            accuracy = 100,
+            power = 40,
+            pp = 30,
+            priority = 0,
+            type = NamedApiResource("electric", ""),
+            damageClass = NamedApiResource("special", ""),
+            effectEntries = listOf(EffectEntry("Has a 10% chance to paralyze the target.", "May paralyze target.", NamedApiResource("en", ""))),
+            flavorTextEntries = emptyList(),
+            machines = emptyList()
+        ),
+        "quick-attack" to MoveDetails(
+            id = 98,
+            name = "quick-attack",
+            accuracy = 100,
+            power = 40,
+            pp = 30,
+            priority = 1,
+            type = NamedApiResource("normal", ""),
+            damageClass = NamedApiResource("physical", ""),
+            effectEntries = listOf(EffectEntry("Inflicts regular damage. User attacks first.", "Inflicts damage. User attacks first.", NamedApiResource("en", ""))),
+            flavorTextEntries = emptyList(),
+            machines = emptyList()
+        )
+    )
 }

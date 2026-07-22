@@ -1,6 +1,8 @@
 package com.example.pokedexapp.data.remote.api
 
 import com.example.pokedexapp.domain.model.AbilityDetails
+import com.example.pokedexapp.domain.model.MachineDetails
+import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonSpecies
@@ -31,4 +33,10 @@ interface PokemonApiService {
 
     @GET
     suspend fun getAbilityDetails(@Url url: String): Response<AbilityDetails>
+
+    @GET
+    suspend fun getMoveDetails(@Url url: String): Response<MoveDetails>
+
+    @GET
+    suspend fun getMachineDetails(@Url url: String): Response<MachineDetails>
 }
