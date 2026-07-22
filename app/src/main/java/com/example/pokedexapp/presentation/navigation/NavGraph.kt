@@ -35,7 +35,12 @@ fun SetupNavGraph(navController: NavHostController) {
             PokemonDetailsScreen()
         }
         composable(route = Screen.Favorites.route) {
-            FavoritePokemonScreen(onHomeClick = { navController.navigate(Screen.PokemonList.route)})
+            FavoritePokemonScreen(
+                onHomeClick = { navController.navigate(Screen.PokemonList.route) },
+                onPokemonClick = { url ->
+                    navController.navigate(Screen.PokemonDetail.passUrl(url))
+                },
+            )
         }
     }
 }
