@@ -4,6 +4,8 @@ import com.example.pokedexapp.data.local.dao.FavouritePokemonDao
 import com.example.pokedexapp.data.local.entities.FavouritePokemonEntity
 import com.example.pokedexapp.data.remote.api.PokemonApiService
 import com.example.pokedexapp.domain.model.AbilityDetails
+import com.example.pokedexapp.domain.model.MachineDetails
+import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonResults
@@ -15,12 +17,26 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 class PokemonRepositoryImpl @Inject constructor(
     private val service: PokemonApiService,
     private val dao: FavouritePokemonDao
 ) : PokemonRepository {
+
+    // In-memory caches
+    private val detailsCache = ConcurrentHashMap<String, PokemonDetails>()
+    private val speciesCache = ConcurrentHashMap<String, PokemonSpecies>()
+    private val typeCache = ConcurrentHashMap<String, TypeDetails>()
+    private val abilityCache = ConcurrentHashMap<String, AbilityDetails>()
+    private val moveCache = ConcurrentHashMap<String, MoveDetails>()
+    private val machineCache = ConcurrentHashMap<String, MachineDetails>()
+
+    // Limit concurrency for batch operations
+    private val networkSemaphore = Semaphore(5)
 
     override suspend fun getAllPokemon(url: String?): PokemonListResponse {
         val response = if (url != null) {
@@ -63,16 +79,11 @@ class PokemonRepositoryImpl @Inject constructor(
             list.map { pokemon ->
                 async {
                     try {
-                        val detailsResponse = service.getPokemonDetails(pokemon.url)
-                        if (detailsResponse.isSuccessful) {
-                            val details = detailsResponse.body()
-                            pokemon.copy(
-                                imageUrl = details?.sprites?.other?.officialArtwork?.frontDefault,
-                                types = details?.types?.map { it.type.name }
-                            )
-                        } else {
-                            pokemon
-                        }
+                        val details = getPokemonDetails(pokemon.url)
+                        pokemon.copy(
+                            imageUrl = details.sprites.other?.officialArtwork?.frontDefault,
+                            types = details.types.map { it.type.name }
+                        )
                     } catch (e: Exception) {
                         pokemon
                     }
@@ -82,38 +93,80 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPokemonDetails(url: String): PokemonDetails {
-        val response = service.getPokemonDetails(url)
-        if (response.isSuccessful) {
-            return response.body() ?: throw Exception("Response body is null")
-        } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+        detailsCache[url]?.let { return it }
+        return networkSemaphore.withPermit {
+            val response = service.getPokemonDetails(url)
+            if (response.isSuccessful) {
+                response.body()?.also { detailsCache[url] = it }
+                    ?: throw Exception("Response body is null")
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
         }
     }
 
     override suspend fun getPokemonSpecies(url: String): PokemonSpecies {
-        val response = service.getPokemonSpecies(url)
-        if (response.isSuccessful) {
-            return response.body() ?: throw Exception("Response body is null")
-        } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+        speciesCache[url]?.let { return it }
+        return networkSemaphore.withPermit {
+            val response = service.getPokemonSpecies(url)
+            if (response.isSuccessful) {
+                response.body()?.also { speciesCache[url] = it }
+                    ?: throw Exception("Response body is null")
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
         }
     }
 
     override suspend fun getTypeDetails(url: String): TypeDetails {
-        val response = service.getTypeDetails(url)
-        if (response.isSuccessful) {
-            return response.body() ?: throw Exception("Response body is null")
-        } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+        typeCache[url]?.let { return it }
+        return networkSemaphore.withPermit {
+            val response = service.getTypeDetails(url)
+            if (response.isSuccessful) {
+                response.body()?.also { typeCache[url] = it }
+                    ?: throw Exception("Response body is null")
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
         }
     }
 
     override suspend fun getAbilityDetails(url: String): AbilityDetails {
-        val response = service.getAbilityDetails(url)
-        if (response.isSuccessful) {
-            return response.body() ?: throw Exception("Response body is null")
-        } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+        abilityCache[url]?.let { return it }
+        return networkSemaphore.withPermit {
+            val response = service.getAbilityDetails(url)
+            if (response.isSuccessful) {
+                response.body()?.also { abilityCache[url] = it }
+                    ?: throw Exception("Response body is null")
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
+        }
+    }
+
+    override suspend fun getMoveDetails(url: String): MoveDetails {
+        moveCache[url]?.let { return it }
+        return networkSemaphore.withPermit {
+            val response = service.getMoveDetails(url)
+            if (response.isSuccessful) {
+                response.body()?.also { moveCache[url] = it }
+                    ?: throw Exception("Response body is null")
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
+        }
+    }
+
+    override suspend fun getMachineDetails(url: String): MachineDetails {
+        machineCache[url]?.let { return it }
+        return networkSemaphore.withPermit {
+            val response = service.getMachineDetails(url)
+            if (response.isSuccessful) {
+                response.body()?.also { machineCache[url] = it }
+                    ?: throw Exception("Response body is null")
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
         }
     }
 

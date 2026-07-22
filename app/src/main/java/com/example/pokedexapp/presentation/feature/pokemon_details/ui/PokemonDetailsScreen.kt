@@ -66,6 +66,8 @@ fun PokemonDetailsScreen(
     val error by viewModel.error.collectAsState()
     val typeAdvantages by viewModel.typeAdvantages.collectAsState()
     val abilityDetails by viewModel.abilityDetails.collectAsState()
+    val moveDetails by viewModel.moveDetails.collectAsState()
+    val machineDetails by viewModel.machineDetails.collectAsState()
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
 
     PokemonDetailsContent(
@@ -76,6 +78,8 @@ fun PokemonDetailsScreen(
         error = error,
         typeAdvantages = typeAdvantages,
         abilityDetails = abilityDetails,
+        moveDetails = moveDetails,
+        machineDetails = machineDetails,
         selectedTabIndex = selectedTabIndex,
         onBackClick = onBackClick,
         onVariantChanged = { viewModel.onVariantChanged(it) },
@@ -93,6 +97,8 @@ fun PokemonDetailsContent(
     error: String?,
     typeAdvantages: Map<String, Double>,
     abilityDetails: List<com.example.pokedexapp.domain.model.AbilityDetails>,
+    moveDetails: Map<String, com.example.pokedexapp.domain.model.MoveDetails>,
+    machineDetails: Map<String, com.example.pokedexapp.domain.model.MachineDetails>,
     selectedTabIndex: Int,
     onBackClick: () -> Unit,
     onVariantChanged: (PokemonDetails) -> Unit,
@@ -114,6 +120,7 @@ fun PokemonDetailsContent(
                 animationSpec = tween(durationMillis = 500),
                 label = "backgroundColor"
             )
+            val contentColor = PokemonTypeUtils.getContrastColor(backgroundColor)
 
             Scaffold(
                 topBar = {
@@ -127,7 +134,7 @@ fun PokemonDetailsContent(
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                     contentDescription = "Back",
-                                    tint = Color.White,
+                                    tint = contentColor,
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
@@ -221,7 +228,7 @@ fun PokemonDetailsContent(
 
                                 when (selectedTabIndex) {
                                     0 -> StatsTab(activeDetails)
-                                    1 -> MovesTab(activeDetails)
+                                    1 -> MovesTab(activeDetails, moveDetails, machineDetails)
                                     2 -> AbilitiesTab(activeDetails, abilityDetails)
                                     3 -> WeaknessTab(typeAdvantages)
                                     4 -> PokedexEntriesTab(species)
@@ -312,6 +319,8 @@ fun PokemonDetailsScreenPreview() {
             error = null,
             typeAdvantages = emptyMap(),
             abilityDetails = emptyList(),
+            moveDetails = emptyMap(),
+            machineDetails = emptyMap(),
             selectedTabIndex = 0,
             onBackClick = {},
             onVariantChanged = {},

@@ -434,6 +434,62 @@ data class AbilityDetails(
     val effectEntries: List<EffectEntry>
 )
 
+// --- Move Details ---
+
+data class MoveDetails(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("accuracy")
+    val accuracy: Int?,
+    @SerializedName("power")
+    val power: Int?,
+    @SerializedName("pp")
+    val pp: Int?,
+    @SerializedName("priority")
+    val priority: Int,
+    @SerializedName("type")
+    val type: NamedApiResource,
+    @SerializedName("damage_class")
+    val damageClass: NamedApiResource?,
+    @SerializedName("effect_entries")
+    val effectEntries: List<EffectEntry>,
+    @SerializedName("flavor_text_entries")
+    val flavorTextEntries: List<MoveFlavorText>,
+    @SerializedName("machines")
+    val machines: List<MachineVersionDetail>
+)
+
+data class MachineVersionDetail(
+    @SerializedName("machine")
+    val machine: NamedApiResource,
+    @SerializedName("version_group")
+    val versionGroup: NamedApiResource
+)
+
+// --- Machine Details ---
+
+data class MachineDetails(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("item")
+    val item: NamedApiResource,
+    @SerializedName("move")
+    val move: NamedApiResource,
+    @SerializedName("version_group")
+    val versionGroup: NamedApiResource
+)
+
+data class MoveFlavorText(
+    @SerializedName("flavor_text")
+    val flavorText: String,
+    @SerializedName("language")
+    val language: NamedApiResource,
+    @SerializedName("version_group")
+    val versionGroup: NamedApiResource
+)
+
 data class EffectEntry(
     @SerializedName("effect")
     val effect: String,

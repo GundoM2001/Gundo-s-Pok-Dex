@@ -294,36 +294,38 @@ fun PaginationPager(
 @Preview(showBackground = true)
 @Composable
 fun PokemonListContentPreview() {
-    PokemonListContent(
-        pokemonList = listOf(
-            PokemonResults(
-                name = "Bulbasaur",
-                url = "https://pokeapi.co/api/v2/pokemon/1/"
+    com.example.pokedexapp.presentation.theme.PokeDexAppTheme {
+        PokemonListContent(
+            pokemonList = listOf(
+                PokemonResults(
+                    name = "Bulbasaur",
+                    url = "https://pokeapi.co/api/v2/pokemon/1/"
+                ),
+                PokemonResults(
+                    name = "Ivysaur",
+                    url = "https://pokeapi.co/api/v2/pokemon/2/"
+                ),
+                PokemonResults(
+                    name = "Venusaur",
+                    url = "https://pokeapi.co/api/v2/pokemon/3/"
+                )
             ),
-            PokemonResults(
-                name = "Ivysaur",
-                url = "https://pokeapi.co/api/v2/pokemon/2/"
-            ),
-            PokemonResults(
-                name = "Venusaur",
-                url = "https://pokeapi.co/api/v2/pokemon/3/"
+            favouriteIds = setOf(1, 3),
+            nextUrl = "next",
+            previousUrl = null,
+            isLoading = false,
+            isEnriching = false,
+            searchQuery = "",
+            onSearchQueryChanged = {},
+            onPageRequest = {},
+            onPokemonClick = {},
+            onMenuClick = {},
+            onHomeClick = {},
+            onFavoritesClick = {},
+            onToggleFavourite = {},
+            drawerState = rememberDrawerState(
+                initialValue = DrawerValue.Closed
             )
-        ),
-        favouriteIds = setOf(1, 3),
-        nextUrl = "next",
-        previousUrl = null,
-        isLoading = false,
-        isEnriching = false,
-        searchQuery = "",
-        onSearchQueryChanged = {},
-        onPageRequest = {},
-        onPokemonClick = {},
-        onMenuClick = {},
-        onHomeClick = {},
-        onFavoritesClick = {},
-        onToggleFavourite = {},
-        drawerState = rememberDrawerState(
-            initialValue = DrawerValue.Closed
         )
-    )
+    }
 }

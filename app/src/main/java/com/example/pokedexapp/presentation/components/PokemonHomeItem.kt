@@ -60,6 +60,7 @@ fun PokemonItem(
     val gradient = PokemonTypeUtils.getGradientForType(
         pokemon.types?.firstOrNull()
     )
+    val contentColor = PokemonTypeUtils.getContrastColor(gradient.start)
 
     Card(
         onClick = onClick,
@@ -97,7 +98,7 @@ fun PokemonItem(
                     text = "#${pokemon.id.toString().padStart(3, '0')}",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black.copy(alpha = 0.4f)
+                    color = contentColor.copy(alpha = 0.6f)
                 )
 
                 IconButton(
@@ -107,7 +108,7 @@ fun PokemonItem(
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Favorite",
-                        tint = if (isFavorite) Color.Red else Color.Black.copy(alpha = 0.4f),
+                        tint = if (isFavorite) Color.Red else contentColor.copy(alpha = 0.6f),
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -131,7 +132,7 @@ fun PokemonItem(
                     fontSize = 18.sp,
                     lineHeight = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = contentColor,
                     maxLines = 1,
                     softWrap = false,
                     overflow = TextOverflow.Clip
@@ -149,6 +150,7 @@ fun PokemonItem(
                 ) {
                     PokemonTypes(
                         types = pokemon.types,
+                        contentColor = contentColor,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
@@ -171,6 +173,7 @@ fun PokemonItem(
 @Composable
 private fun PokemonTypes(
     types: List<String>?,
+    contentColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -181,7 +184,10 @@ private fun PokemonTypes(
         types
             ?.take(2)
             ?.forEachIndexed { index, type ->
-                PokemonTypePill(type = type)
+                PokemonTypePill(
+                    type = type,
+                    contentColor = contentColor
+                )
 
                 if (index < types.take(2).lastIndex) {
                     Spacer(
@@ -235,13 +241,14 @@ private fun PokemonImage(
 @Composable
 fun PokemonTypePill(
     type: String,
+    contentColor: Color,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(50))
             .background(
-                Color.Black.copy(alpha = 0.1f)
+                contentColor.copy(alpha = 0.1f)
             )
             .padding(
                 horizontal = 10.dp,
@@ -250,7 +257,7 @@ fun PokemonTypePill(
     ) {
         Text(
             text = type.replaceFirstChar { it.uppercase() },
-            color = Color.Black,
+            color = contentColor,
             fontSize = 11.sp,
             lineHeight = 13.sp,
             fontWeight = FontWeight.Medium,

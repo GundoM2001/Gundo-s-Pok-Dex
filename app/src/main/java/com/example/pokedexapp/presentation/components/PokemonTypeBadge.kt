@@ -3,6 +3,7 @@ package com.example.pokedexapp.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,7 +39,7 @@ fun PokemonTypeBadge(
     ) {
         Text(
             text = type.uppercase(),
-            color = Color.White,
+            color = PokemonTypeUtils.getContrastColor(gradient.start),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
             fontSize = 12.sp
@@ -50,10 +51,17 @@ fun PokemonTypeBadge(
 @Composable
 fun PokemonTypeBadgePreview() {
     MaterialTheme {
-        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            PokemonTypeBadge(type = "fire")
-            PokemonTypeBadge(type = "water")
-            PokemonTypeBadge(type = "grass")
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                PokemonTypeBadge(type = "fire")
+                PokemonTypeBadge(type = "water")
+                PokemonTypeBadge(type = "grass")
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                PokemonTypeBadge(type = "electric")
+                PokemonTypeBadge(type = "normal")
+                PokemonTypeBadge(type = "dragon")
+            }
         }
     }
 }

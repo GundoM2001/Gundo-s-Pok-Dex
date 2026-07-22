@@ -1,6 +1,8 @@
 package com.example.pokedexapp.domain.repository
 
 import com.example.pokedexapp.domain.model.AbilityDetails
+import com.example.pokedexapp.domain.model.MachineDetails
+import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonResults
@@ -16,6 +18,8 @@ interface PokemonRepository {
     suspend fun getPokemonSpecies(url: String): PokemonSpecies
     suspend fun getTypeDetails(url: String): TypeDetails
     suspend fun getAbilityDetails(url: String): AbilityDetails
+    suspend fun getMoveDetails(url: String): MoveDetails
+    suspend fun getMachineDetails(url: String): MachineDetails
     suspend fun addFavourite(pokemon: PokemonResults)
     suspend fun removeFavourite(pokemonId: Int)
     fun getFavouritePokemon(): Flow<List<PokemonResults>>
