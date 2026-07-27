@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.pokedexapp.data.AppDatabase
 import com.example.pokedexapp.data.local.dao.FavouritePokemonDao
+import com.example.pokedexapp.data.local.dao.TeamDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,5 +29,10 @@ object DatabaseModule {
     }
 
     @Provides
+    @Singleton
     fun provideFavouriteDao(db: AppDatabase): FavouritePokemonDao = db.favouritePokemonDao()
+
+    @Provides
+    @Singleton
+    fun provideTeamDao(db: AppDatabase): TeamDao = db.teamDao()
 }

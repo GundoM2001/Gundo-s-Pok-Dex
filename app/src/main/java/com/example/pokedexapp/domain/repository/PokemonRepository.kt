@@ -8,7 +8,6 @@ import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.domain.model.PokemonSpecies
 import com.example.pokedexapp.domain.model.TypeDetails
-import kotlinx.coroutines.flow.Flow
 
 interface PokemonRepository {
     suspend fun getAllPokemon(url: String? = null): PokemonListResponse
@@ -20,8 +19,4 @@ interface PokemonRepository {
     suspend fun getAbilityDetails(url: String): AbilityDetails
     suspend fun getMoveDetails(url: String): MoveDetails
     suspend fun getMachineDetails(url: String): MachineDetails
-    suspend fun addFavourite(pokemon: PokemonResults)
-    suspend fun removeFavourite(pokemonId: Int)
-    fun getFavouritePokemon(): Flow<List<PokemonResults>>
-    fun getFavouritePokemonIds(): Flow<Set<Int>>
 }

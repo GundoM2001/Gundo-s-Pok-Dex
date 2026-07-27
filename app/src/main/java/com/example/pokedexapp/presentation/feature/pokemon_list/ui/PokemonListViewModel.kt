@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedexapp.domain.model.PokemonListResponse
 import com.example.pokedexapp.domain.model.PokemonResults
+import com.example.pokedexapp.domain.repository.FavouriteRepository
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -24,7 +25,10 @@ import kotlinx.coroutines.flow.stateIn
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class PokemonListViewModel @Inject constructor(private val repository: PokemonRepository) :
+class PokemonListViewModel @Inject constructor(
+    private val repository: PokemonRepository,
+    private val favouriteRepository: FavouriteRepository
+) :
     ViewModel() {
     private val _pokemonList = MutableStateFlow<List<PokemonResults>?>(null)
     val pokemonList = _pokemonList.asStateFlow()
@@ -75,7 +79,7 @@ class PokemonListViewModel @Inject constructor(private val repository: PokemonRe
         initialValue = null
     )
 
-    val favouriteIds = repository
+    val favouriteIds = favouriteRepository
         .getFavouritePokemonIds()
         .stateIn(
             scope = viewModelScope,
@@ -121,9 +125,9 @@ class PokemonListViewModel @Inject constructor(private val repository: PokemonRe
     fun toggleFavourite(pokemon: PokemonResults) {
         viewModelScope.launch {
             if (favouriteIds.value.contains(pokemon.id)) {
-                repository.removeFavourite(pokemon.id)
+                favouriteRepository.removeFavourite(pokemon.id)
             } else {
-                repository.addFavourite(pokemon)
+                favouriteRepository.addFavourite(pokemon)
             }
         }
     }
