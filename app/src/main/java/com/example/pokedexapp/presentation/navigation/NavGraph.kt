@@ -62,7 +62,15 @@ fun NavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            PokemonDetailsScreen()
+            PokemonDetailsScreen(
+                onBackClick = { navController.popBackStack() },
+                onHomeClick = { 
+                    navController.navigate(Screen.PokemonList.route) {
+                        popUpTo(Screen.PokemonList.route) { inclusive = true }
+                    }
+                },
+                onFavoritesClick = { navController.navigate(Screen.Favorites.route) }
+            )
         }
         composable(route = Screen.Favorites.route) {
             FavoritePokemonScreen(

@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,7 +47,9 @@ fun MovesTab(
     moveDetails: Map<String, MoveDetails> = emptyMap(),
     machineDetails: Map<String, MachineDetails> = emptyMap()
 ) {
-    val groupedMoves = remember(details.moves, machineDetails) {
+    val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
+
+    val groupedMoves = remember(details.moves, moveDetails, machineDetails) {
         val levelUp = details.moves.filter { move ->
             move.versionGroupDetails.any { it.moveLearnMethod.name == "level-up" }
         }.sortedBy { move ->
@@ -106,13 +109,15 @@ fun MovesTab(
                         // Extract machine number if applicable
                         val machineUrl = details?.machines?.firstOrNull()?.machine?.url
                         val machineNumber = machineDetails[machineUrl]?.item?.name?.uppercase()
-                        var isExpanded by remember { mutableStateOf(false) }
+                        val isExpanded = expandedStates[moveEntry.move.name] ?: false
                         val rotation by animateFloatAsState(targetValue = if (isExpanded) 180f else 0f)
 
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { isExpanded = !isExpanded },
+                                .clickable { 
+                                    expandedStates[moveEntry.move.name] = !isExpanded 
+                                },
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                             )
@@ -225,7 +230,7 @@ fun MovesTab(
                                                 ?.shortEffect
                                         
                                         Text(
-                                            text = effect ?: "No description available",
+                                            text = effect ?: if (details == null) "Loading description..." else "No description available",
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             lineHeight = 16.sp,
