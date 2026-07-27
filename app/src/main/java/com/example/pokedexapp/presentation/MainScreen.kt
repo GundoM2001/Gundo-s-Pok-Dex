@@ -30,6 +30,7 @@ fun MainScreen() {
 
     val bottomBarScreens = listOf(
         BottomNavItem.Home,
+        BottomNavItem.TeamBuilder,
         BottomNavItem.Favorites
     )
 
@@ -101,6 +102,7 @@ fun MainContentPreview() {
             currentRoute = BottomNavItem.Home.route,
             bottomBarScreens = listOf(
                 BottomNavItem.Home,
+                BottomNavItem.TeamBuilder,
                 BottomNavItem.Favorites
             ),
             onNavigate = {},

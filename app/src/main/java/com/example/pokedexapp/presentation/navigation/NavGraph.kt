@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.pokedexapp.presentation.feature.favourite_pokemon.ui.FavoritePokemonScreen
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.PokemonDetailsScreen
 import com.example.pokedexapp.presentation.feature.pokemon_list.ui.PokemonListScreen
+import com.example.pokedexapp.presentation.feature.team_builder.team_builder_home.ui.TeamBuilderHomeScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -65,6 +66,14 @@ fun NavGraph(navController: NavHostController) {
                 onBackClick = { navController.popBackStack() }
             )
         }
+        composable(route = Screen.TeamBuilderHome.route){
+            TeamBuilderHomeScreen(
+                onTeamClick = { url ->
+
+                }
+            )
+        }
+
         composable(route = Screen.Favorites.route) {
             FavoritePokemonScreen(
                 onPokemonClick = { url ->

@@ -1,7 +1,9 @@
 package com.example.pokedexapp.presentation.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CatchingPokemon
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -19,7 +21,7 @@ sealed class BottomNavItem(
     object TeamBuilder : BottomNavItem(
         route = Screen.TeamBuilderHome.route,
         title = "Team Builder",
-        icon = Icons.Default.Favorite
+        icon = Icons.Default.CatchingPokemon
     )
 
     object Favorites : BottomNavItem(
