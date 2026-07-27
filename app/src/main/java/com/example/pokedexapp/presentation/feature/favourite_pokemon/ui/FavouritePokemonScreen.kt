@@ -35,8 +35,9 @@ fun FavoritePokemonScreen(
     viewModel: FavouritePokemonViewModel = hiltViewModel(),
     onPokemonClick: (String) -> Unit = {}
 ) {
-    val favouritePokemon by viewModel.favouritePokemon.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    val state by viewModel.state.collectAsState()
+    val favouritePokemon = state.favouritePokemon
+    val isLoading = state.isLoading
 
     FavoritePokemonContent(
         favouritePokemon = favouritePokemon,

@@ -3,7 +3,9 @@ package com.example.pokedexapp.data.repository
 import com.example.pokedexapp.data.local.dao.TeamDao
 import com.example.pokedexapp.data.local.entities.TeamEntity
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
+import com.example.pokedexapp.data.local.entities.TeamWithPokemon
 import com.example.pokedexapp.domain.repository.TeamRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class TeamRepositoryImpl @Inject constructor(
@@ -11,6 +13,8 @@ class TeamRepositoryImpl @Inject constructor(
 ) : TeamRepository {
 
     override fun getTeams() = dao.getTeams()
+
+    override fun getTeamsWithPokemon() = dao.getTeamsWithPokemon()
 
     override fun getPokemonForTeam(teamId: Int) = dao.getPokemonForTeam(teamId)
 
@@ -27,7 +31,6 @@ class TeamRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addPokemonToTeam(teamId: Int, pokemonId: Int) {
-
         val size = dao.getTeamSize(teamId)
 
         if (size >= 6) {
@@ -45,5 +48,21 @@ class TeamRepositoryImpl @Inject constructor(
 
     override suspend fun removePokemonFromTeam(teamPokemon: TeamPokemonEntity) {
         dao.removePokemon(teamPokemon)
+    }
+
+    override fun getTeamMember(id: Int): Flow<TeamPokemonEntity?> {
+        return dao.getTeamMember(id)
+    }
+
+    override suspend fun updateTeamMember(member: TeamPokemonEntity) {
+        dao.updateTeamMember(member)
+    }
+
+    override suspend fun getTeamWithPokemonById(teamId: Int): TeamWithPokemon? {
+        return dao.getTeamWithPokemonById(teamId)
+    }
+
+    override suspend fun addPokemonToTeamWithDetails(member: TeamPokemonEntity) {
+        dao.addPokemon(member)
     }
 }

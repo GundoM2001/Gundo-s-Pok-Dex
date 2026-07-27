@@ -59,16 +59,18 @@ fun PokemonDetailsScreen(
     viewModel: PokemonDetailsViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {}
 ) {
-    val details by viewModel.pokemonDetails.collectAsState()
-    val species by viewModel.pokemonSpecies.collectAsState()
-    val variants by viewModel.pokemonVariants.collectAsState()
-    val isLoading by viewModel.loading.collectAsState()
-    val error by viewModel.error.collectAsState()
-    val typeAdvantages by viewModel.typeAdvantages.collectAsState()
-    val abilityDetails by viewModel.abilityDetails.collectAsState()
-    val moveDetails by viewModel.moveDetails.collectAsState()
-    val machineDetails by viewModel.machineDetails.collectAsState()
-    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
+    val state by viewModel.state.collectAsState()
+    
+    val details = state.pokemonDetails
+    val species = state.pokemonSpecies
+    val variants = state.pokemonVariants
+    val isLoading = state.isLoading
+    val error = state.error
+    val typeAdvantages = state.typeAdvantages
+    val abilityDetails = state.abilityDetails
+    val moveDetails = state.moveDetails
+    val machineDetails = state.machineDetails
+    val selectedTabIndex = state.selectedTabIndex
 
     PokemonDetailsContent(
         details = details,

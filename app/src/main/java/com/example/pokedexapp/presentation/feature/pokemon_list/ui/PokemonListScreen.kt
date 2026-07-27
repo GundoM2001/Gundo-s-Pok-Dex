@@ -37,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,13 +52,14 @@ fun PokemonListScreen(
     viewModel: PokemonListViewModel = hiltViewModel(),
     onPokemonClick: (String) -> Unit = {}
 ) {
+    val state by viewModel.state.collectAsState()
     val pokemonList by viewModel.filteredPokemonList.collectAsState()
-    val nextUrl by viewModel.nextUrl.collectAsState()
-    val previousUrl by viewModel.previousUrl.collectAsState()
-    val isLoading by viewModel.loading.collectAsState()
-    val isEnriching by viewModel.isEnriching.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val favouriteIds by viewModel.favouriteIds.collectAsState()
+    val nextUrl = state.nextUrl
+    val previousUrl = state.previousUrl
+    val isLoading = state.isLoading
+    val isEnriching = state.isEnriching
+    val searchQuery = state.searchQuery
+    val favouriteIds = state.favouriteIds
 
     PokemonListContent(
         pokemonList = pokemonList,
@@ -121,7 +121,7 @@ fun PokemonListContent(
                                     focusedIndicatorColor = Color.Transparent,
                                     unfocusedIndicatorColor = Color.Transparent,
                                 ),
-                                textStyle = TextStyle(
+                                textStyle = MaterialTheme.typography.bodyLarge.copy(
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Medium
                                 )
