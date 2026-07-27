@@ -19,19 +19,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,13 +56,17 @@ import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components.PokemonDetailsHeader
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components.StatsTab
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components.WeaknessTab
+import com.example.pokedexapp.presentation.feature.pokemon_list.components.AppDrawer
 import com.example.pokedexapp.utils.PokemonNameFormatter
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonDetailsScreen(
     viewModel: PokemonDetailsViewModel = hiltViewModel(),
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    onFavoritesClick: () -> Unit = {}
 ) {
     val details by viewModel.pokemonDetails.collectAsState()
     val species by viewModel.pokemonSpecies.collectAsState()
@@ -82,6 +91,8 @@ fun PokemonDetailsScreen(
         machineDetails = machineDetails,
         selectedTabIndex = selectedTabIndex,
         onBackClick = onBackClick,
+        onHomeClick = onHomeClick,
+        onFavoritesClick = onFavoritesClick,
         onVariantChanged = { viewModel.onVariantChanged(it) },
         onTabSelected = { viewModel.onTabSelected(it) }
     )
@@ -101,6 +112,8 @@ fun PokemonDetailsContent(
     machineDetails: Map<String, com.example.pokedexapp.domain.model.MachineDetails>,
     selectedTabIndex: Int,
     onBackClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
     onVariantChanged: (PokemonDetails) -> Unit,
     onTabSelected: (Int) -> Unit
 ) {
@@ -121,117 +134,155 @@ fun PokemonDetailsContent(
                 label = "backgroundColor"
             )
             val contentColor = PokemonTypeUtils.getContrastColor(backgroundColor)
+            
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+            val scope = rememberCoroutineScope()
 
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {},
-                        navigationIcon = {
-                            IconButton(
-                                onClick = onBackClick,
-                                modifier = Modifier.size(48.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back",
-                                    tint = contentColor,
-                                    modifier = Modifier.size(24.dp)
-                                )
+            ModalNavigationDrawer(
+                drawerState = drawerState,
+                drawerContent = {
+                    AppDrawer(
+                        onHomeClick = {
+                            scope.launch {
+                                drawerState.close()
+                                onHomeClick()
                             }
                         },
-                        modifier = Modifier.height(48.dp),
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                        onFavoritesClick = {
+                            scope.launch {
+                                drawerState.close()
+                                onFavoritesClick()
+                            }
+                        }
                     )
-                },
-                containerColor = backgroundColor
-            ) { innerPadding ->
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = innerPadding.calculateTopPadding())
-                ) {
-                    val screenHeight = maxHeight
-                    val scrollState = rememberScrollState()
-                    val headerHeight = 350.dp
-                    
-                    Column(
+                }
+            ) {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {},
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = onBackClick,
+                                    modifier = Modifier.size(48.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back",
+                                        tint = contentColor,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                            },
+                            actions = {
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            drawerState.open()
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Menu,
+                                        contentDescription = "Menu",
+                                        tint = contentColor
+                                    )
+                                }
+                            },
+                            modifier = Modifier.height(48.dp),
+                            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                        )
+                    },
+                    containerColor = backgroundColor
+                ) { innerPadding ->
+                    BoxWithConstraints(
                         modifier = Modifier
                             .fillMaxSize()
-                            .verticalScroll(scrollState)
+                            .padding(top = innerPadding.calculateTopPadding())
                     ) {
-                        PokemonDetailsHeader(
-                            activeDetails = activeDetails,
-                            variants = variants,
-                            onVariantChanged = onVariantChanged
-                        )
-
-                        Surface(
+                        val screenHeight = maxHeight
+                        val scrollState = rememberScrollState()
+                        val headerHeight = 350.dp
+                        
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = screenHeight - headerHeight),
-                            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-                            color = MaterialTheme.colorScheme.surface
+                                .fillMaxSize()
+                                .verticalScroll(scrollState)
                         ) {
-                            Column(
+                            PokemonDetailsHeader(
+                                activeDetails = activeDetails,
+                                variants = variants,
+                                onVariantChanged = onVariantChanged
+                            )
+
+                            Surface(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(24.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                    .heightIn(min = screenHeight - headerHeight),
+                                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+                                color = MaterialTheme.colorScheme.surface
                             ) {
-                                Text(
-                                    text = PokemonNameFormatter.format(activeDetails.name),
-                                    style = MaterialTheme.typography.headlineLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                
-                                val genus = species?.genera?.firstOrNull { it.language.name == "en" }?.genus
-                                if (genus != null) {
-                                    Text(
-                                        text = genus,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(bottom = 8.dp)
-                                    )
-                                }
-
-                                Row(
-                                    modifier = Modifier.padding(vertical = 8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(24.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    activeDetails.types.forEach { type ->
-                                        PokemonTypeBadge(type = type.type.name)
-                                    }
-                                }
-
-                                val description = species?.flavorTextEntries
-                                    ?.firstOrNull { it.language.name == "en" }
-                                    ?.flavorText?.replace("\n", " ")
-                                
-                                if (description != null) {
                                     Text(
-                                        text = description,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        textAlign = TextAlign.Center,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(vertical = 16.dp)
+                                        text = PokemonNameFormatter.format(activeDetails.name),
+                                        style = MaterialTheme.typography.headlineLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
-                                }
+                                    
+                                    val genus = species?.genera?.firstOrNull { it.language.name == "en" }?.genus
+                                    if (genus != null) {
+                                        Text(
+                                            text = genus,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.padding(bottom = 8.dp)
+                                        )
+                                    }
 
-                                TabRow(
-                                    selectedTabIndex = selectedTabIndex,
-                                    onTabSelected = onTabSelected,
-                                    activeColor = backgroundColor
-                                )
+                                    Row(
+                                        modifier = Modifier.padding(vertical = 8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        activeDetails.types.forEach { type ->
+                                            PokemonTypeBadge(type = type.type.name)
+                                        }
+                                    }
 
-                                Spacer(modifier = Modifier.height(24.dp))
+                                    val description = species?.flavorTextEntries
+                                        ?.firstOrNull { it.language.name == "en" }
+                                        ?.flavorText?.replace("\n", " ")
+                                    
+                                    if (description != null) {
+                                        Text(
+                                            text = description,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.padding(vertical = 16.dp)
+                                        )
+                                    }
 
-                                when (selectedTabIndex) {
-                                    0 -> StatsTab(activeDetails)
-                                    1 -> MovesTab(activeDetails, moveDetails, machineDetails)
-                                    2 -> AbilitiesTab(activeDetails, abilityDetails)
-                                    3 -> WeaknessTab(typeAdvantages)
-                                    4 -> PokedexEntriesTab(species)
+                                    TabRow(
+                                        selectedTabIndex = selectedTabIndex,
+                                        onTabSelected = onTabSelected,
+                                        activeColor = backgroundColor
+                                    )
+
+                                    Spacer(modifier = Modifier.height(24.dp))
+
+                                    when (selectedTabIndex) {
+                                        0 -> StatsTab(activeDetails)
+                                        1 -> MovesTab(activeDetails, moveDetails, machineDetails)
+                                        2 -> AbilitiesTab(activeDetails, abilityDetails)
+                                        3 -> WeaknessTab(typeAdvantages)
+                                        4 -> PokedexEntriesTab(species)
+                                    }
                                 }
                             }
                         }
@@ -323,6 +374,8 @@ fun PokemonDetailsScreenPreview() {
             machineDetails = emptyMap(),
             selectedTabIndex = 0,
             onBackClick = {},
+            onHomeClick = {},
+            onFavoritesClick = {},
             onVariantChanged = {},
             onTabSelected = {}
         )
