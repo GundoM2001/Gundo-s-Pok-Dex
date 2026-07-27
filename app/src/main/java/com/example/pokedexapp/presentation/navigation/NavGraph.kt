@@ -50,8 +50,7 @@ fun NavGraph(navController: NavHostController) {
             PokemonListScreen(
                 onPokemonClick = { url ->
                     navController.navigate(Screen.PokemonDetail.passUrl(url))
-                },
-                onFavoritesClick = { navController.navigate(Screen.Favorites.route) },
+                }
             )
         }
         composable(
@@ -63,21 +62,14 @@ fun NavGraph(navController: NavHostController) {
             )
         ) {
             PokemonDetailsScreen(
-                onBackClick = { navController.popBackStack() },
-                onHomeClick = { 
-                    navController.navigate(Screen.PokemonList.route) {
-                        popUpTo(Screen.PokemonList.route) { inclusive = true }
-                    }
-                },
-                onFavoritesClick = { navController.navigate(Screen.Favorites.route) }
+                onBackClick = { navController.popBackStack() }
             )
         }
         composable(route = Screen.Favorites.route) {
             FavoritePokemonScreen(
-                onHomeClick = { navController.navigate(Screen.PokemonList.route) },
                 onPokemonClick = { url ->
                     navController.navigate(Screen.PokemonDetail.passUrl(url))
-                },
+                }
             )
         }
     }
