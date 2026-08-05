@@ -1,47 +1,71 @@
 # Gundo's Pokédex
 
-A modern Android application built with Jetpack Compose that organizes and locally saves a user's favorite Pokémon. It provides detailed information including base stats, abilities, and PokéDex descriptions across generations.
+A modern, feature-rich Android application built with Jetpack Compose that leverages the [PokéAPI](https://pokeapi.co/) to provide a comprehensive Pokémon experience. From building competitive teams to exploring detailed Pokémon lore across generations, Gundo's Pokédex is designed for trainers of all levels.
 
-## ✨ Features
-- **Browse Pokémon**: Explore a comprehensive list of Pokémon from the PokéAPI.
-- **Search & Filter**: Quickly find Pokémon by name or ID.
-- **Detailed View**: View base stats, abilities, types, and descriptions for every generation.
-- **Favorites**: Save your favorite Pokémon locally for quick access.
-- **Offline Support**: Favorited Pokémon are persisted locally using Room.
+## Features
 
-## 🛠 Tech Stack
+### Explore & Search
+- **Comprehensive Pokédex**: Browse through the entire Pokémon library with smooth pagination.
+- **Smart Search**: Find any Pokémon instantly by name or ID number.
+- **Dynamic Backgrounds**: UI themes dynamically adjust based on the primary type of the Pokémon being viewed.
+
+### Team Builder (Advanced)
+- **Custom Team Creation**: Build and manage multiple Pokémon teams locally.
+- **Deep Customization**:
+    - **Nicknaming**: Give your Pokémon a personal touch.
+    - **Level Scaling**: Adjust levels (1-100) and see stats calculate in real-time.
+    - **Move Sets**: Full access to learnsets (Level-up, TMs/HMs, Tutor, Evolution moves).
+    - **Nature Selection**: Influence stat growth with the full range of Pokémon Natures.
+    - **EV/IV Training**: Fine-tune stats with precise Effort Value (EV) and Individual Value (IV) controls.
+
+### Detailed Lore & Stats
+- **Multi-Generation Entries**: Read Pokédex flavor text from every game version the Pokémon has appeared in.
+- **Battle Stats**: View base stats, type advantages/weaknesses, and ability details.
+- **Varieties & Forms**: Easily switch between Mega Evolutions, Alolan forms, Galarian forms, and more.
+
+### Personalization & Localization
+- **Global Support**: Fully localized in **17 locales**, including:
+    - English (US & UK), Afrikaans, Venda, French, Italian, Japanese, German, Spanish (European & Latin), Portuguese, Arabic, Russian, Polish, Hindi, and Mandarin.
+- **Theme Control**: Force Light Mode, Dark Mode, or follow the System Default.
+- **In-App Language Selection**: Change the app language independently of the system (supports Android 13+ per-app language settings).
+
+## Tech Stack
+
+- **UI Framework**: [Jetpack Compose](https://developer.android.com/jetpack/compose) (Material 3)
 - **Language**: [Kotlin](https://kotlinlang.org/)
-- **UI Framework**: [Jetpack Compose](https://developer.android.com/jetpack/compose)
+- **Architecture**: Clean Architecture with MVVM (Model-View-ViewModel)
 - **Dependency Injection**: [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
-- **Local Database**: [Room](https://developer.android.com/training/data-storage/room)
+- **Local Database**: [Room](https://developer.android.com/training/data-storage/room) (with schema versioning for user preferences)
 - **Networking**: [Retrofit](https://square.github.io/retrofit/) & [OkHttp](https://square.github.io/okhttp/)
-- **Image Loading**: [Coil](https://coil-kt.github.io/coil/)
-- **Asynchronous Programming**: [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html)
-- **Navigation**: [Compose Navigation](https://developer.android.com/jetpack/compose/navigation)
+- **Image Loading**: [Coil 3](https://coil-kt.github.io/coil/) (Network-aware)
+- **Reactive Programming**: Kotlin Coroutines & [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/)
+- **Navigation**: [Compose Navigation](https://developer.android.com/pack/compose/navigation)
 
-## 🏗 Architecture
-The project follows **Clean Architecture** principles and the **MVVM (Model-View-ViewModel)** pattern:
-- **Presentation Layer**: Contains Compose screens, ViewModels (using Hilt), and UI state management.
-- **Domain Layer**: Contains business logic, use cases, and repository interfaces.
-- **Data Layer**: Implements repository interfaces, manages local (Room) and remote (Retrofit) data sources.
+## Architecture & Project Structure
 
-## 📁 Project Structure
+The project is organized into layers to ensure scalability and testability:
+
 ```
 com.example.pokedexapp
-├── data             # Repository implementation, Local & Remote data sources
+├── data             # Repositories, DAOs, Entities, and Remote API services
 ├── di               # Hilt Dependency Injection modules
-├── domain           # Business logic: Models, Repository interfaces, Use Cases
-├── presentation     # UI: Features (List, Details, Favorites), Theme, Navigation
-└── utils            # Helper classes and extensions
+├── domain           # Business logic: Models and Repository interfaces
+├── presentation     # UI Layer
+│   ├── components   # Shared UI components (Stat bars, Badges, etc.)
+│   ├── feature      # Feature-based modules (Details, Team Builder, Settings)
+│   ├── navigation   # NavHost and Route definitions
+│   └── theme        # Material 3 Design System implementation
+└── utils            # Formatters, Image helpers, and common utilities
 ```
 
-## 🚀 Getting Started
-1. Clone the repository.
-2. Open the project in Android Studio.
-3. Build and run the app on an emulator or physical device.
+## Getting Started
 
-## 📡 API
-This project uses the [PokéAPI](https://pokeapi.co/) for all Pokémon data.
+1. **Clone the Repo**: `git clone https://github.com/yourusername/Gundo-s-Pok-Dex.git`
+2. **Open in Android Studio**: Use the latest Ladybug or newer version.
+3. **Sync & Run**: Allow Gradle to sync and deploy to an API 26+ device.
+
+## API Reference
+This project utilizes the [PokéAPI](https://pokeapi.co/) for all dynamic data.
 
 ---
 *Developed by Gundo Mahatma Mukwevho*
