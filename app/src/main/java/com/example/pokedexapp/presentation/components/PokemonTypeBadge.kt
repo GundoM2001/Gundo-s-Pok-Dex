@@ -34,7 +34,7 @@ fun PokemonTypeBadge(
                 ),
                 shape = RoundedCornerShape(24.dp)
             )
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = 10.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

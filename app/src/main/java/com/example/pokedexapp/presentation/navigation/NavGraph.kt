@@ -15,6 +15,10 @@ import androidx.navigation.navArgument
 import com.example.pokedexapp.presentation.feature.favourite_pokemon.ui.FavoritePokemonScreen
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.PokemonDetailsScreen
 import com.example.pokedexapp.presentation.feature.pokemon_list.ui.PokemonListScreen
+import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.ui.PokemonCustomizationScreen
+import com.example.pokedexapp.presentation.feature.team_builder.pokemon_search.ui.PokemonSearchScreen
+import com.example.pokedexapp.presentation.feature.team_builder.team_builder_home.ui.TeamBuilderHomeScreen
+import com.example.pokedexapp.presentation.feature.team_builder.team_detail.ui.TeamDetailScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -50,8 +54,7 @@ fun NavGraph(navController: NavHostController) {
             PokemonListScreen(
                 onPokemonClick = { url ->
                     navController.navigate(Screen.PokemonDetail.passUrl(url))
-                },
-                onFavoritesClick = { navController.navigate(Screen.Favorites.route) },
+                }
             )
         }
         composable(
@@ -63,21 +66,71 @@ fun NavGraph(navController: NavHostController) {
             )
         ) {
             PokemonDetailsScreen(
-                onBackClick = { navController.popBackStack() },
-                onHomeClick = { 
-                    navController.navigate(Screen.PokemonList.route) {
-                        popUpTo(Screen.PokemonList.route) { inclusive = true }
-                    }
-                },
-                onFavoritesClick = { navController.navigate(Screen.Favorites.route) }
+                onBackClick = { navController.popBackStack() }
             )
         }
+        composable(route = Screen.TeamBuilderHome.route) {
+            TeamBuilderHomeScreen(
+                onTeamClick = { teamId ->
+                    navController.navigate(Screen.TeamDetail.passId(teamId))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.TeamDetail.route,
+            arguments = listOf(navArgument("teamId") { type = NavType.IntType })
+        ) {
+            TeamDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                onAddPokemonClick = { teamId, slot ->
+                    navController.navigate(Screen.PokemonSearch.passArgs(teamId, slot))
+                },
+                onMemberClick = { teamId, slot, pokemonId, memberId ->
+                    navController.navigate(Screen.PokemonCustomization.passArgs(teamId, slot, pokemonId, memberId))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.PokemonSearch.route,
+            arguments = listOf(
+                navArgument("teamId") { type = NavType.IntType },
+                navArgument("slot") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val teamId = backStackEntry.arguments?.getInt("teamId") ?: 0
+            val slot = backStackEntry.arguments?.getInt("slot") ?: 0
+            PokemonSearchScreen(
+                onBackClick = { navController.popBackStack() },
+                onPokemonSelected = { tId, s, pId ->
+                    navController.navigate(Screen.PokemonCustomization.passArgs(tId, s, pId, 0))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.PokemonCustomization.route,
+            arguments = listOf(
+                navArgument("teamId") { type = NavType.IntType },
+                navArgument("slot") { type = NavType.IntType },
+                navArgument("pokemonId") { type = NavType.IntType },
+                navArgument("memberId") { type = NavType.IntType }
+            )
+        ) {
+            PokemonCustomizationScreen(
+                onBackClick = { navController.popBackStack() },
+                onSaveSuccess = {
+                    navController.popBackStack(Screen.TeamDetail.route, inclusive = false)
+                }
+            )
+        }
+
         composable(route = Screen.Favorites.route) {
             FavoritePokemonScreen(
-                onHomeClick = { navController.navigate(Screen.PokemonList.route) },
                 onPokemonClick = { url ->
                     navController.navigate(Screen.PokemonDetail.passUrl(url))
-                },
+                }
             )
         }
     }

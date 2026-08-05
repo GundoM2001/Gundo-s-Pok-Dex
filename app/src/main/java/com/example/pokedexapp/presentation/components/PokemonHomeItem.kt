@@ -259,7 +259,6 @@ fun PokemonTypePill(
             text = type.replaceFirstChar { it.uppercase() },
             color = contentColor,
             fontSize = 11.sp,
-            lineHeight = 13.sp,
             fontWeight = FontWeight.Medium,
             maxLines = 1
         )
