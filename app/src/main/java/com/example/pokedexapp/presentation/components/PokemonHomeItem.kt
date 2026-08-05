@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -95,7 +96,7 @@ fun PokemonItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "#${pokemon.id.toString().padStart(3, '0')}",
+                    text = stringResource(R.string.pokemon_id_format, pokemon.id),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = contentColor.copy(alpha = 0.6f)
@@ -107,7 +108,7 @@ fun PokemonItem(
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favorite",
+                        contentDescription = stringResource(R.string.favorite_content_desc),
                         tint = if (isFavorite) Color.Red else contentColor.copy(alpha = 0.6f),
                         modifier = Modifier.size(20.dp)
                     )
@@ -255,8 +256,9 @@ fun PokemonTypePill(
                 vertical = 4.dp
             )
     ) {
+        val typeRes = PokemonTypeUtils.getTypeStringRes(type)
         Text(
-            text = type.replaceFirstChar { it.uppercase() },
+            text = stringResource(typeRes),
             color = contentColor,
             fontSize = 11.sp,
             fontWeight = FontWeight.Medium,

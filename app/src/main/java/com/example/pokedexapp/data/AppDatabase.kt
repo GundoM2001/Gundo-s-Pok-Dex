@@ -10,9 +10,12 @@ import com.example.pokedexapp.data.local.dao.TeamDao
 import com.example.pokedexapp.data.local.entities.TeamEntity
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 
+import com.example.pokedexapp.data.local.dao.UserPreferencesDao
+import com.example.pokedexapp.data.local.entities.UserPreferencesEntity
+
 @Database(
-    entities = [FavouritePokemonEntity::class, TeamEntity::class, TeamPokemonEntity::class],
-    version = 7,
+    entities = [FavouritePokemonEntity::class, TeamEntity::class, TeamPokemonEntity::class, UserPreferencesEntity::class],
+    version = 8,
     exportSchema = true
 )
 @TypeConverters(PokemonConverters::class)
@@ -21,4 +24,5 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun teamDao(): TeamDao
 
+    abstract fun userPreferencesDao(): UserPreferencesDao
 }

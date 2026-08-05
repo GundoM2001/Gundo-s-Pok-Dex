@@ -17,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pokedexapp.R
 import com.example.pokedexapp.presentation.components.PokemonTypeBadge
 import com.example.pokedexapp.presentation.mock.MockData
 
@@ -38,15 +40,15 @@ fun WeaknessTab(advantages: Map<String, Double>) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         if (weaknesses.isNotEmpty()) {
-            WeaknessSection(title = "Weaknesses", types = weaknesses, color = MaterialTheme.colorScheme.error)
+            WeaknessSection(title = stringResource(R.string.weakness_section_title), types = weaknesses, color = MaterialTheme.colorScheme.error)
         }
         
         if (resistances.isNotEmpty()) {
-            WeaknessSection(title = "Resistances", types = resistances, color = Color(0xFF2E7D32))
+            WeaknessSection(title = stringResource(R.string.resistance_section_title), types = resistances, color = Color(0xFF2E7D32))
         }
 
         if (immunities.isNotEmpty()) {
-            WeaknessSection(title = "Immunities", types = immunities, color = MaterialTheme.colorScheme.outline)
+            WeaknessSection(title = stringResource(R.string.immunity_section_title), types = immunities, color = MaterialTheme.colorScheme.outline)
         }
     }
 }

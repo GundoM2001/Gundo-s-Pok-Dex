@@ -21,10 +21,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.presentation.components.PokedexBackground
 import com.example.pokedexapp.presentation.components.PokemonItem
@@ -60,7 +62,7 @@ fun FavoritePokemonContent(
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = "Favorites",
+                            text = stringResource(R.string.nav_favorites),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -81,7 +83,7 @@ fun FavoritePokemonContent(
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 } else if (favouritePokemon.isEmpty()) {
                     Text(
-                        text = "No favorites yet",
+                        text = stringResource(R.string.no_favorites),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.Gray
                     )
