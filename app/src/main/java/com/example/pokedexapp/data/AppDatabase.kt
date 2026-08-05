@@ -12,7 +12,7 @@ import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 
 @Database(
     entities = [FavouritePokemonEntity::class, TeamEntity::class, TeamPokemonEntity::class],
-    version = 6,
+    version = 7,
     exportSchema = true
 )
 @TypeConverters(PokemonConverters::class)

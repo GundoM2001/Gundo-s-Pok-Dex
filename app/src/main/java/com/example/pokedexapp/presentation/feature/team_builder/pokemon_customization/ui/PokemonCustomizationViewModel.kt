@@ -11,6 +11,9 @@ import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.state.PokemonCustomizationState
 import com.example.pokedexapp.utils.ApiConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +28,7 @@ class PokemonCustomizationViewModel @Inject constructor(
 
     private val teamId: Int = checkNotNull(savedStateHandle["teamId"])
     private val slot: Int = checkNotNull(savedStateHandle["slot"])
-    private val pokemonId: Int = checkNotNull(savedStateHandle["pokemonId"])
+    private val initialPokemonId: Int = checkNotNull(savedStateHandle["pokemonId"])
     private val memberId: Int = checkNotNull(savedStateHandle["memberId"])
 
     private val _state = MutableStateFlow(PokemonCustomizationState())
@@ -39,8 +42,21 @@ class PokemonCustomizationViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                val details = pokemonRepository.getPokemonDetails("${ApiConfig.BASE_URL}pokemon/$pokemonId/")
+                val details = pokemonRepository.getPokemonDetails("${ApiConfig.BASE_URL}pokemon/$initialPokemonId/")
+                val species = pokemonRepository.getPokemonSpecies(details.species.url)
                 
+                val variantDetails = coroutineScope {
+                    species.varieties
+                        .filter { !it.pokemon.name.contains("totem") }
+                        .map { variety ->
+                            async {
+                                pokemonRepository.getPokemonDetails(variety.pokemon.url)
+                            }
+                        }
+                        .awaitAll()
+                        .sortedBy { v -> species.varieties.indexOfFirst { it.pokemon.name == v.name } }
+                }
+
                 var currentMember: TeamPokemonEntity? = null
                 if (memberId > 0) {
                     currentMember = teamRepository.getTeamMember(memberId).firstOrNull()
@@ -49,6 +65,7 @@ class PokemonCustomizationViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         pokemonDetails = details,
+                        varieties = variantDetails,
                         member = currentMember,
                         nickname = currentMember?.nickname,
                         level = currentMember?.level ?: 100,
@@ -72,9 +89,30 @@ class PokemonCustomizationViewModel @Inject constructor(
                         isLoading = false
                     )
                 }
+                
+                fetchMoveDetails(details)
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false, error = e.message) }
             }
+        }
+    }
+
+    private suspend fun fetchMoveDetails(details: PokemonDetails) {
+        coroutineScope {
+            details.moves.map { moveEntry ->
+                async {
+                    if (!_state.value.moveDetails.containsKey(moveEntry.move.name)) {
+                        try {
+                            val moveInfo = pokemonRepository.getMoveDetails(moveEntry.move.url)
+                            _state.update { s ->
+                                s.copy(moveDetails = s.moveDetails + (moveEntry.move.name to moveInfo))
+                            }
+                        } catch (e: Exception) {
+                            // Silent fail for single move
+                        }
+                    }
+                }
+            }.awaitAll()
         }
     }
 
@@ -90,6 +128,17 @@ class PokemonCustomizationViewModel @Inject constructor(
 
     fun onNatureChanged(natureName: String) {
         _state.update { it.copy(selectedNature = natureName) }
+    }
+
+    fun onVarietyChanged(details: PokemonDetails) {
+        _state.update { it.copy(pokemonDetails = details) }
+        viewModelScope.launch {
+            fetchMoveDetails(details)
+        }
+    }
+
+    fun onMoveSearchQueryChanged(query: String) {
+        _state.update { it.copy(moveSearchQuery = query) }
     }
 
     fun onEvChanged(stat: String, value: Int) {
@@ -167,10 +216,13 @@ class PokemonCustomizationViewModel @Inject constructor(
     fun save(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val s = _state.value
+            val currentPokemonDetails = s.pokemonDetails ?: return@launch
+            
             val entity = TeamPokemonEntity(
                 id = if (memberId > 0) memberId else 0,
                 teamId = teamId,
-                pokemonId = pokemonId,
+                pokemonId = currentPokemonDetails.id, // Save the ID of the selected variety
+                pokemonName = currentPokemonDetails.name,
                 slot = slot,
                 nickname = s.nickname,
                 level = s.level,

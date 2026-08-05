@@ -30,7 +30,7 @@ class TeamRepositoryImpl @Inject constructor(
         dao.deleteTeam(team)
     }
 
-    override suspend fun addPokemonToTeam(teamId: Int, pokemonId: Int) {
+    override suspend fun addPokemonToTeam(teamId: Int, pokemonId: Int, pokemonName: String) {
         val size = dao.getTeamSize(teamId)
 
         if (size >= 6) {
@@ -41,6 +41,7 @@ class TeamRepositoryImpl @Inject constructor(
             TeamPokemonEntity(
                 teamId = teamId,
                 pokemonId = pokemonId,
+                pokemonName = pokemonName,
                 slot = size
             )
         )
@@ -60,6 +61,10 @@ class TeamRepositoryImpl @Inject constructor(
 
     override suspend fun getTeamWithPokemonById(teamId: Int): TeamWithPokemon? {
         return dao.getTeamWithPokemonById(teamId)
+    }
+
+    override fun getTeamWithPokemonByIdFlow(teamId: Int): Flow<TeamWithPokemon?> {
+        return dao.getTeamWithPokemonByIdFlow(teamId)
     }
 
     override suspend fun addPokemonToTeamWithDetails(member: TeamPokemonEntity) {

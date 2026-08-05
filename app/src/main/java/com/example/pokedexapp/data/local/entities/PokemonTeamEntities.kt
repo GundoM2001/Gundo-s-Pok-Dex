@@ -34,6 +34,7 @@ data class TeamPokemonEntity(
     val id: Int = 0,
     val teamId: Int,
     val pokemonId: Int,
+    val pokemonName: String,
     val slot: Int,
     val nickname: String? = null,
     val level: Int = 100,

@@ -17,7 +17,7 @@ interface TeamRepository {
 
     suspend fun deleteTeam(team: TeamEntity)
 
-    suspend fun addPokemonToTeam(teamId: Int, pokemonId: Int)
+    suspend fun addPokemonToTeam(teamId: Int, pokemonId: Int, pokemonName: String)
 
     suspend fun removePokemonFromTeam(teamPokemon: TeamPokemonEntity)
 
@@ -26,6 +26,8 @@ interface TeamRepository {
     suspend fun updateTeamMember(member: TeamPokemonEntity)
 
     suspend fun getTeamWithPokemonById(teamId: Int): TeamWithPokemon?
+
+    fun getTeamWithPokemonByIdFlow(teamId: Int): Flow<TeamWithPokemon?>
 
     suspend fun addPokemonToTeamWithDetails(member: TeamPokemonEntity)
 }

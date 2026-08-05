@@ -86,11 +86,8 @@ fun NavGraph(navController: NavHostController) {
                 onAddPokemonClick = { teamId, slot ->
                     navController.navigate(Screen.PokemonSearch.passArgs(teamId, slot))
                 },
-                onMemberClick = { memberId, pokemonId ->
-                    // For editing existing, we need teamId and slot too. 
-                    // Let's get them from the current entry or pass them along.
-                    // Actually we can pass 0 for teamId/slot if memberId > 0 since we'll use memberId to fetch.
-                    navController.navigate(Screen.PokemonCustomization.passArgs(0, 0, pokemonId, memberId))
+                onMemberClick = { teamId, slot, pokemonId, memberId ->
+                    navController.navigate(Screen.PokemonCustomization.passArgs(teamId, slot, pokemonId, memberId))
                 }
             )
         }

@@ -1,23 +1,34 @@
 package com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.Nature
+import com.example.pokedexapp.domain.model.PokemonDetails
+import com.example.pokedexapp.presentation.components.PokemonTypeBadge
+import com.example.pokedexapp.presentation.mock.MockData
+import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
 import com.example.pokedexapp.utils.PokemonImageUtils
 import com.example.pokedexapp.utils.PokemonNameFormatter
 
@@ -77,6 +88,15 @@ fun PokemonCustomizationScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
+                    if (state.varieties.size > 1) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        VarietySelector(
+                            currentVariety = details,
+                            allVarieties = state.varieties,
+                            onVarietySelected = { viewModel.onVarietyChanged(it) }
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
@@ -107,12 +127,12 @@ fun PokemonCustomizationScreen(
                         modifier = Modifier.align(Alignment.Start).padding(bottom = 8.dp)
                     )
                     
-                    val allMoveNames = details.moves.map { it.move.name }
+                    val allMoveEntries = details.moves
                     
-                    MoveSelector(1, state.move1, allMoveNames) { viewModel.onMoveSelected(1, it) }
-                    MoveSelector(2, state.move2, allMoveNames) { viewModel.onMoveSelected(2, it) }
-                    MoveSelector(3, state.move3, allMoveNames) { viewModel.onMoveSelected(3, it) }
-                    MoveSelector(4, state.move4, allMoveNames) { viewModel.onMoveSelected(4, it) }
+                    MoveSelector(1, state.move1, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(1, it) }
+                    MoveSelector(2, state.move2, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(2, it) }
+                    MoveSelector(3, state.move3, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(3, it) }
+                    MoveSelector(4, state.move4, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(4, it) }
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
 
@@ -182,6 +202,47 @@ fun PokemonCustomizationScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun VarietySelector(
+    currentVariety: PokemonDetails,
+    allVarieties: List<PokemonDetails>,
+    onVarietySelected: (PokemonDetails) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    
+    Box(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = PokemonNameFormatter.format(currentVariety.name),
+            onValueChange = {},
+            label = { Text("Form") },
+            modifier = Modifier.fillMaxWidth().clickable { expanded = true },
+            readOnly = true,
+            enabled = false,
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledBorderColor = MaterialTheme.colorScheme.outline
+            )
+        )
+        
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth(0.9f)
+        ) {
+            allVarieties.forEach { variety ->
+                DropdownMenuItem(
+                    text = { Text(PokemonNameFormatter.format(variety.name)) },
+                    onClick = {
+                        onVarietySelected(variety)
+                        expanded = false
+                    }
+                )
             }
         }
     }
@@ -312,7 +373,10 @@ fun StatRow(label: String, value: Int, range: ClosedFloatingPointRange<Float>, o
 fun MoveSelector(
     index: Int,
     currentMove: String?,
-    allMoves: List<String>,
+    allMoveEntries: List<com.example.pokedexapp.domain.model.Move>,
+    moveDetailsMap: Map<String, MoveDetails>,
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit,
     onMoveSelected: (String?) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -322,11 +386,33 @@ fun MoveSelector(
             onClick = { expanded = true },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = currentMove?.replace("-", " ")?.uppercase() ?: "EMPTY SLOT $index",
+            val details = currentMove?.let { moveDetailsMap[it] }
+            Row(
                 modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyLarge
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = currentMove?.replace("-", " ")?.uppercase() ?: "EMPTY SLOT $index",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (details != null) {
+                        Row(
+                            modifier = Modifier.padding(top = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            PokemonTypeBadge(type = details.type.name)
+                            Text(
+                                text = "PWR: ${details.power ?: "--"}  ACC: ${details.accuracy ?: "--"}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         if (expanded) {
@@ -334,16 +420,65 @@ fun MoveSelector(
                 onDismissRequest = { expanded = false },
                 title = { Text("Select Move $index") },
                 text = {
-                    Box(modifier = Modifier.height(400.dp)) {
-                        LazyColumn {
-                            item {
-                                TextButton(onClick = { onMoveSelected(null); expanded = false }) {
-                                    Text("NONE")
+                    Column {
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = onSearchQueryChanged,
+                            placeholder = { Text("Search Moves") },
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                            singleLine = true
+                        )
+                        
+                        Box(modifier = Modifier.height(400.dp)) {
+                            val filteredMoves = remember(allMoveEntries, searchQuery) {
+                                allMoveEntries.filter { 
+                                    it.move.name.contains(searchQuery, ignoreCase = true) 
                                 }
                             }
-                            items(allMoves) { move ->
-                                TextButton(onClick = { onMoveSelected(move); expanded = false }) {
-                                    Text(move.replace("-", " ").uppercase())
+                            
+                            LazyColumn {
+                                item {
+                                    TextButton(
+                                        onClick = { onMoveSelected(null); expanded = false },
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text("NONE", modifier = Modifier.fillMaxWidth())
+                                    }
+                                }
+                                items(filteredMoves) { moveEntry ->
+                                    val moveName = moveEntry.move.name
+                                    val details = moveDetailsMap[moveName]
+                                    
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                        onClick = { onMoveSelected(moveName); expanded = false },
+                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                                    ) {
+                                        Column(modifier = Modifier.padding(12.dp)) {
+                                            Text(
+                                                text = moveName.replace("-", " ").uppercase(),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            if (details != null) {
+                                                Row(
+                                                    modifier = Modifier.padding(top = 4.dp),
+                                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    PokemonTypeBadge(type = details.type.name)
+                                                    Text(
+                                                        text = "PWR: ${details.power ?: "--"} ACC: ${details.accuracy ?: "--"} PP: ${details.pp ?: "--"}",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                            } else {
+                                                Text("Loading details...", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -351,6 +486,49 @@ fun MoveSelector(
                 },
                 confirmButton = {}
             )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokemonCustomizationScreenPreview() {
+    PokeDexAppTheme {
+        // Simplified content for preview
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AsyncImage(
+                    model = PokemonImageUtils.getOfficialArtworkUrl(25),
+                    contentDescription = null,
+                    modifier = Modifier.size(150.dp)
+                )
+                Text(
+                    text = "Pikachu",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                VarietySelector(
+                    currentVariety = MockData.mockDetails,
+                    allVarieties = listOf(MockData.mockDetails, MockData.mockDetails.copy(name = "pikachu-mega")),
+                    onVarietySelected = {}
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = "Sparky",
+                    onValueChange = {},
+                    label = { Text("Nickname") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }

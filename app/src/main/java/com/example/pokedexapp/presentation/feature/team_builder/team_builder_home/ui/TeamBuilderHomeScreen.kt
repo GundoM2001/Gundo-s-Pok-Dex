@@ -139,16 +139,16 @@ fun TeamBuilderHomeScreenContentPreview() {
         TeamWithPokemon(
             team = TeamEntity(id = 1, name = "Kanto Team"),
             pokemon = listOf(
-                TeamPokemonEntity(teamId = 1, pokemonId = 1, slot = 0), // Bulbasaur
-                TeamPokemonEntity(teamId = 1, pokemonId = 4, slot = 1), // Charmander
-                TeamPokemonEntity(teamId = 1, pokemonId = 7, slot = 2)  // Squirtle
+                TeamPokemonEntity(teamId = 1, pokemonId = 1, pokemonName = "bulbasaur", slot = 0),
+                TeamPokemonEntity(teamId = 1, pokemonId = 4, pokemonName = "charmander", slot = 1),
+                TeamPokemonEntity(teamId = 1, pokemonId = 7, pokemonName = "squirtle", slot = 2)
             )
         ),
         TeamWithPokemon(
             team = TeamEntity(id = 2, name = "My Favourites"),
             pokemon = listOf(
-                TeamPokemonEntity(teamId = 2, pokemonId = 25, slot = 0), // Pikachu
-                TeamPokemonEntity(teamId = 2, pokemonId = 133, slot = 1) // Eevee
+                TeamPokemonEntity(teamId = 2, pokemonId = 25, pokemonName = "pikachu", slot = 0),
+                TeamPokemonEntity(teamId = 2, pokemonId = 133, pokemonName = "eevee", slot = 1)
             )
         ),
         TeamWithPokemon(

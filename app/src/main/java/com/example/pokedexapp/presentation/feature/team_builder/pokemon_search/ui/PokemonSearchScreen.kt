@@ -6,15 +6,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pokedexapp.presentation.components.PokemonItem
 
@@ -27,7 +24,7 @@ fun PokemonSearchScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val searchQuery = state.searchQuery
-    val pokemonList by viewModel.filteredList.collectAsState()
+    val pokemonList = state.pokemonList
     val isLoading = state.isLoading
 
     Scaffold(

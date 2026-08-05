@@ -35,7 +35,7 @@ fun TeamDetailScreen(
     viewModel: TeamDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onAddPokemonClick: (Int, Int) -> Unit, // teamId, slot
-    onMemberClick: (Int, Int) -> Unit // memberId, pokemonId
+    onMemberClick: (Int, Int, Int, Int) -> Unit // teamId, slot, pokemonId, memberId
 ) {
     val state by viewModel.state.collectAsState()
     val teamWithPokemon = state.team
@@ -69,7 +69,7 @@ fun TeamDetailScreen(
                             if (member == null) {
                                 onAddPokemonClick(team.team.id, index)
                             } else {
-                                onMemberClick(member.id, member.pokemonId)
+                                onMemberClick(team.team.id, index, member.pokemonId, member.id)
                             }
                         }
                     )
@@ -138,8 +138,13 @@ fun TeamSlotItem(
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    val displayName = if (!member.nickname.isNullOrBlank()) {
+                        member.nickname
+                    } else {
+                        com.example.pokedexapp.utils.PokemonNameFormatter.format(member.pokemonName)
+                    }
                     Text(
-                        text = member.nickname ?: "Pokemon #${member.pokemonId}",
+                        text = displayName,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -180,12 +185,19 @@ fun TeamDetailScreenPreview() {
                 id = 1, 
                 teamId = 1, 
                 pokemonId = 1, 
+                pokemonName = "bulbasaur",
                 slot = 0, 
                 nickname = "Bulba",
                 move1 = "Tackle",
                 move2 = "Growl"
             ),
-            TeamPokemonEntity(id = 2, teamId = 1, pokemonId = 4, slot = 1)
+            TeamPokemonEntity(
+                id = 2, 
+                teamId = 1, 
+                pokemonId = 4, 
+                pokemonName = "charmander",
+                slot = 1
+            )
         )
     )
     PokeDexAppTheme {

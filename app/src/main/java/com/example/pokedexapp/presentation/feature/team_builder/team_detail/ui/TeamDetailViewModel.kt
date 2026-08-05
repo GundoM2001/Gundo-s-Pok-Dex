@@ -8,8 +8,10 @@ import com.example.pokedexapp.presentation.feature.team_builder.team_detail.stat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,14 +33,14 @@ class TeamDetailViewModel @Inject constructor(
     }
 
     private fun fetchTeam() {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            try {
-                val result = repository.getTeamWithPokemonById(teamId)
+        _state.update { it.copy(isLoading = true) }
+        repository.getTeamWithPokemonByIdFlow(teamId)
+            .onEach { result ->
                 _state.update { it.copy(team = result, isLoading = false) }
-            } catch (e: Exception) {
+            }
+            .catch { e ->
                 _state.update { it.copy(isLoading = false, error = e.message) }
             }
-        }
+            .launchIn(viewModelScope)
     }
 }

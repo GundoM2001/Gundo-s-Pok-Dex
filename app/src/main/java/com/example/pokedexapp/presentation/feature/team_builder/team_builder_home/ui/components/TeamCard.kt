@@ -109,9 +109,9 @@ fun TeamCardPreview() {
     val sampleTeam = TeamWithPokemon(
         team = TeamEntity(id = 1, name = "Kanto Champions"),
         pokemon = listOf(
-            TeamPokemonEntity(teamId = 1, pokemonId = 1, slot = 0),
-            TeamPokemonEntity(teamId = 1, pokemonId = 4, slot = 1),
-            TeamPokemonEntity(teamId = 1, pokemonId = 7, slot = 2)
+            TeamPokemonEntity(teamId = 1, pokemonId = 1, pokemonName = "bulbasaur", slot = 0),
+            TeamPokemonEntity(teamId = 1, pokemonId = 4, pokemonName = "charmander", slot = 1),
+            TeamPokemonEntity(teamId = 1, pokemonId = 7, pokemonName = "squirtle", slot = 2)
         )
     )
     PokeDexAppTheme {

@@ -31,6 +31,11 @@ data class PokemonCustomizationState(
     val move3: String? = null,
     val move4: String? = null,
     
+    val moveDetails: Map<String, com.example.pokedexapp.domain.model.MoveDetails> = emptyMap(),
+    val moveSearchQuery: String = "",
+    
+    val varieties: List<PokemonDetails> = emptyList(),
+    
     val isLoading: Boolean = false,
     val error: String? = null
 )
