@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -358,13 +360,36 @@ fun StatRow(label: String, value: Int, range: ClosedFloatingPointRange<Float>, o
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "$label: $value", modifier = Modifier.width(60.dp), style = MaterialTheme.typography.bodyMedium)
+        Text(text = "$label: $value", modifier = Modifier.width(70.dp), style = MaterialTheme.typography.bodyMedium)
+        
+        IconButton(
+            onClick = { onValueChange((value - 1).coerceIn(range.start.toInt(), range.endInclusive.toInt())) },
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Remove,
+                contentDescription = "Decrease",
+                modifier = Modifier.size(18.dp)
+            )
+        }
+
         Slider(
             value = value.toFloat(),
             onValueChange = { onValueChange(it.toInt()) },
             valueRange = range,
             modifier = Modifier.weight(1f)
         )
+
+        IconButton(
+            onClick = { onValueChange((value + 1).coerceIn(range.start.toInt(), range.endInclusive.toInt())) },
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Increase",
+                modifier = Modifier.size(18.dp)
+            )
+        }
     }
 }
 
