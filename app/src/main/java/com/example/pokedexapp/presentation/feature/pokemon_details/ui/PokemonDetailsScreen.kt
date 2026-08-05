@@ -35,11 +35,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonSpecies
 import com.example.pokedexapp.presentation.components.TabRow
@@ -112,7 +114,7 @@ fun PokemonDetailsContent(
         }
     } else if (error != null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = "Error: $error", color = MaterialTheme.colorScheme.error)
+            Text(text = stringResource(R.string.error_message, error), color = MaterialTheme.colorScheme.error)
         }
     } else {
         details?.let { activeDetails ->
@@ -135,7 +137,7 @@ fun PokemonDetailsContent(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back",
+                                    contentDescription = stringResource(R.string.back_desc),
                                     tint = contentColor,
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -187,7 +189,10 @@ fun PokemonDetailsContent(
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 
-                                val genus = species?.genera?.firstOrNull { it.language.name == "en" }?.genus
+                                val currentLanguage = java.util.Locale.getDefault().language
+                                val genus = species?.genera?.firstOrNull { it.language.name == currentLanguage }?.genus
+                                    ?: species?.genera?.firstOrNull { it.language.name == "en" }?.genus
+                                
                                 if (genus != null) {
                                     Text(
                                         text = genus,
@@ -207,8 +212,11 @@ fun PokemonDetailsContent(
                                 }
 
                                 val description = species?.flavorTextEntries
-                                    ?.firstOrNull { it.language.name == "en" }
+                                    ?.firstOrNull { it.language.name == currentLanguage }
                                     ?.flavorText?.replace("\n", " ")
+                                    ?: species?.flavorTextEntries
+                                        ?.firstOrNull { it.language.name == "en" }
+                                        ?.flavorText?.replace("\n", " ")
                                 
                                 if (description != null) {
                                     Text(

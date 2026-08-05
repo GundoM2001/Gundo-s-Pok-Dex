@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.pokedexapp.presentation.feature.favourite_pokemon.ui.FavoritePokemonScreen
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.PokemonDetailsScreen
 import com.example.pokedexapp.presentation.feature.pokemon_list.ui.PokemonListScreen
+import com.example.pokedexapp.presentation.feature.settings.ui.SettingsScreen
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.ui.PokemonCustomizationScreen
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_search.ui.PokemonSearchScreen
 import com.example.pokedexapp.presentation.feature.team_builder.team_builder_home.ui.TeamBuilderHomeScreen
@@ -132,6 +133,10 @@ fun NavGraph(navController: NavHostController) {
                     navController.navigate(Screen.PokemonDetail.passUrl(url))
                 }
             )
+        }
+
+        composable(route = Screen.Settings.route) {
+            SettingsScreen()
         }
     }
 }

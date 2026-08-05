@@ -2,6 +2,7 @@ package com.example.pokedexapp.presentation.components
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import com.example.pokedexapp.R
 
 data class TypeGradient(
     val start: Color,
@@ -30,8 +31,33 @@ object PokemonTypeUtils {
         "normal" to TypeGradient(Color(0xFFA8A77A), Color(0xFF6D6D4E))
     )
 
+    private val typeStringRes = mapOf(
+        "fire" to R.string.type_fire,
+        "water" to R.string.type_water,
+        "grass" to R.string.type_grass,
+        "electric" to R.string.type_electric,
+        "ice" to R.string.type_ice,
+        "fighting" to R.string.type_fighting,
+        "poison" to R.string.type_poison,
+        "ground" to R.string.type_ground,
+        "flying" to R.string.type_flying,
+        "psychic" to R.string.type_psychic,
+        "bug" to R.string.type_bug,
+        "rock" to R.string.type_rock,
+        "ghost" to R.string.type_ghost,
+        "dragon" to R.string.type_dragon,
+        "dark" to R.string.type_dark,
+        "steel" to R.string.type_steel,
+        "fairy" to R.string.type_fairy,
+        "normal" to R.string.type_normal
+    )
+
     fun getGradientForType(type: String?): TypeGradient {
         return typeColors[type?.lowercase()] ?: TypeGradient(Color(0xFFA8A77A), Color(0xFF6D6D4E))
+    }
+
+    fun getTypeStringRes(type: String?): Int {
+        return typeStringRes[type?.lowercase()] ?: R.string.type_normal
     }
 
     fun getContrastColor(backgroundColor: Color): Color {

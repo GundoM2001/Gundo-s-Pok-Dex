@@ -19,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.Nature
 import com.example.pokedexapp.domain.model.PokemonDetails
@@ -47,10 +49,10 @@ fun PokemonCustomizationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Customize Pokemon") },
+                title = { Text(stringResource(R.string.customize_pokemon_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_desc))
                     }
                 },
                 actions = {
@@ -58,7 +60,7 @@ fun PokemonCustomizationScreen(
                         onClick = { viewModel.save(onSaveSuccess) },
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        Text("Save")
+                        Text(stringResource(R.string.btn_save))
                     }
                 }
             )
@@ -104,14 +106,14 @@ fun PokemonCustomizationScreen(
                     OutlinedTextField(
                         value = state.nickname ?: "",
                         onValueChange = { viewModel.onNicknameChanged(it) },
-                        label = { Text("Nickname") },
+                        label = { Text(stringResource(R.string.nickname_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    StatRow(label = "Level", value = state.level, range = 1f..100f) {
+                    StatRow(label = stringResource(R.string.level_label), value = state.level, range = 1f..100f) {
                         viewModel.onLevelChanged(it)
                     }
 
@@ -124,7 +126,7 @@ fun PokemonCustomizationScreen(
                     HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
 
                     Text(
-                        text = "Moves",
+                        text = stringResource(R.string.tab_moves),
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.align(Alignment.Start).padding(bottom = 8.dp)
                     )
@@ -140,39 +142,39 @@ fun PokemonCustomizationScreen(
 
                     val totalEvs = state.hpEv + state.atkEv + state.defEv + state.spaEv + state.spdEv + state.speEv
                     Text(
-                        text = "Stats (EVs: $totalEvs / 510)",
+                        text = stringResource(R.string.evs_label, totalEvs),
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.align(Alignment.Start).padding(bottom = 16.dp)
                     )
 
                     val stats = listOf(
-                        Triple("HP", details.stats.find { it.stat.name == "hp" }?.baseStat ?: 0, "hp"),
-                        Triple("Atk", details.stats.find { it.stat.name == "attack" }?.baseStat ?: 0, "attack"),
-                        Triple("Def", details.stats.find { it.stat.name == "defense" }?.baseStat ?: 0, "defense"),
-                        Triple("SpA", details.stats.find { it.stat.name == "special-attack" }?.baseStat ?: 0, "special-attack"),
-                        Triple("SpD", details.stats.find { it.stat.name == "special-defense" }?.baseStat ?: 0, "special-defense"),
-                        Triple("Spe", details.stats.find { it.stat.name == "speed" }?.baseStat ?: 0, "speed")
+                        Triple(stringResource(R.string.stat_hp), details.stats.find { it.stat.name == "hp" }?.baseStat ?: 0, "hp"),
+                        Triple(stringResource(R.string.stat_atk), details.stats.find { it.stat.name == "attack" }?.baseStat ?: 0, "attack"),
+                        Triple(stringResource(R.string.stat_def), details.stats.find { it.stat.name == "defense" }?.baseStat ?: 0, "defense"),
+                        Triple(stringResource(R.string.stat_spa), details.stats.find { it.stat.name == "special-attack" }?.baseStat ?: 0, "special-attack"),
+                        Triple(stringResource(R.string.stat_spd), details.stats.find { it.stat.name == "special-defense" }?.baseStat ?: 0, "special-defense"),
+                        Triple(stringResource(R.string.stat_spe), details.stats.find { it.stat.name == "speed" }?.baseStat ?: 0, "speed")
                     )
 
                     val currentNature = Nature.fromName(state.selectedNature)
 
                     stats.forEach { (label, base, statKey) ->
-                        val ev = when(label) {
-                            "HP" -> state.hpEv
-                            "Atk" -> state.atkEv
-                            "Def" -> state.defEv
-                            "SpA" -> state.spaEv
-                            "SpD" -> state.spdEv
-                            "Spe" -> state.speEv
+                        val ev = when(statKey) {
+                            "hp" -> state.hpEv
+                            "attack" -> state.atkEv
+                            "defense" -> state.defEv
+                            "special-attack" -> state.spaEv
+                            "special-defense" -> state.spdEv
+                            "speed" -> state.speEv
                             else -> 0
                         }
-                        val iv = when(label) {
-                            "HP" -> state.hpIv
-                            "Atk" -> state.atkIv
-                            "Def" -> state.defIv
-                            "SpA" -> state.spaIv
-                            "SpD" -> state.spdIv
-                            "Spe" -> state.speIv
+                        val iv = when(statKey) {
+                            "hp" -> state.hpIv
+                            "attack" -> state.atkIv
+                            "defense" -> state.defIv
+                            "special-attack" -> state.spaIv
+                            "special-defense" -> state.spdIv
+                            "speed" -> state.speIv
                             else -> 31
                         }
                         
@@ -221,7 +223,7 @@ fun VarietySelector(
         OutlinedTextField(
             value = PokemonNameFormatter.format(currentVariety.name),
             onValueChange = {},
-            label = { Text("Form") },
+            label = { Text(stringResource(R.string.form_label)) },
             modifier = Modifier.fillMaxWidth().clickable { expanded = true },
             readOnly = true,
             enabled = false,
@@ -258,7 +260,7 @@ fun NatureSelector(selectedNature: String, onNatureSelected: (String) -> Unit) {
         OutlinedTextField(
             value = selectedNature,
             onValueChange = {},
-            label = { Text("Nature") },
+            label = { Text(stringResource(R.string.nature_label)) },
             modifier = Modifier.fillMaxWidth().clickable { expanded = true },
             readOnly = true,
             enabled = false,
@@ -341,15 +343,15 @@ fun StatEditor(
             }
             
             Text(
-                text = "Base: $base",
+                text = stringResource(R.string.base_stat_label, base),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            StatRow(label = "EV", value = ev, range = 0f..252f, onValueChange = onEvChange)
-            StatRow(label = "IV", value = iv, range = 0f..31f, onValueChange = onIvChange)
+            StatRow(label = stringResource(R.string.ev_label), value = ev, range = 0f..252f, onValueChange = onEvChange)
+            StatRow(label = stringResource(R.string.iv_label), value = iv, range = 0f..31f, onValueChange = onIvChange)
         }
     }
 }
@@ -368,7 +370,7 @@ fun StatRow(label: String, value: Int, range: ClosedFloatingPointRange<Float>, o
         ) {
             Icon(
                 imageVector = Icons.Default.Remove,
-                contentDescription = "Decrease",
+                contentDescription = stringResource(R.string.decrease_desc),
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -386,7 +388,7 @@ fun StatRow(label: String, value: Int, range: ClosedFloatingPointRange<Float>, o
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Increase",
+                contentDescription = stringResource(R.string.increase_desc),
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -418,7 +420,7 @@ fun MoveSelector(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = currentMove?.replace("-", " ")?.uppercase() ?: "EMPTY SLOT $index",
+                        text = currentMove?.replace("-", " ")?.uppercase() ?: stringResource(R.string.empty_slot_index, index),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -430,7 +432,7 @@ fun MoveSelector(
                         ) {
                             PokemonTypeBadge(type = details.type.name)
                             Text(
-                                text = "PWR: ${details.power ?: "--"}  ACC: ${details.accuracy ?: "--"}",
+                                text = "${stringResource(R.string.move_stat_power)}: ${details.power ?: "--"}  ${stringResource(R.string.move_stat_accuracy)}: ${details.accuracy ?: "--"}",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -443,13 +445,13 @@ fun MoveSelector(
         if (expanded) {
             AlertDialog(
                 onDismissRequest = { expanded = false },
-                title = { Text("Select Move $index") },
+                title = { Text(stringResource(R.string.tab_moves)) },
                 text = {
                     Column {
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = onSearchQueryChanged,
-                            placeholder = { Text("Search Moves") },
+                            placeholder = { Text(stringResource(R.string.search_moves_placeholder)) },
                             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                             singleLine = true
@@ -468,7 +470,7 @@ fun MoveSelector(
                                         onClick = { onMoveSelected(null); expanded = false },
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
-                                        Text("NONE", modifier = Modifier.fillMaxWidth())
+                                        Text(stringResource(R.string.none_label), modifier = Modifier.fillMaxWidth())
                                     }
                                 }
                                 items(filteredMoves) { moveEntry ->
@@ -494,13 +496,13 @@ fun MoveSelector(
                                                 ) {
                                                     PokemonTypeBadge(type = details.type.name)
                                                     Text(
-                                                        text = "PWR: ${details.power ?: "--"} ACC: ${details.accuracy ?: "--"} PP: ${details.pp ?: "--"}",
+                                                        text = "${stringResource(R.string.move_stat_power)}: ${details.power ?: "--"} ${stringResource(R.string.move_stat_accuracy)}: ${details.accuracy ?: "--"} ${stringResource(R.string.move_stat_pp)}: ${details.pp ?: "--"}",
                                                         style = MaterialTheme.typography.labelSmall,
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                                     )
                                                 }
                                             } else {
-                                                Text("Loading details...", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                                                Text(stringResource(R.string.loading_description), style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                                             }
                                         }
                                     }

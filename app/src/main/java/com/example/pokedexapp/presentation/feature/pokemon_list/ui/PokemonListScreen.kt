@@ -37,11 +37,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.presentation.components.PokedexBackground
 import com.example.pokedexapp.presentation.components.PokemonItem
@@ -107,7 +109,7 @@ fun PokemonListContent(
                                 onValueChange = onSearchQueryChanged,
                                 placeholder = {
                                     Text(
-                                        "Search by name or number",
+                                        stringResource(R.string.search_placeholder),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = Color.Gray
                                     )
@@ -128,7 +130,7 @@ fun PokemonListContent(
                             )
                         } else {
                             Text(
-                                text = "Pokédex",
+                                text = stringResource(R.string.pokedex_title),
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold
                             )
@@ -142,7 +144,7 @@ fun PokemonListContent(
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
-                                    contentDescription = "Close Search"
+                                    contentDescription = stringResource(R.string.close_search_desc)
                                 )
                             }
                         }
@@ -150,7 +152,7 @@ fun PokemonListContent(
                     actions = {
                         if (!isSearchExpanded) {
                             IconButton(onClick = { isSearchExpanded = true }) {
-                                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                                Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.search_desc))
                             }
                         }
                     },
@@ -231,7 +233,7 @@ fun PaginationPager(
                 contentDescription = null,
                 modifier = Modifier.padding(end = 8.dp)
             )
-            Text("Previous", style = MaterialTheme.typography.labelSmall)
+            Text(stringResource(R.string.pagination_previous), style = MaterialTheme.typography.labelSmall)
         }
 
         Button(
@@ -243,7 +245,7 @@ fun PaginationPager(
             ),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text("Next", style = MaterialTheme.typography.labelSmall)
+            Text(stringResource(R.string.pagination_next), style = MaterialTheme.typography.labelSmall)
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,

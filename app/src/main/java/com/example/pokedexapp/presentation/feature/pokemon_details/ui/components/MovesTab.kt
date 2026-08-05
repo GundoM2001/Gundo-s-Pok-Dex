@@ -30,11 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.MachineDetails
 import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
@@ -48,8 +50,13 @@ fun MovesTab(
     machineDetails: Map<String, MachineDetails> = emptyMap()
 ) {
     val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
+    
+    val levelUpHeader = stringResource(R.string.move_learn_level_up)
+    val evolutionHeader = stringResource(R.string.move_learn_evolution)
+    val machineHeader = stringResource(R.string.move_learn_machine)
+    val tutorHeader = stringResource(R.string.move_learn_tutor)
 
-    val groupedMoves = remember(details.moves, moveDetails, machineDetails) {
+    val groupedMoves = remember(details.moves, moveDetails, machineDetails, levelUpHeader, evolutionHeader, machineHeader, tutorHeader) {
         val levelUp = details.moves.filter { move ->
             move.versionGroupDetails.any { it.moveLearnMethod.name == "level-up" }
         }.sortedBy { move ->
@@ -75,10 +82,10 @@ fun MovesTab(
         }.sortedBy { it.move.name }
 
         listOf(
-            "Level Up" to levelUp,
-            "Evolution" to evolution,
-            "TMs / HMs" to machine,
-            "Move Tutor" to tutor
+            levelUpHeader to levelUp,
+            evolutionHeader to evolution,
+            machineHeader to machine,
+            tutorHeader to tutor
         )
     }
 
@@ -97,10 +104,14 @@ fun MovesTab(
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                     moves.forEach { moveEntry ->
+                        val levelUpHeader = stringResource(R.string.move_learn_level_up)
+                        val evolutionHeader = stringResource(R.string.move_learn_evolution)
+                        val machineHeader = stringResource(R.string.move_learn_machine)
+
                         val methodKey = when {
-                            header == "Level Up" -> "level-up"
-                            header == "Evolution" -> "evolution"
-                            header.contains("TM") -> "machine"
+                            header == levelUpHeader -> "level-up"
+                            header == evolutionHeader -> "evolution"
+                            header == machineHeader -> "machine"
                             else -> "tutor"
                         }
                         val learnDetail = moveEntry.versionGroupDetails.find { it.moveLearnMethod.name == methodKey }
@@ -162,7 +173,7 @@ fun MovesTab(
                                         val level = learnDetail?.levelLearnedAt ?: 0
                                         if (level > 0) {
                                             Text(
-                                                text = "Lvl $level",
+                                                text = stringResource(R.string.move_level_label, level),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
@@ -172,15 +183,15 @@ fun MovesTab(
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
-                                        } else if (header.contains("Tutor")) {
+                                        } else if (header == stringResource(R.string.move_learn_tutor)) {
                                             Text(
-                                                text = "TUTOR",
+                                                text = stringResource(R.string.move_tutor_label),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
-                                        } else if (header == "Evolution") {
+                                        } else if (header == stringResource(R.string.move_learn_evolution)) {
                                             Text(
-                                                text = "EVO",
+                                                text = stringResource(R.string.move_evolution_label),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
@@ -192,13 +203,13 @@ fun MovesTab(
                                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
                                                 if (details.power != null) {
-                                                    MoveStatItem(label = "PWR", value = details.power.toString())
+                                                    MoveStatItem(label = stringResource(R.string.move_stat_power), value = details.power.toString())
                                                 }
                                                 if (details.pp != null) {
-                                                    MoveStatItem(label = "PP", value = details.pp.toString())
+                                                    MoveStatItem(label = stringResource(R.string.move_stat_pp), value = details.pp.toString())
                                                 }
                                                 if (details.accuracy != null) {
-                                                    MoveStatItem(label = "ACC", value = "${details.accuracy}%")
+                                                    MoveStatItem(label = stringResource(R.string.move_stat_accuracy), value = "${details.accuracy}%")
                                                 }
                                             }
                                         }
@@ -206,7 +217,7 @@ fun MovesTab(
 
                                     Icon(
                                         imageVector = Icons.Default.KeyboardArrowDown,
-                                        contentDescription = if (isExpanded) "Collapse" else "Expand",
+                                        contentDescription = if (isExpanded) stringResource(R.string.collapse_desc) else stringResource(R.string.expand_desc),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier
                                             .size(24.dp)
@@ -222,15 +233,22 @@ fun MovesTab(
                                             color = MaterialTheme.colorScheme.outlineVariant
                                         )
                                         // Priority: Flavor text (cleaner description) -> Short effect -> No description
+                                        val currentLanguage = java.util.Locale.getDefault().language
                                         val effect = details?.flavorTextEntries
-                                            ?.firstOrNull { it.language.name == "en" }
+                                            ?.firstOrNull { it.language.name == currentLanguage }
                                             ?.flavorText?.replace("\n", " ")
+                                            ?: details?.flavorTextEntries
+                                                ?.firstOrNull { it.language.name == "en" }
+                                                ?.flavorText?.replace("\n", " ")
+                                            ?: details?.effectEntries
+                                                ?.firstOrNull { it.language.name == currentLanguage }
+                                                ?.shortEffect
                                             ?: details?.effectEntries
                                                 ?.firstOrNull { it.language.name == "en" }
                                                 ?.shortEffect
                                         
                                         Text(
-                                            text = effect ?: if (details == null) "Loading description..." else "No description available",
+                                            text = effect ?: if (details == null) stringResource(R.string.loading_description) else stringResource(R.string.no_description),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             lineHeight = 16.sp,

@@ -20,9 +20,18 @@ import com.example.pokedexapp.utils.PokemonVersionUtils
 
 @Composable
 fun PokedexEntriesTab(species: PokemonSpecies?) {
+    val currentLanguage = java.util.Locale.getDefault().language
     val entries = remember(species) {
-        species?.flavorTextEntries
-            ?.filter { it.language.name == "en" }
+        val filtered = species?.flavorTextEntries
+            ?.filter { it.language.name == currentLanguage }
+        
+        val displayEntries = if (filtered.isNullOrEmpty()) {
+            species?.flavorTextEntries?.filter { it.language.name == "en" }
+        } else {
+            filtered
+        }
+
+        displayEntries
             ?.map { it.copy(flavorText = it.flavorText.replace("\n", " ").replace("\u000c", " ")) }
             ?.distinctBy { it.flavorText }
             ?.groupBy { PokemonVersionUtils.getGeneration(it.version.name) }

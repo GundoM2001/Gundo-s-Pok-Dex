@@ -9,9 +9,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.pokedexapp.R
 import com.example.pokedexapp.data.local.entities.TeamEntity
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.data.local.entities.TeamWithPokemon
@@ -50,7 +52,7 @@ fun TeamBuilderHomeScreenContent(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = onAddClick) {
-                Icon(Icons.Default.Add, contentDescription = "Add Team")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_team_desc))
             }
         }
     ) { paddingValues ->
@@ -62,7 +64,7 @@ fun TeamBuilderHomeScreenContent(
             if (teamList.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = "No teams created yet.",
+                        text = stringResource(R.string.no_teams),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -102,15 +104,15 @@ fun CreateTeamDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create New Team") },
+        title = { Text(stringResource(R.string.create_team_title)) },
         text = {
             Column {
-                Text("Enter a name for your team:")
+                Text(stringResource(R.string.enter_team_name))
                 Spacer(modifier = Modifier.height(8.dp))
                 TextField(
                     value = teamName,
                     onValueChange = { teamName = it },
-                    placeholder = { Text("Team Name") },
+                    placeholder = { Text(stringResource(R.string.team_name_placeholder)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -121,12 +123,12 @@ fun CreateTeamDialog(
                 onClick = { if (teamName.isNotBlank()) onConfirm(teamName) },
                 enabled = teamName.isNotBlank()
             ) {
-                Text("Create")
+                Text(stringResource(R.string.btn_create))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.btn_cancel))
             }
         }
     )

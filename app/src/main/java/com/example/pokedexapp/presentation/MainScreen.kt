@@ -15,10 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.pokedexapp.R
 import com.example.pokedexapp.presentation.navigation.BottomNavItem
 import com.example.pokedexapp.presentation.navigation.NavGraph
 
@@ -31,7 +33,8 @@ fun MainScreen() {
     val bottomBarScreens = listOf(
         BottomNavItem.Home,
         BottomNavItem.TeamBuilder,
-        BottomNavItem.Favorites
+        BottomNavItem.Favorites,
+        BottomNavItem.Settings
     )
 
     val currentRoute = currentDestination?.route
@@ -80,8 +83,8 @@ fun MainContent(
                     bottomBarScreens.forEach { item ->
                         val isSelected = currentRoute == item.route
                         NavigationBarItem(
-                            icon = { Icon(item.icon, contentDescription = item.title) },
-                            label = { Text(item.title) },
+                            icon = { Icon(item.icon, contentDescription = stringResource(item.titleRes)) },
+                            label = { Text(stringResource(item.titleRes)) },
                             selected = isSelected,
                             onClick = { onNavigate(item.route) }
                         )
@@ -103,7 +106,8 @@ fun MainContentPreview() {
             bottomBarScreens = listOf(
                 BottomNavItem.Home,
                 BottomNavItem.TeamBuilder,
-                BottomNavItem.Favorites
+                BottomNavItem.Favorites,
+                BottomNavItem.Settings
             ),
             onNavigate = {},
             content = { innerPadding ->
@@ -113,7 +117,7 @@ fun MainContentPreview() {
                         .padding(innerPadding),
                     contentAlignment = androidx.compose.ui.Alignment.Center
                 ) {
-                    Text("Main Content Area")
+                    Text(stringResource(R.string.main_content_area))
                 }
             }
         )

@@ -19,4 +19,5 @@ sealed class Screen(val route: String) {
             "pokemon_customization_screen/$teamId/$slot/$pokemonId/$memberId"
     }
     object Favorites : Screen("favorites_screen")
+    object Settings : Screen("settings_screen")
 }

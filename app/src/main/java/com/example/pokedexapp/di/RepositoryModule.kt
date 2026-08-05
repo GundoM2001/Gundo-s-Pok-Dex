@@ -9,6 +9,9 @@ import com.example.pokedexapp.data.repository.TeamRepositoryImpl
 import com.example.pokedexapp.domain.repository.FavouriteRepository
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.domain.repository.TeamRepository
+import com.example.pokedexapp.data.local.dao.UserPreferencesDao
+import com.example.pokedexapp.data.repository.SettingsRepositoryImpl
+import com.example.pokedexapp.domain.repository.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,5 +36,10 @@ object RepositoryModule {
     @Singleton
     fun provideTeamRepository(dao: TeamDao): TeamRepository =
         TeamRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(dao: UserPreferencesDao): SettingsRepository =
+        SettingsRepositoryImpl(dao)
 
 }

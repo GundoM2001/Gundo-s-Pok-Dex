@@ -13,16 +13,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.pokedexapp.R
 
 @Composable
 fun TabRow(
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit,
     activeColor: Color,
-    tabs: List<String> = listOf("Stats", "Moves", "Abilities", "Weakness", "Entries")
+    tabs: List<String> = listOf(
+        stringResource(R.string.tab_stats),
+        stringResource(R.string.tab_moves),
+        stringResource(R.string.tab_abilities),
+        stringResource(R.string.tab_weakness),
+        stringResource(R.string.tab_entries)
+    )
 ) {
     Row(
         modifier = Modifier

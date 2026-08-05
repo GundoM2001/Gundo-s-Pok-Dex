@@ -17,8 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.AbilityDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.presentation.mock.MockData
@@ -28,14 +30,16 @@ fun AbilitiesTab(
     details: PokemonDetails,
     abilityDetails: List<AbilityDetails>
 ) {
+    val currentLanguage = java.util.Locale.getDefault().language
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         details.abilities.forEach { abilityEntry ->
             val detail = abilityDetails.find { it.name == abilityEntry.ability.name }
-            val description = detail?.effectEntries?.find { it.language.name == "en" }?.shortEffect 
-                ?: "No description available."
+            val description = detail?.effectEntries?.find { it.language.name == currentLanguage }?.shortEffect
+                ?: detail?.effectEntries?.find { it.language.name == "en" }?.shortEffect
+                ?: stringResource(R.string.no_description)
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -64,7 +68,7 @@ fun AbilitiesTab(
                                 contentColor = MaterialTheme.colorScheme.onErrorContainer
                             ) {
                                 Text(
-                                    text = "HIDDEN",
+                                    text = stringResource(R.string.ability_hidden),
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold
