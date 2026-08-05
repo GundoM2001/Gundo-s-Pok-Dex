@@ -40,7 +40,11 @@ class SettingsViewModel @Inject constructor(
             repository.saveUserPreferences(current.copy(languageCode = languageCode))
 
             // Apply language globally
-            val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(languageCode)
+            val appLocale: LocaleListCompat = if (languageCode.isEmpty()) {
+                LocaleListCompat.getEmptyLocaleList()
+            } else {
+                LocaleListCompat.forLanguageTags(languageCode)
+            }
             AppCompatDelegate.setApplicationLocales(appLocale)
         }
     }

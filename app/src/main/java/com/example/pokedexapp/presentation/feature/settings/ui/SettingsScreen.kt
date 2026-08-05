@@ -120,7 +120,9 @@ fun LanguageSection(
     onLanguageSelected: (String) -> Unit
 ) {
     val languages = listOf(
-        "en" to "English",
+        "" to stringResource(R.string.theme_system),
+        "en-US" to "English (US)",
+        "en-GB" to "English (UK)",
         "af" to "Afrikaans",
         "ve" to "Venda",
         "fr" to "Français",
@@ -128,16 +130,17 @@ fun LanguageSection(
         "ja" to "日本語",
         "de" to "Deutsch",
         "es" to "Español",
+        "es-US" to "Español (Latinoamérica)",
         "pt" to "Português",
         "ar" to "العربية",
         "ru" to "Русский",
         "pl" to "Polski",
         "hi" to "हिन्दी",
-        "zh" to "中文"
+        "zh-Hans" to "中文"
     )
 
     var expanded by remember { mutableStateOf(false) }
-    val currentLanguageName = languages.find { it.first == selectedLanguage }?.second ?: "English"
+    val currentLanguageName = languages.find { it.first == selectedLanguage }?.second ?: stringResource(R.string.theme_system)
 
     Column {
         Text(

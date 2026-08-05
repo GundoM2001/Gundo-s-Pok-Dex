@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +26,9 @@ import com.example.pokedexapp.presentation.navigation.BottomNavItem
 import com.example.pokedexapp.presentation.navigation.NavGraph
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    languageCode: String = ""
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -57,7 +60,9 @@ fun MainScreen() {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                NavGraph(navController = navController)
+                key(languageCode) {
+                    NavGraph(navController = navController)
+                }
             }
         }
     )

@@ -189,9 +189,13 @@ fun PokemonDetailsContent(
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 
-                                val currentLanguage = java.util.Locale.getDefault().language
-                                val genus = species?.genera?.firstOrNull { it.language.name == currentLanguage }?.genus
-                                    ?: species?.genera?.firstOrNull { it.language.name == "en" }?.genus
+                                val currentLocale = java.util.Locale.getDefault()
+                                val currentLang = currentLocale.language
+                                val currentFull = currentLocale.toLanguageTag().lowercase()
+                                
+                                val genus = species?.genera?.firstOrNull { 
+                                    it.language.name.lowercase() == currentFull || it.language.name.lowercase() == currentLang 
+                                }?.genus ?: species?.genera?.firstOrNull { it.language.name == "en" }?.genus
                                 
                                 if (genus != null) {
                                     Text(
@@ -212,8 +216,9 @@ fun PokemonDetailsContent(
                                 }
 
                                 val description = species?.flavorTextEntries
-                                    ?.firstOrNull { it.language.name == currentLanguage }
-                                    ?.flavorText?.replace("\n", " ")
+                                    ?.firstOrNull { 
+                                        it.language.name.lowercase() == currentFull || it.language.name.lowercase() == currentLang 
+                                    }?.flavorText?.replace("\n", " ")
                                     ?: species?.flavorTextEntries
                                         ?.firstOrNull { it.language.name == "en" }
                                         ?.flavorText?.replace("\n", " ")

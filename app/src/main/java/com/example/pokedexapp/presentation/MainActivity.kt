@@ -1,10 +1,10 @@
 package com.example.pokedexapp.presentation
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
@@ -15,7 +15,7 @@ import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -28,7 +28,11 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(preferences.languageCode) {
                 val currentLocales = AppCompatDelegate.getApplicationLocales()
                 if (currentLocales.toLanguageTags() != preferences.languageCode) {
-                    val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(preferences.languageCode)
+                    val appLocale: LocaleListCompat = if (preferences.languageCode.isEmpty()) {
+                        LocaleListCompat.getEmptyLocaleList()
+                    } else {
+                        LocaleListCompat.forLanguageTags(preferences.languageCode)
+                    }
                     AppCompatDelegate.setApplicationLocales(appLocale)
                 }
             }
@@ -40,7 +44,7 @@ class MainActivity : ComponentActivity() {
             }
 
             PokeDexAppTheme(darkTheme = darkTheme) {
-                MainScreen()
+                MainScreen(languageCode = preferences.languageCode)
             }
         }
     }
