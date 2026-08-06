@@ -9,6 +9,7 @@ data class PokemonCustomizationState(
     val nickname: String? = null,
     val level: Int = 100,
     val selectedNature: String = "Hardy",
+    val selectedAbility: String? = null,
     
     // EVs
     val hpEv: Int = 0,

@@ -39,6 +39,7 @@ data class TeamPokemonEntity(
     val nickname: String? = null,
     val level: Int = 100,
     val nature: String = "Hardy",
+    val ability: String? = null,
     
     // Moves
     val move1: String? = null,

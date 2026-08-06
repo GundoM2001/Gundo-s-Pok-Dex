@@ -2,6 +2,7 @@ package com.example.pokedexapp.presentation.feature.team_builder.team_builder_ho
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pokedexapp.data.local.entities.TeamEntity
 import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.team_builder_home.state.TeamBuilderHomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,9 @@ class TeamBuilderHomeViewModel @Inject constructor(
     val showCreateDialog = state.map { it.showCreateDialog }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
+    val teamToDelete = state.map { it.teamToDelete }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
     fun onShowDialog() {
         _state.update { it.copy(showCreateDialog = true) }
     }
@@ -43,6 +47,23 @@ class TeamBuilderHomeViewModel @Inject constructor(
         viewModelScope.launch {
             repository.createTeam(name)
             onDismissDialog()
+        }
+    }
+
+    fun onConfirmDelete(team: TeamEntity) {
+        _state.update { it.copy(teamToDelete = team) }
+    }
+
+    fun onDismissDelete() {
+        _state.update { it.copy(teamToDelete = null) }
+    }
+
+    fun deleteTeam() {
+        viewModelScope.launch {
+            _state.value.teamToDelete?.let {
+                repository.deleteTeam(it)
+            }
+            onDismissDelete()
         }
     }
 }

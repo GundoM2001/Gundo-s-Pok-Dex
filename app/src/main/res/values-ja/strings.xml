@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">チーム名</string>
     <string name="btn_create">作成</string>
     <string name="btn_cancel">キャンセル</string>
+    <string name="btn_delete">削除</string>
+    <string name="delete_team_confirm_title">チームを削除しますか？</string>
+    <string name="delete_team_confirm_msg">このチームを削除してもよろしいですか？この操作は取り消せません。</string>
     <string name="customize_pokemon_title">ポケモンをカスタマイズ</string>
     <string name="btn_save">保存</string>
     <string name="nickname_label">ニックネーム</string>
     <string name="level_label">レベル</string>
     <string name="form_label">姿</string>
     <string name="nature_label">性格</string>
+    <string name="ability_label">特性</string>
     <string name="evs_label">努力値 (EVs: %d / 510)</string>
     <string name="stat_hp">HP</string>
     <string name="stat_atk">攻撃</string>

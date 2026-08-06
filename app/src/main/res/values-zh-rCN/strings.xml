@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">阵容名称</string>
     <string name="btn_create">创建</string>
     <string name="btn_cancel">取消</string>
+    <string name="btn_delete">删除</string>
+    <string name="delete_team_confirm_title">删除团队？</string>
+    <string name="delete_team_confirm_msg">您确定要删除此团队吗？此操作无法撤销。</string>
     <string name="customize_pokemon_title">自定义宝可梦</string>
     <string name="btn_save">保存</string>
     <string name="nickname_label">昵称</string>
     <string name="level_label">等级</string>
     <string name="form_label">形态</string>
     <string name="nature_label">性格</string>
+    <string name="ability_label">特性</string>
     <string name="evs_label">基础点数 (EVs: %d / 510)</string>
     <string name="stat_hp">HP</string>
     <string name="stat_atk">攻击</string>

@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -72,6 +73,9 @@ fun TeamDetailScreen(
                             } else {
                                 onMemberClick(team.team.id, index, member.pokemonId, member.id)
                             }
+                        },
+                        onDeleteClick = {
+                            member?.let { viewModel.removePokemon(it) }
                         }
                     )
                 }
@@ -84,7 +88,8 @@ fun TeamDetailScreen(
 fun TeamSlotItem(
     slotIndex: Int,
     member: TeamPokemonEntity?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
@@ -149,6 +154,15 @@ fun TeamSlotItem(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
+
+                    if (!member.ability.isNullOrBlank()) {
+                        Text(
+                            text = member.ability.replace("-", " ").uppercase(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     
                     val moves = listOfNotNull(member.move1, member.move2, member.move3, member.move4)
                     if (moves.isNotEmpty()) {
@@ -169,6 +183,16 @@ fun TeamSlotItem(
                         text = stringResource(R.string.empty_slot_label),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
+                }
+            }
+
+            if (member != null) {
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Remove Pokemon",
+                        tint = MaterialTheme.colorScheme.error.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -210,7 +234,8 @@ fun TeamDetailScreenPreview() {
                     TeamSlotItem(
                         slotIndex = index,
                         member = sampleTeam.pokemon.find { it.slot == index },
-                        onClick = {}
+                        onClick = {},
+                        onDeleteClick = {}
                     )
                 }
             }

@@ -3,6 +3,7 @@ package com.example.pokedexapp.presentation.feature.team_builder.team_detail.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.team_detail.state.TeamDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,5 +44,11 @@ class TeamDetailViewModel @Inject constructor(
                 _state.update { it.copy(isLoading = false, error = e.message) }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun removePokemon(member: TeamPokemonEntity) {
+        viewModelScope.launch {
+            repository.removePokemonFromTeam(member)
+        }
     }
 }

@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Spannaam</string>
     <string name="btn_create">Skep</string>
     <string name="btn_cancel">Kanselleer</string>
+    <string name="btn_delete">Skrap</string>
+    <string name="delete_team_confirm_title">Skrap span?</string>
+    <string name="delete_team_confirm_msg">Is jy seker jy wil hierdie span skrap? Hierdie aksie kan nie ongedaan gemaak word nie.</string>
     <string name="customize_pokemon_title">Pasmaak Pokemon</string>
     <string name="btn_save">Stoor</string>
     <string name="nickname_label">Bynaam</string>
     <string name="level_label">Vlak</string>
     <string name="form_label">Vorm</string>
     <string name="nature_label">Natuur</string>
+    <string name="ability_label">Vermoë</string>
     <string name="evs_label">Statistieke (EVs: %d / 510)</string>
     <string name="stat_hp">LE</string>
     <string name="stat_atk">Aan</string>

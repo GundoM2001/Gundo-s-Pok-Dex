@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Nombre del Equipo</string>
     <string name="btn_create">Crear</string>
     <string name="btn_cancel">Cancelar</string>
+    <string name="btn_delete">Eliminar</string>
+    <string name="delete_team_confirm_title">¿Eliminar equipo?</string>
+    <string name="delete_team_confirm_msg">¿Estás seguro de que quieres eliminar este equipo? Esta acción no se puede deshacer.</string>
     <string name="customize_pokemon_title">Personalizar Pokemon</string>
     <string name="btn_save">Guardar</string>
     <string name="nickname_label">Apodo</string>
     <string name="level_label">Nivel</string>
     <string name="form_label">Forma</string>
     <string name="nature_label">Naturaleza</string>
+    <string name="ability_label">Habilidad</string>
     <string name="evs_label">Estad. (EVs: %d / 510)</string>
     <string name="stat_hp">PS</string>
     <string name="stat_atk">Atq</string>

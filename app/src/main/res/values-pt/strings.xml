@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Nome da Equipe</string>
     <string name="btn_create">Criar</string>
     <string name="btn_cancel">Cancelar</string>
+    <string name="btn_delete">Excluir</string>
+    <string name="delete_team_confirm_title">Excluir equipe?</string>
+    <string name="delete_team_confirm_msg">Tem certeza de que deseja excluir esta equipe? Esta ação não pode ser desfeita.</string>
     <string name="customize_pokemon_title">Personalizar Pokemon</string>
     <string name="btn_save">Salvar</string>
     <string name="nickname_label">Apelido</string>
     <string name="level_label">Nível</string>
     <string name="form_label">Forma</string>
     <string name="nature_label">Natureza</string>
+    <string name="ability_label">Habilidade</string>
     <string name="evs_label">Stats (EVs: %d / 510)</string>
     <string name="stat_hp">HP</string>
     <string name="stat_atk">Atk</string>

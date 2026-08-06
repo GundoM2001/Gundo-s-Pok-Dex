@@ -3,6 +3,7 @@ package com.example.pokedexapp.presentation.feature.team_builder.team_builder_ho
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -27,15 +28,20 @@ fun TeamBuilderHomeScreen(
 ) {
     val teamList by viewModel.teams.collectAsState()
     val showDialog by viewModel.showCreateDialog.collectAsState()
+    val teamToDelete by viewModel.teamToDelete.collectAsState()
 
     TeamBuilderHomeScreenContent(
         teamList = teamList,
         showDialog = showDialog,
+        teamToDelete = teamToDelete,
         onAddClick = { viewModel.onShowDialog() },
         onDismissDialog = { viewModel.onDismissDialog() },
         onCreateTeam = { viewModel.createTeam(it) },
         onTeamClick = onTeamClick,
-        onEditTeam = { /* Rename logic if needed */ }
+        onEditTeam = { /* Rename logic if needed */ },
+        onDeleteTeam = { viewModel.onConfirmDelete(it) },
+        onConfirmDelete = { viewModel.deleteTeam() },
+        onDismissDelete = { viewModel.onDismissDelete() }
     )
 }
 
@@ -43,15 +49,19 @@ fun TeamBuilderHomeScreen(
 fun TeamBuilderHomeScreenContent(
     teamList: List<TeamWithPokemon>,
     showDialog: Boolean,
+    teamToDelete: TeamEntity?,
     onAddClick: () -> Unit,
     onDismissDialog: () -> Unit,
     onCreateTeam: (String) -> Unit,
     onTeamClick: (Int) -> Unit,
-    onEditTeam: (TeamEntity) -> Unit
+    onEditTeam: (TeamEntity) -> Unit,
+    onDeleteTeam: (TeamEntity) -> Unit,
+    onConfirmDelete: () -> Unit,
+    onDismissDelete: () -> Unit
 ) {
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddClick) {
+            FloatingActionButton(onClick = onAddClick, shape = CircleShape, containerColor = MaterialTheme.colorScheme.primary) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_team_desc))
             }
         }
@@ -79,7 +89,8 @@ fun TeamBuilderHomeScreenContent(
                         TeamCard(
                             teamWithPokemon = teamWithPokemon,
                             onClick = { onTeamClick(teamWithPokemon.team.id) },
-                            onEditClick = { onEditTeam(teamWithPokemon.team) }
+                            onEditClick = { onEditTeam(teamWithPokemon.team) },
+                            onDeleteClick = { onDeleteTeam(teamWithPokemon.team) }
                         )
                     }
                 }
@@ -93,6 +104,38 @@ fun TeamBuilderHomeScreenContent(
             onConfirm = onCreateTeam
         )
     }
+
+    if (teamToDelete != null) {
+        DeleteTeamConfirmationDialog(
+            onDismiss = onDismissDelete,
+            onConfirm = onConfirmDelete
+        )
+    }
+}
+
+@Composable
+fun DeleteTeamConfirmationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.delete_team_confirm_title)) },
+        text = { Text(stringResource(R.string.delete_team_confirm_msg)) },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text(stringResource(R.string.btn_delete))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.btn_cancel))
+            }
+        }
+    )
 }
 
 @Composable
@@ -163,11 +206,15 @@ fun TeamBuilderHomeScreenContentPreview() {
         TeamBuilderHomeScreenContent(
             teamList = sampleTeams,
             showDialog = false,
+            teamToDelete = null,
             onAddClick = {},
             onDismissDialog = {},
             onCreateTeam = {},
             onTeamClick = {},
-            onEditTeam = {}
+            onEditTeam = {},
+            onDeleteTeam = {},
+            onConfirmDelete = {},
+            onDismissDelete = {}
         )
     }
 }
@@ -179,11 +226,15 @@ fun TeamBuilderHomeScreenContentEmptyPreview() {
         TeamBuilderHomeScreenContent(
             teamList = emptyList(),
             showDialog = false,
+            teamToDelete = null,
             onAddClick = {},
             onDismissDialog = {},
             onCreateTeam = {},
             onTeamClick = {},
-            onEditTeam = {}
+            onEditTeam = {},
+            onDeleteTeam = {},
+            onConfirmDelete = {},
+            onDismissDelete = {}
         )
     }
 }

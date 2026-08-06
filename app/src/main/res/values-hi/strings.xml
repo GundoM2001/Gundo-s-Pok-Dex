@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">टीम का नाम</string>
     <string name="btn_create">बनाएं</string>
     <string name="btn_cancel">रद्द करें</string>
+    <string name="btn_delete">हटाएँ</string>
+    <string name="delete_team_confirm_title">टीम हटाएँ?</string>
+    <string name="delete_team_confirm_msg">क्या आप वाकई इस टीम को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।</string>
     <string name="customize_pokemon_title">पोकेमॉन कस्टमाइज़ करें</string>
     <string name="btn_save">सहेजें</string>
     <string name="nickname_label">उपनाम</string>
     <string name="level_label">लेवल</string>
     <string name="form_label">रूप</string>
     <string name="nature_label">स्वभाव</string>
+    <string name="ability_label">क्षमता</string>
     <string name="evs_label">आंकड़े (EVs: %d / 510)</string>
     <string name="stat_hp">एचपी</string>
     <string name="stat_atk">हमला</string>
