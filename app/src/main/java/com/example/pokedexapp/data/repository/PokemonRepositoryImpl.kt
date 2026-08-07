@@ -16,6 +16,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import java.util.concurrent.ConcurrentHashMap
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class PokemonRepositoryImpl @Inject constructor(
@@ -40,13 +41,13 @@ class PokemonRepositoryImpl @Inject constructor(
             service.getAllPokemon()
         }
 
-        if (response.isSuccessful) {
-            val listResponse = response.body() ?: throw Exception("Response body is null")
-            val filteredResults = listResponse.results.filter { isBaseForm(it.url) }
+            if (response.isSuccessful) {
+                val listResponse = response.body() ?: throw com.google.gson.JsonSyntaxException("Response body is null")
+                val filteredResults = listResponse.results.filter { isBaseForm(it.url) }
             val updatedResults = enrichPokemonList(filteredResults)
             return listResponse.copy(results = updatedResults)
         } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+            throw HttpException(response)
         }
     }
 
@@ -56,7 +57,7 @@ class PokemonRepositoryImpl @Inject constructor(
             val results = response.body()?.results ?: emptyList()
             return results.filter { isBaseForm(it.url) }
         } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+            throw HttpException(response)
         }
     }
 
@@ -93,9 +94,9 @@ class PokemonRepositoryImpl @Inject constructor(
             val response = service.getPokemonDetails(url)
             if (response.isSuccessful) {
                 response.body()?.also { detailsCache[url] = it }
-                    ?: throw Exception("Response body is null")
+                    ?: throw com.google.gson.JsonSyntaxException("Response body is null")
             } else {
-                throw Exception("API Error: ${response.code()} ${response.message()}")
+                throw HttpException(response)
             }
         }
     }
@@ -108,7 +109,7 @@ class PokemonRepositoryImpl @Inject constructor(
                 response.body()?.also { speciesCache[url] = it }
                     ?: throw Exception("Response body is null")
             } else {
-                throw Exception("API Error: ${response.code()} ${response.message()}")
+                throw HttpException(response)
             }
         }
     }
@@ -121,7 +122,7 @@ class PokemonRepositoryImpl @Inject constructor(
                 response.body()?.also { typeCache[url] = it }
                     ?: throw Exception("Response body is null")
             } else {
-                throw Exception("API Error: ${response.code()} ${response.message()}")
+                throw HttpException(response)
             }
         }
     }
@@ -134,7 +135,7 @@ class PokemonRepositoryImpl @Inject constructor(
                 response.body()?.also { abilityCache[url] = it }
                     ?: throw Exception("Response body is null")
             } else {
-                throw Exception("API Error: ${response.code()} ${response.message()}")
+                throw HttpException(response)
             }
         }
     }
@@ -147,7 +148,7 @@ class PokemonRepositoryImpl @Inject constructor(
                 response.body()?.also { moveCache[url] = it }
                     ?: throw Exception("Response body is null")
             } else {
-                throw Exception("API Error: ${response.code()} ${response.message()}")
+                throw HttpException(response)
             }
         }
     }
@@ -160,7 +161,7 @@ class PokemonRepositoryImpl @Inject constructor(
                 response.body()?.also { machineCache[url] = it }
                     ?: throw Exception("Response body is null")
             } else {
-                throw Exception("API Error: ${response.code()} ${response.message()}")
+                throw HttpException(response)
             }
         }
     }

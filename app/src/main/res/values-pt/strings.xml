@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Nome da Equipe</string>
     <string name="btn_create">Criar</string>
     <string name="btn_cancel">Cancelar</string>
+    <string name="btn_delete">Excluir</string>
+    <string name="delete_team_confirm_title">Excluir equipe?</string>
+    <string name="delete_team_confirm_msg">Tem certeza de que deseja excluir esta equipe? Esta ação não pode ser desfeita.</string>
     <string name="customize_pokemon_title">Personalizar Pokemon</string>
     <string name="btn_save">Salvar</string>
     <string name="nickname_label">Apelido</string>
     <string name="level_label">Nível</string>
     <string name="form_label">Forma</string>
     <string name="nature_label">Natureza</string>
+    <string name="ability_label">Habilidade</string>
     <string name="evs_label">Stats (EVs: %d / 510)</string>
     <string name="stat_hp">HP</string>
     <string name="stat_atk">Atk</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Favorito</string>
     <string name="unknown_error">Ocorreu um erro desconhecido</string>
+    <string name="error_network_title">Problema de conexão</string>
+    <string name="error_network_msg">Verifique sua conexão com a Internet e tente novamente.</string>
+    <string name="error_server_title">Dificuldade técnica</string>
+    <string name="error_server_msg">Algo deu errado do nosso lado. Tente novamente mais tarde.</string>
+    <string name="error_not_found_title">Não encontrado</string>
+    <string name="error_not_found_msg">Não conseguimos encontrar o que você estava procurando.</string>
+    <string name="error_unknown_title">Opa!</string>
+    <string name="error_timeout_title">Tempo de solicitação esgotado</string>
+    <string name="error_timeout_msg">O servidor está demorando muito para responder. Tente novamente.</string>
+    <string name="error_data_title">Erro de dados</string>
+    <string name="error_data_msg">Recebemos dados confusos. Tente novamente ou atualize o aplicativo.</string>
+    <string name="btn_retry">Repetir</string>
 </resources>

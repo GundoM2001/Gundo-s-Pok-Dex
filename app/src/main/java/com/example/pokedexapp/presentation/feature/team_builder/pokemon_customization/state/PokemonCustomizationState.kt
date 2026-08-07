@@ -2,6 +2,7 @@ package com.example.pokedexapp.presentation.feature.team_builder.pokemon_customi
 
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.domain.model.PokemonDetails
+import com.example.pokedexapp.utils.UiErrorMessage
 
 data class PokemonCustomizationState(
     val pokemonDetails: PokemonDetails? = null,
@@ -9,6 +10,7 @@ data class PokemonCustomizationState(
     val nickname: String? = null,
     val level: Int = 100,
     val selectedNature: String = "Hardy",
+    val selectedAbility: String? = null,
     
     // EVs
     val hpEv: Int = 0,
@@ -37,5 +39,5 @@ data class PokemonCustomizationState(
     val varieties: List<PokemonDetails> = emptyList(),
     
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: UiErrorMessage? = null
 )

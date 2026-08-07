@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Spannaam</string>
     <string name="btn_create">Skep</string>
     <string name="btn_cancel">Kanselleer</string>
+    <string name="btn_delete">Skrap</string>
+    <string name="delete_team_confirm_title">Skrap span?</string>
+    <string name="delete_team_confirm_msg">Is jy seker jy wil hierdie span skrap? Hierdie aksie kan nie ongedaan gemaak word nie.</string>
     <string name="customize_pokemon_title">Pasmaak Pokemon</string>
     <string name="btn_save">Stoor</string>
     <string name="nickname_label">Bynaam</string>
     <string name="level_label">Vlak</string>
     <string name="form_label">Vorm</string>
     <string name="nature_label">Natuur</string>
+    <string name="ability_label">Vermoë</string>
     <string name="evs_label">Statistieke (EVs: %d / 510)</string>
     <string name="stat_hp">LE</string>
     <string name="stat_atk">Aan</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Gunsteling</string>
     <string name="unknown_error">\'n Onbekende fout het voorgekom</string>
+    <string name="error_network_title">Verbindingsprobleem</string>
+    <string name="error_network_msg">Gaan asseblief u internetverbinding na en probeer weer.</string>
+    <string name="error_server_title">Tegniese probleme</string>
+    <string name="error_server_msg">Iets het aan ons kant foutgegaan. Probeer asseblief later weer.</string>
+    <string name="error_not_found_title">Nie gevind nie</string>
+    <string name="error_not_found_msg">Ons kon nie vind waarna u soek nie.</string>
+    <string name="error_unknown_title">Oeps!</string>
+    <string name="error_timeout_title">Versoek het uitgetel</string>
+    <string name="error_timeout_msg">Die bediener neem te lank om te reageer. Probeer asseblief weer.</string>
+    <string name="error_data_title">Datafout</string>
+    <string name="error_data_msg">Ons het verwarrende data ontvang. Probeer asseblief weer of dateer die toepassing op.</string>
+    <string name="btn_retry">Probeer weer</string>
 </resources>

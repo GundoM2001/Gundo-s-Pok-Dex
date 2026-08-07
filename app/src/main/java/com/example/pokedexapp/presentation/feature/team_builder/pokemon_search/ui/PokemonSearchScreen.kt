@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pokedexapp.R
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.components.PokemonItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,6 +29,7 @@ fun PokemonSearchScreen(
     val searchQuery = state.searchQuery
     val pokemonList = state.pokemonList
     val isLoading = state.isLoading
+    val error = state.error
 
     Scaffold(
         topBar = {
@@ -58,6 +60,11 @@ fun PokemonSearchScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             if (isLoading && pokemonList.isEmpty()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else if (error != null && pokemonList.isEmpty()) {
+                ErrorState(
+                    error = error,
+                    onRetry = { viewModel.onRetry() }
+                )
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),

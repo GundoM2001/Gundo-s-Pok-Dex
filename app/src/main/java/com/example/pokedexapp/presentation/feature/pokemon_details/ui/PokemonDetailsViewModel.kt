@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pokedexapp.domain.model.*
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.presentation.feature.pokemon_details.state.PokemonDetailsState
+import com.example.pokedexapp.utils.ErrorHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PokemonDetailsViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PokemonDetailsState())
@@ -195,10 +196,16 @@ class PokemonDetailsViewModel @Inject constructor(
                     fetchMoveDetails(initialDetails, essentialOnly = false)
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(error = e.message ?: "An unknown error occurred") }
+                _state.update { it.copy(error = ErrorHandler.mapException(e)) }
             } finally {
                 _state.update { it.copy(isLoading = false) }
             }
+        }
+    }
+
+    fun retry() {
+        savedStateHandle.get<String>("pokemonUrl")?.let { url ->
+            fetchPokemonDetails(url)
         }
     }
 

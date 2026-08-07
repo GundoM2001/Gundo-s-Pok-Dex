@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Nombre del Equipo</string>
     <string name="btn_create">Crear</string>
     <string name="btn_cancel">Cancelar</string>
+    <string name="btn_delete">Eliminar</string>
+    <string name="delete_team_confirm_title">¿Eliminar equipo?</string>
+    <string name="delete_team_confirm_msg">¿Estás seguro de que quieres eliminar este equipo? Esta acción no se puede deshacer.</string>
     <string name="customize_pokemon_title">Personalizar Pokemon</string>
     <string name="btn_save">Guardar</string>
     <string name="nickname_label">Apodo</string>
     <string name="level_label">Nivel</string>
     <string name="form_label">Forma</string>
     <string name="nature_label">Naturaleza</string>
+    <string name="ability_label">Habilidad</string>
     <string name="evs_label">Estad. (EVs: %d / 510)</string>
     <string name="stat_hp">PS</string>
     <string name="stat_atk">Atq</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Favorito</string>
     <string name="unknown_error">Ocurrió un error desconocido</string>
+    <string name="error_network_title">Problema de conexión</string>
+    <string name="error_network_msg">Por favor, comprueba tu conexión a Internet e inténtalo de nuevo.</string>
+    <string name="error_server_title">Problemas técnicos</string>
+    <string name="error_server_msg">Algo salió mal por nuestra parte. Por favor, inténtalo de nuevo más tarde.</string>
+    <string name="error_not_found_title">No encontrado</string>
+    <string name="error_not_found_msg">No pudimos encontrar lo que buscabas.</string>
+    <string name="error_unknown_title">¡Ups!</string>
+    <string name="error_timeout_title">Tiempo de espera agotado</string>
+    <string name="error_timeout_msg">El servidor está tardando demasiado en responder. Por favor, inténtalo de nuevo.</string>
+    <string name="error_data_title">Error de datos</string>
+    <string name="error_data_msg">Recibimos datos confusos. Vuelve a intentarlo o actualiza la aplicación.</string>
+    <string name="btn_retry">Reintentar</string>
 </resources>

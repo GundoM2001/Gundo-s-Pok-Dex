@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,8 +28,10 @@ import com.example.pokedexapp.R
 import com.example.pokedexapp.data.local.entities.TeamEntity
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.data.local.entities.TeamWithPokemon
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
 import com.example.pokedexapp.utils.PokemonImageUtils
+import com.example.pokedexapp.utils.UiErrorMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +43,33 @@ fun TeamDetailScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val teamWithPokemon = state.team
+    val isLoading = state.isLoading
+    val error = state.error
 
+    TeamDetailContent(
+        teamWithPokemon = teamWithPokemon,
+        isLoading = isLoading,
+        error = error,
+        onBackClick = onBackClick,
+        onAddPokemonClick = onAddPokemonClick,
+        onMemberClick = onMemberClick,
+        onRemovePokemon = { viewModel.removePokemon(it) },
+        onRetry = { viewModel.onRetry() }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TeamDetailContent(
+    teamWithPokemon: TeamWithPokemon?,
+    isLoading: Boolean,
+    error: UiErrorMessage?,
+    onBackClick: () -> Unit,
+    onAddPokemonClick: (Int, Int) -> Unit,
+    onMemberClick: (Int, Int, Int, Int) -> Unit,
+    onRemovePokemon: (TeamPokemonEntity) -> Unit,
+    onRetry: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,38 +82,51 @@ fun TeamDetailScreen(
             )
         }
     ) { padding ->
-        teamWithPokemon?.let { team ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(count = 6) { index ->
-                    val member = team.pokemon.find { it.slot == index }
-                    TeamSlotItem(
-                        slotIndex = index,
-                        member = member,
-                        onClick = {
-                            if (member == null) {
-                                onAddPokemonClick(team.team.id, index)
-                            } else {
-                                onMemberClick(team.team.id, index, member.pokemonId, member.id)
+        if (isLoading) {
+            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (error != null && teamWithPokemon == null) {
+            ErrorState(error = error, onRetry = onRetry)
+        } else {
+            teamWithPokemon?.let { team ->
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(count = 6) { index ->
+                        val member = team.pokemon.find { it.slot == index }
+                        TeamSlotItem(
+                            slotIndex = index,
+                            member = member,
+                            onClick = {
+                                if (member == null) {
+                                    onAddPokemonClick(team.team.id, index)
+                                } else {
+                                    onMemberClick(team.team.id, index, member.pokemonId, member.id)
+                                }
+                            },
+                            onDeleteClick = {
+                                member?.let { onRemovePokemon(it) }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+
 @Composable
 fun TeamSlotItem(
     slotIndex: Int,
     member: TeamPokemonEntity?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
@@ -149,6 +191,15 @@ fun TeamSlotItem(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
+
+                    if (!member.ability.isNullOrBlank()) {
+                        Text(
+                            text = member.ability.replace("-", " ").uppercase(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     
                     val moves = listOfNotNull(member.move1, member.move2, member.move3, member.move4)
                     if (moves.isNotEmpty()) {
@@ -169,6 +220,16 @@ fun TeamSlotItem(
                         text = stringResource(R.string.empty_slot_label),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
+                }
+            }
+
+            if (member != null) {
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Remove Pokemon",
+                        tint = MaterialTheme.colorScheme.error.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -202,18 +263,17 @@ fun TeamDetailScreenPreview() {
         )
     )
     PokeDexAppTheme {
-        // Mocked view model behavior for preview isn't easy, but we can preview the content
         Surface {
-            // Simplification for preview
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                repeat(6) { index ->
-                    TeamSlotItem(
-                        slotIndex = index,
-                        member = sampleTeam.pokemon.find { it.slot == index },
-                        onClick = {}
-                    )
-                }
-            }
+            TeamDetailContent(
+                teamWithPokemon = sampleTeam,
+                isLoading = false,
+                error = null,
+                onBackClick = {},
+                onAddPokemonClick = { _, _ -> },
+                onMemberClick = { _, _, _, _ -> },
+                onRemovePokemon = {},
+                onRetry = {}
+            )
         }
     }
 }

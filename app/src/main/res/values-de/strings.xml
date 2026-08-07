@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Team-Name</string>
     <string name="btn_create">Erstellen</string>
     <string name="btn_cancel">Abbrechen</string>
+    <string name="btn_delete">Löschen</string>
+    <string name="delete_team_confirm_title">Team löschen?</string>
+    <string name="delete_team_confirm_msg">Bist du sicher, dass du dieses Team löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <string name="customize_pokemon_title">Pokemon anpassen</string>
     <string name="btn_save">Speichern</string>
     <string name="nickname_label">Spitzname</string>
     <string name="level_label">Level</string>
     <string name="form_label">Form</string>
     <string name="nature_label">Wesen</string>
+    <string name="ability_label">Fähigkeit</string>
     <string name="evs_label">Werte (EVs: %d / 510)</string>
     <string name="stat_hp">KP</string>
     <string name="stat_atk">Ang</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Favorit</string>
     <string name="unknown_error">Ein unbekannter Fehler ist aufgetreten</string>
+    <string name="error_network_title">Verbindungsproblem</string>
+    <string name="error_network_msg">Bitte überprüfe deine Internetverbindung und versuche es erneut.</string>
+    <string name="error_server_title">Technische Schwierigkeit</string>
+    <string name="error_server_msg">Auf unserer Seite ist etwas schiefgelaufen. Bitte versuche es später noch einmal.</string>
+    <string name="error_not_found_title">Nicht gefunden</string>
+    <string name="error_not_found_msg">Wir konnten nicht finden, wonach du gesucht hast.</string>
+    <string name="error_unknown_title">Hoppla!</string>
+    <string name="error_timeout_title">Zeitüberschreitung der Anforderung</string>
+    <string name="error_timeout_msg">Der Server braucht zu lange, um zu antworten. Bitte versuchen Sie es erneut.</string>
+    <string name="error_data_title">Datenfehler</string>
+    <string name="error_data_msg">Wir haben verwirrende Daten erhalten. Bitte versuchen Sie es erneut oder aktualisieren Sie die App.</string>
+    <string name="btn_retry">Wiederholen</string>
 </resources>

@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Название команды</string>
     <string name="btn_create">Создать</string>
     <string name="btn_cancel">Отмена</string>
+    <string name="btn_delete">Удалить</string>
+    <string name="delete_team_confirm_title">Удалить команду?</string>
+    <string name="delete_team_confirm_msg">Вы уверены, что хотите удалить эту команду? Это действие нельзя отменить.</string>
     <string name="customize_pokemon_title">Настройка Покемона</string>
     <string name="btn_save">Сохранить</string>
     <string name="nickname_label">Кличка</string>
     <string name="level_label">Уровень</string>
     <string name="form_label">Форма</string>
     <string name="nature_label">Характер</string>
+    <string name="ability_label">Способность</string>
     <string name="evs_label">Стат. (EVs: %d / 510)</string>
     <string name="stat_hp">ОЗ</string>
     <string name="stat_atk">Атк</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Избранное</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
+    <string name="error_network_title">Проблема с соединением</string>
+    <string name="error_network_msg">Пожалуйста, проверьте интернет-соединение и попробуйте еще раз.</string>
+    <string name="error_server_title">Технические трудности</string>
+    <string name="error_server_msg">Что-то пошло не так с нашей стороны. Пожалуйста, попробуйте позже.</string>
+    <string name="error_not_found_title">Не найдено</string>
+    <string name="error_not_found_msg">Мы не смогли найти то, что вы искали.</string>
+    <string name="error_unknown_title">Ой!</string>
+    <string name="error_timeout_title">Время ожидания запроса истекло</string>
+    <string name="error_timeout_msg">Сервер слишком долго отвечает. Пожалуйста, попробуйте еще раз.</string>
+    <string name="error_data_title">Ошибка данных</string>
+    <string name="error_data_msg">Мы получили непонятные данные. Попробуйте еще раз или обновите приложение.</string>
+    <string name="btn_retry">Повторить</string>
 </resources>

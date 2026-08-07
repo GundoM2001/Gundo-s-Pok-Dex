@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">阵容名称</string>
     <string name="btn_create">创建</string>
     <string name="btn_cancel">取消</string>
+    <string name="btn_delete">删除</string>
+    <string name="delete_team_confirm_title">删除团队？</string>
+    <string name="delete_team_confirm_msg">您确定要删除此团队吗？此操作无法撤销。</string>
     <string name="customize_pokemon_title">自定义宝可梦</string>
     <string name="btn_save">保存</string>
     <string name="nickname_label">昵称</string>
     <string name="level_label">等级</string>
     <string name="form_label">形态</string>
     <string name="nature_label">性格</string>
+    <string name="ability_label">特性</string>
     <string name="evs_label">基础点数 (EVs: %d / 510)</string>
     <string name="stat_hp">HP</string>
     <string name="stat_atk">攻击</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">收藏</string>
     <string name="unknown_error">发生了未知错误</string>
+    <string name="error_network_title">网络连接问题</string>
+    <string name="error_network_msg">请检查您的网络连接并重试。</string>
+    <string name="error_server_title">技术故障</string>
+    <string name="error_server_msg">我们这边出了点问题。请稍后再试。</string>
+    <string name="error_not_found_title">未找到</string>
+    <string name="error_not_found_msg">我们找不到您要找的内容。</string>
+    <string name="error_unknown_title">哎呀！</string>
+    <string name="error_timeout_title">请求超时</string>
+    <string name="error_timeout_msg">服务器响应时间过长。请稍后再试。</string>
+    <string name="error_data_title">数据错误</string>
+    <string name="error_data_msg">我们收到了一些混乱的数据。请重试或更新应用。</string>
+    <string name="btn_retry">重试</string>
 </resources>

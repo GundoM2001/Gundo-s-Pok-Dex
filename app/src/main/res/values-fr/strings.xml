@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Nom de l\'équipe</string>
     <string name="btn_create">Créer</string>
     <string name="btn_cancel">Annuler</string>
+    <string name="btn_delete">Supprimer</string>
+    <string name="delete_team_confirm_title">Supprimer l\'équipe ?</string>
+    <string name="delete_team_confirm_msg">Êtes-vous sûr de vouloir supprimer cette équipe ? Cette action est irréversible.</string>
     <string name="customize_pokemon_title">Personnaliser Pokemon</string>
     <string name="btn_save">Enregistrer</string>
     <string name="nickname_label">Surnom</string>
     <string name="level_label">Niveau</string>
     <string name="form_label">Forme</string>
     <string name="nature_label">Nature</string>
+    <string name="ability_label">Talent</string>
     <string name="evs_label">Stats (EVs: %d / 510)</string>
     <string name="stat_hp">PV</string>
     <string name="stat_atk">Atq</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Favori</string>
     <string name="unknown_error">Une erreur inconnue est survenue</string>
+    <string name="error_network_title">Problème de connexion</string>
+    <string name="error_network_msg">Veuillez vérifier votre connexion Internet et réessayer.</string>
+    <string name="error_server_title">Difficulté technique</string>
+    <string name="error_server_msg">Un problème est survenu de notre côté. Veuillez réessayer plus tard.</string>
+    <string name="error_not_found_title">Non trouvé</string>
+    <string name="error_not_found_msg">Nous n\'avons pas pu trouver ce que vous cherchiez.</string>
+    <string name="error_unknown_title">Oups !</string>
+    <string name="error_timeout_title">Délai d\'attente de la demande dépassé</string>
+    <string name="error_timeout_msg">Le serveur met trop de temps à répondre. Veuillez réessayer.</string>
+    <string name="error_data_title">Erreur de données</string>
+    <string name="error_data_msg">Nous avons reçu des données confuses. Veuillez réessayer ou mettre à jour l\'application.</string>
+    <string name="btn_retry">Réessayer</string>
 </resources>

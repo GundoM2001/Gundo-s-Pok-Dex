@@ -2,10 +2,13 @@ package com.example.pokedexapp.presentation.feature.pokemon_list.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -39,14 +42,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonResults
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.components.PokedexBackground
 import com.example.pokedexapp.presentation.components.PokemonItem
+import com.example.pokedexapp.utils.UiErrorMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +68,7 @@ fun PokemonListScreen(
     val isEnriching = state.isEnriching
     val searchQuery = state.searchQuery
     val favouriteIds = state.favouriteIds
+    val error = state.error
 
     PokemonListContent(
         pokemonList = pokemonList,
@@ -71,12 +78,14 @@ fun PokemonListScreen(
         isLoading = isLoading,
         isEnriching = isEnriching,
         searchQuery = searchQuery,
+        error = error,
         onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
         onPageRequest = { viewModel.fetchPokemonData(it) },
         onPokemonClick = onPokemonClick,
         onToggleFavourite = { pokemon ->
             viewModel.toggleFavourite(pokemon)
-        }
+        },
+        onRetry = { viewModel.fetchPokemonData() }
     )
 }
 
@@ -90,10 +99,12 @@ fun PokemonListContent(
     isLoading: Boolean,
     isEnriching: Boolean,
     searchQuery: String,
+    error: UiErrorMessage?,
     onSearchQueryChanged: (String) -> Unit,
     onPageRequest: (String) -> Unit,
     onPokemonClick: (String) -> Unit,
-    onToggleFavourite: (PokemonResults) -> Unit
+    onToggleFavourite: (PokemonResults) -> Unit,
+    onRetry: () -> Unit
 ) {
     var isSearchExpanded by remember { mutableStateOf(false) }
 
@@ -179,6 +190,11 @@ fun PokemonListContent(
             ) {
                 if (isLoading || isEnriching) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                } else if (error != null && pokemonList.isNullOrEmpty()) {
+                    ErrorState(
+                        error = error,
+                        onRetry = onRetry
+                    )
                 } else {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
@@ -280,10 +296,12 @@ fun PokemonListContentPreview() {
             isLoading = false,
             isEnriching = false,
             searchQuery = "",
+            error = null,
             onSearchQueryChanged = {},
             onPageRequest = {},
             onPokemonClick = {},
-            onToggleFavourite = {}
+            onToggleFavourite = {},
+            onRetry = {}
         )
     }
 }

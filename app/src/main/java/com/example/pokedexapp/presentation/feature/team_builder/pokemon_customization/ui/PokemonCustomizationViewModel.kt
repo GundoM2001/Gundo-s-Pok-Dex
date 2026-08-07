@@ -10,6 +10,9 @@ import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.state.PokemonCustomizationState
 import com.example.pokedexapp.utils.ApiConfig
+import com.example.pokedexapp.utils.ErrorHandler
+import com.example.pokedexapp.utils.UiErrorMessage
+import com.example.pokedexapp.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -26,16 +29,20 @@ class PokemonCustomizationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val teamId: Int = checkNotNull(savedStateHandle["teamId"])
-    private val slot: Int = checkNotNull(savedStateHandle["slot"])
-    private val initialPokemonId: Int = checkNotNull(savedStateHandle["pokemonId"])
-    private val memberId: Int = checkNotNull(savedStateHandle["memberId"])
+    private val teamId: Int = savedStateHandle.get<Int>("teamId") ?: 0
+    private val slot: Int = savedStateHandle.get<Int>("slot") ?: 0
+    private val initialPokemonId: Int = savedStateHandle.get<Int>("pokemonId") ?: 1
+    private val memberId: Int = savedStateHandle.get<Int>("memberId") ?: 0
 
     private val _state = MutableStateFlow(PokemonCustomizationState())
     val state = _state.asStateFlow()
 
     init {
-        loadData()
+        if (teamId != 0 || initialPokemonId != 1) {
+            loadData()
+        } else {
+            _state.update { it.copy(error = UiErrorMessage(R.string.error_unknown_title, R.string.unknown_error)) }
+        }
     }
 
     private fun loadData() {
@@ -70,6 +77,7 @@ class PokemonCustomizationViewModel @Inject constructor(
                         nickname = currentMember?.nickname,
                         level = currentMember?.level ?: 100,
                         selectedNature = currentMember?.nature ?: "Hardy",
+                        selectedAbility = currentMember?.ability ?: details.abilities.firstOrNull()?.ability?.name,
                         hpEv = currentMember?.hpEv ?: 0,
                         atkEv = currentMember?.atkEv ?: 0,
                         defEv = currentMember?.defEv ?: 0,
@@ -92,9 +100,13 @@ class PokemonCustomizationViewModel @Inject constructor(
                 
                 fetchMoveDetails(details)
             } catch (e: Exception) {
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                _state.update { it.copy(isLoading = false, error = ErrorHandler.mapException(e)) }
             }
         }
+    }
+
+    fun onRetry() {
+        loadData()
     }
 
     private suspend fun fetchMoveDetails(details: PokemonDetails) {
@@ -130,8 +142,17 @@ class PokemonCustomizationViewModel @Inject constructor(
         _state.update { it.copy(selectedNature = natureName) }
     }
 
+    fun onAbilityChanged(abilityName: String) {
+        _state.update { it.copy(selectedAbility = abilityName) }
+    }
+
     fun onVarietyChanged(details: PokemonDetails) {
-        _state.update { it.copy(pokemonDetails = details) }
+        _state.update { 
+            it.copy(
+                pokemonDetails = details,
+                selectedAbility = details.abilities.firstOrNull()?.ability?.name
+            ) 
+        }
         viewModelScope.launch {
             fetchMoveDetails(details)
         }
@@ -202,13 +223,22 @@ class PokemonCustomizationViewModel @Inject constructor(
     }
 
     fun onMoveSelected(index: Int, moveName: String?) {
-        _state.update {
+        _state.update { s ->
+            // If the move is already selected in another slot, clear that slot
+            var nextS = s
+            if (moveName != null) {
+                if (s.move1 == moveName && index != 1) nextS = nextS.copy(move1 = null)
+                if (s.move2 == moveName && index != 2) nextS = nextS.copy(move2 = null)
+                if (s.move3 == moveName && index != 3) nextS = nextS.copy(move3 = null)
+                if (s.move4 == moveName && index != 4) nextS = nextS.copy(move4 = null)
+            }
+
             when(index) {
-                1 -> it.copy(move1 = moveName)
-                2 -> it.copy(move2 = moveName)
-                3 -> it.copy(move3 = moveName)
-                4 -> it.copy(move4 = moveName)
-                else -> it
+                1 -> nextS.copy(move1 = moveName)
+                2 -> nextS.copy(move2 = moveName)
+                3 -> nextS.copy(move3 = moveName)
+                4 -> nextS.copy(move4 = moveName)
+                else -> nextS
             }
         }
     }
@@ -227,6 +257,7 @@ class PokemonCustomizationViewModel @Inject constructor(
                 nickname = s.nickname,
                 level = s.level,
                 nature = s.selectedNature,
+                ability = s.selectedAbility,
                 hpEv = s.hpEv,
                 atkEv = s.atkEv,
                 defEv = s.defEv,

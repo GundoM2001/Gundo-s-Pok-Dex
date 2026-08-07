@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">اسم الفريق</string>
     <string name="btn_create">إنشاء</string>
     <string name="btn_cancel">إلغاء</string>
+    <string name="btn_delete">حذف</string>
+    <string name="delete_team_confirm_title">حذف الفريق؟</string>
+    <string name="delete_team_confirm_msg">هل أنت متأكد أنك تريد حذف هذا الفريق؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="customize_pokemon_title">تخصيص البوكيمون</string>
     <string name="btn_save">حفظ</string>
     <string name="nickname_label">اللقب</string>
     <string name="level_label">المستوى</string>
     <string name="form_label">الشكل</string>
     <string name="nature_label">الطبيعة</string>
+    <string name="ability_label">قدرة</string>
     <string name="evs_label">الإحصائيات (EVs: %d / 510)</string>
     <string name="stat_hp">صحة</string>
     <string name="stat_atk">هجوم</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">مفضل</string>
     <string name="unknown_error">حدث خطأ غير معروف</string>
+    <string name="error_network_title">مشكلة في الاتصال</string>
+    <string name="error_network_msg">يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.</string>
+    <string name="error_server_title">مشكلة فنية</string>
+    <string name="error_server_msg">حدث خطأ ما من جانبنا. يرجى المحاولة مرة أخرى في وقت لاحق.</string>
+    <string name="error_not_found_title">غير موجود</string>
+    <string name="error_not_found_msg">لم نتمكن من العثور على ما كنت تبحث عنه.</string>
+    <string name="error_unknown_title">عذراً!</string>
+    <string name="error_timeout_title">انتهت مهلة الطلب</string>
+    <string name="error_timeout_msg">يستغرق الخادم وقتًا طويلاً للرد. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_data_title">خطأ في البيانات</string>
+    <string name="error_data_msg">تلقينا بعض البيانات المحيرة. يرجى المحاولة مرة أخرى أو تحديث التطبيق.</string>
+    <string name="btn_retry">إعادة المحاولة</string>
 </resources>

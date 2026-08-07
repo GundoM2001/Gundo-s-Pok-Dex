@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Nome Team</string>
     <string name="btn_create">Crea</string>
     <string name="btn_cancel">Annulla</string>
+    <string name="btn_delete">Elimina</string>
+    <string name="delete_team_confirm_title">Eliminare la squadra?</string>
+    <string name="delete_team_confirm_msg">Sei sicuro di voler eliminare questa squadra? L\'azione non può essere annullata.</string>
     <string name="customize_pokemon_title">Personalizza Pokemon</string>
     <string name="btn_save">Salva</string>
     <string name="nickname_label">Soprannome</string>
     <string name="level_label">Livello</string>
     <string name="form_label">Forma</string>
     <string name="nature_label">Natura</string>
+    <string name="ability_label">Abilità</string>
     <string name="evs_label">Stat (EVs: %d / 510)</string>
     <string name="stat_hp">PS</string>
     <string name="stat_atk">Att</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Preferito</string>
     <string name="unknown_error">Si è verificato un errore sconosciuto</string>
+    <string name="error_network_title">Problema di connessione</string>
+    <string name="error_network_msg">Controlla la tua connessione Internet e riprova.</string>
+    <string name="error_server_title">Difficoltà tecnica</string>
+    <string name="error_server_msg">Qualcosa è andato storto da parte nostra. Riprova più tardi.</string>
+    <string name="error_not_found_title">Non trovato</string>
+    <string name="error_not_found_msg">Non siamo riusciti a trovare quello che cercavi.</string>
+    <string name="error_unknown_title">Oops!</string>
+    <string name="error_timeout_title">Richiesta scaduta</string>
+    <string name="error_timeout_msg">Il server impiega troppo tempo per rispondere. Riprova.</string>
+    <string name="error_data_title">Errore dati</string>
+    <string name="error_data_msg">Abbiamo ricevuto dati confusi. Riprova o aggiorna l\'app.</string>
+    <string name="btn_retry">Riprova</string>
 </resources>

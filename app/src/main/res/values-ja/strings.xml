@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">チーム名</string>
     <string name="btn_create">作成</string>
     <string name="btn_cancel">キャンセル</string>
+    <string name="btn_delete">削除</string>
+    <string name="delete_team_confirm_title">チームを削除しますか？</string>
+    <string name="delete_team_confirm_msg">このチームを削除してもよろしいですか？この操作は取り消せません。</string>
     <string name="customize_pokemon_title">ポケモンをカスタマイズ</string>
     <string name="btn_save">保存</string>
     <string name="nickname_label">ニックネーム</string>
     <string name="level_label">レベル</string>
     <string name="form_label">姿</string>
     <string name="nature_label">性格</string>
+    <string name="ability_label">特性</string>
     <string name="evs_label">努力値 (EVs: %d / 510)</string>
     <string name="stat_hp">HP</string>
     <string name="stat_atk">攻撃</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">お気に入り</string>
     <string name="unknown_error">不明なエラーが発生しました</string>
+    <string name="error_network_title">接続の問題</string>
+    <string name="error_network_msg">インターネット接続を確認して、もう一度お試しください。</string>
+    <string name="error_server_title">技術的な問題</string>
+    <string name="error_server_msg">サーバー側で問題が発生しました。後でもう一度お試しください。</string>
+    <string name="error_not_found_title">見つかりません</string>
+    <string name="error_not_found_msg">お探しのものは見つかりませんでした。</string>
+    <string name="error_unknown_title">おっと！</string>
+    <string name="error_timeout_title">リクエストがタイムアウトしました</string>
+    <string name="error_timeout_msg">サーバーの応答に時間がかかりすぎています。もう一度お試しください。</string>
+    <string name="error_data_title">データエラー</string>
+    <string name="error_data_msg">不明なデータを受信しました。もう一度試すか、アプリを更新してください。</string>
+    <string name="btn_retry">再試行</string>
 </resources>

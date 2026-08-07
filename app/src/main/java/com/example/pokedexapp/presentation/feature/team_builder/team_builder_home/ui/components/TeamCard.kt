@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,7 +27,8 @@ import com.example.pokedexapp.utils.PokemonImageUtils
 fun TeamCard(
     teamWithPokemon: TeamWithPokemon,
     onClick: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
@@ -56,6 +58,13 @@ fun TeamCard(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit Team Name",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Team",
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             }
@@ -119,7 +128,8 @@ fun TeamCardPreview() {
             TeamCard(
                 teamWithPokemon = sampleTeam,
                 onClick = {},
-                onEditClick = {}
+                onEditClick = {},
+                onDeleteClick = {}
             )
         }
     }

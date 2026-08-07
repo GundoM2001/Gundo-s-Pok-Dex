@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Nazwa zespołu</string>
     <string name="btn_create">Utwórz</string>
     <string name="btn_cancel">Anuluj</string>
+    <string name="btn_delete">Usuń</string>
+    <string name="delete_team_confirm_title">Usunąć zespół?</string>
+    <string name="delete_team_confirm_msg">Czy na pewno chcesz usunąć ten zespół? Tej czynności nie można cofnąć.</string>
     <string name="customize_pokemon_title">Dostosuj Pokemon</string>
     <string name="btn_save">Zapisz</string>
     <string name="nickname_label">Pseudonim</string>
     <string name="level_label">Poziom</string>
     <string name="form_label">Forma</string>
     <string name="nature_label">Natura</string>
+    <string name="ability_label">Umiejętność</string>
     <string name="evs_label">Stat. (EVs: %d / 510)</string>
     <string name="stat_hp">PŻ</string>
     <string name="stat_atk">Atk</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Ulubione</string>
     <string name="unknown_error">Wystąpił nieznany błąd</string>
+    <string name="error_network_title">Problem z połączeniem</string>
+    <string name="error_network_msg">Sprawdź połączenie z Internetem i spróbuj ponownie.</string>
+    <string name="error_server_title">Trudności techniczne</string>
+    <string name="error_server_msg">Coś poszło nie tak po naszej stronie. Spróbuj ponownie później.</string>
+    <string name="error_not_found_title">Nie znaleziono</string>
+    <string name="error_not_found_msg">Nie udało nam się znaleźć tego, czego szukałeś.</string>
+    <string name="error_unknown_title">Ups!</string>
+    <string name="error_timeout_title">Przekroczono czas żądania</string>
+    <string name="error_timeout_msg">Serwer zbyt długo nie odpowiada. Spróbuj ponownie.</string>
+    <string name="error_data_title">Błąd danych</string>
+    <string name="error_data_msg">Otrzymaliśmy niejasne dane. Spróbuj ponownie lub zaktualizuj aplikację.</string>
+    <string name="btn_retry">Ponów</string>
 </resources>

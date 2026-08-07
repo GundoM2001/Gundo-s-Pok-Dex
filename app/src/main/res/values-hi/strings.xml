@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">टीम का नाम</string>
     <string name="btn_create">बनाएं</string>
     <string name="btn_cancel">रद्द करें</string>
+    <string name="btn_delete">हटाएँ</string>
+    <string name="delete_team_confirm_title">टीम हटाएँ?</string>
+    <string name="delete_team_confirm_msg">क्या आप वाकई इस टीम को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।</string>
     <string name="customize_pokemon_title">पोकेमॉन कस्टमाइज़ करें</string>
     <string name="btn_save">सहेजें</string>
     <string name="nickname_label">उपनाम</string>
     <string name="level_label">लेवल</string>
     <string name="form_label">रूप</string>
     <string name="nature_label">स्वभाव</string>
+    <string name="ability_label">क्षमता</string>
     <string name="evs_label">आंकड़े (EVs: %d / 510)</string>
     <string name="stat_hp">एचपी</string>
     <string name="stat_atk">हमला</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">पसंदीदा</string>
     <string name="unknown_error">एक अज्ञात त्रुटि हुई</string>
+    <string name="error_network_title">कनेक्शन की समस्या</string>
+    <string name="error_network_msg">कृपया अपना इंटरनेट कनेक्शन जांचें और फिर से प्रयास करें।</string>
+    <string name="error_server_title">तकनीकी कठिनाई</string>
+    <string name="error_server_msg">हमारी ओर से कुछ गलत हो गया। कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="error_not_found_title">नहीं मिला</string>
+    <string name="error_not_found_msg">हमें वह नहीं मिला जो आप खोज रहे थे।</string>
+    <string name="error_unknown_title">ओह!</string>
+    <string name="error_timeout_title">अनुरोध का समय समाप्त हो गया</string>
+    <string name="error_timeout_msg">सर्वर प्रतिक्रिया देने में बहुत अधिक समय ले रहा है। कृपया पुनः प्रयास करें।</string>
+    <string name="error_data_title">डेटा त्रुटि</string>
+    <string name="error_data_msg">हमें कुछ भ्रमित करने वाला डेटा प्राप्त हुआ है। कृपया पुनः प्रयास करें या ऐप अपडेट करें।</string>
+    <string name="btn_retry">पुनः प्रयास करें</string>
 </resources>

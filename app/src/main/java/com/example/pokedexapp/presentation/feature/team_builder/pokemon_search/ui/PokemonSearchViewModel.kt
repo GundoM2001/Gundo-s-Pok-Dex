@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_search.state.PokemonSearchState
+import com.example.pokedexapp.utils.ErrorHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -18,8 +19,8 @@ class PokemonSearchViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val teamId: Int = checkNotNull(savedStateHandle["teamId"])
-    val slot: Int = checkNotNull(savedStateHandle["slot"])
+    val teamId: Int = savedStateHandle.get<Int>("teamId") ?: 0
+    val slot: Int = savedStateHandle.get<Int>("slot") ?: 0
 
     private val _masterPokemonList = MutableStateFlow<List<PokemonResults>>(emptyList())
     
@@ -51,21 +52,27 @@ class PokemonSearchViewModel @Inject constructor(
                 }
             }
         }.onEach { list ->
-            _state.update { it.copy(pokemonList = list) }
+            _state.update { it.copy(pokemonList = list, error = null) }
+        }.catch { e ->
+            _state.update { it.copy(error = ErrorHandler.mapException(e)) }
         }.launchIn(viewModelScope)
     }
 
     private fun fetchMasterList() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, error = null) }
             try {
                 _masterPokemonList.value = repository.getFullPokemonList()
             } catch (e: Exception) {
-                _state.update { it.copy(error = e.message) }
+                _state.update { it.copy(error = ErrorHandler.mapException(e)) }
             } finally {
                 _state.update { it.copy(isLoading = false) }
             }
         }
+    }
+
+    fun onRetry() {
+        fetchMasterList()
     }
 
     fun onSearchQueryChanged(query: String) {

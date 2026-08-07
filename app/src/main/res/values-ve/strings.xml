@@ -50,12 +50,16 @@
     <string name="team_name_placeholder">Dzina la Thwi</string>
     <string name="btn_create">Vhumbani</string>
     <string name="btn_cancel">Kanselani</string>
+    <string name="btn_delete">Phumula</string>
+    <string name="delete_team_confirm_title">Phumula tshigwada?</string>
+    <string name="delete_team_confirm_msg">Vha khou vha vhu khala uri vha khou toda u phumula tshi tshigwada? Zwenezwi a zwi nga tsha kona u vhuyedzedzwa.</string>
     <string name="customize_pokemon_title">Dzudzanyani Pokemon</string>
     <string name="btn_save">Vhulungani</string>
     <string name="nickname_label">Dzina la u takadza</string>
     <string name="level_label">Levhele</string>
     <string name="form_label">Tshivhumbeo</string>
     <string name="nature_label">Muvhili</string>
+    <string name="ability_label">Vhukoni</string>
     <string name="evs_label">Mbalotshaka (EVs: %d / 510)</string>
     <string name="stat_hp">HP</string>
     <string name="stat_atk">Atk</string>
@@ -98,4 +102,16 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Zwine nda zvi funesa</string>
     <string name="unknown_error">Vhukhakhi vhu sa divhei ho vha hone</string>
+    <string name="error_network_title">Thaidzo ya vhukwamani</string>
+    <string name="error_network_msg">Vha khou humbelwa u sedza vhukwamani havho ha inthanethe vha dovha vha lingedza.</string>
+    <string name="error_server_title">Thaidzo ya thikhiniki</string>
+    <string name="error_server_msg">Hu na zwiṅwe zwo yaho nga lwa vhukhakhi ha rine. Vha khou humbelwa u dovha vha lingedza nga u ya ha vhuimo.</string>
+    <string name="error_not_found_title">A zwo ngo wanala</string>
+    <string name="error_not_found_msg">A ro ngo kona u wana zwe vha vha vha khou zwi ṱoḓa.</string>
+    <string name="error_unknown_title">Khakhi!</string>
+    <string name="error_timeout_title">Tshifhinga tsho fhela</string>
+    <string name="error_timeout_msg">Server i khou dzhia tshifhinga tshilapfu u fhindula. Vha khou humbelwa u dovha vha lingedza.</string>
+    <string name="error_data_title">Thaidzo ya data</string>
+    <string name="error_data_msg">Ro ṱanganedza data i no khou fhambana. Vha khou humbelwa u dovha vha lingedza kana u vhuvhadza (update) iṅwe mbeakanyamushumo (app).</string>
+    <string name="btn_retry">Dovha u lingedze</string>
 </resources>

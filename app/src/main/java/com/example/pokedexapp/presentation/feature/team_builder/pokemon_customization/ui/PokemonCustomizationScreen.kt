@@ -30,6 +30,7 @@ import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.Nature
 import com.example.pokedexapp.domain.model.PokemonDetails
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.components.PokemonTypeBadge
 import com.example.pokedexapp.presentation.mock.MockData
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
@@ -66,10 +67,16 @@ fun PokemonCustomizationScreen(
             )
         }
     ) { padding ->
+        val error = state.error
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
+        } else if (error != null && state.pokemonDetails == null) {
+            ErrorState(
+                error = error,
+                onRetry = { viewModel.onRetry() }
+            )
         } else {
             Column(
                 modifier = Modifier
@@ -122,6 +129,14 @@ fun PokemonCustomizationScreen(
                     NatureSelector(selectedNature = state.selectedNature) {
                         viewModel.onNatureChanged(it)
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    AbilitySelector(
+                        selectedAbility = state.selectedAbility ?: "",
+                        abilities = details.abilities.map { it.ability.name },
+                        isEditable = details.abilities.size > 1,
+                        onAbilitySelected = { viewModel.onAbilityChanged(it) }
+                    )
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
 
@@ -295,6 +310,52 @@ fun NatureSelector(selectedNature: String, onNatureSelected: (String) -> Unit) {
                         expanded = false
                     }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun AbilitySelector(
+    selectedAbility: String,
+    abilities: List<String>,
+    isEditable: Boolean,
+    onAbilitySelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = selectedAbility.replace("-", " ").uppercase(),
+            onValueChange = {},
+            label = { Text(stringResource(R.string.ability_label)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(if (isEditable) Modifier.clickable { expanded = true } else Modifier),
+            readOnly = true,
+            enabled = false,
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledBorderColor = MaterialTheme.colorScheme.outline
+            )
+        )
+
+        if (isEditable) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.fillMaxWidth(0.9f)
+            ) {
+                abilities.forEach { ability ->
+                    DropdownMenuItem(
+                        text = { Text(ability.replace("-", " ").uppercase()) },
+                        onClick = {
+                            onAbilitySelected(ability)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }

@@ -39,22 +39,23 @@ data class TeamPokemonEntity(
     val nickname: String? = null,
     val level: Int = 100,
     val nature: String = "Hardy",
-    
-    // Moves
+    val ability: String? = null,
+
+    //Move List
     val move1: String? = null,
     val move2: String? = null,
     val move3: String? = null,
     val move4: String? = null,
-    
-    // EVs
+
+    //EV Fields
     val hpEv: Int = 0,
     val atkEv: Int = 0,
     val defEv: Int = 0,
     val spaEv: Int = 0,
     val spdEv: Int = 0,
     val speEv: Int = 0,
-    
-    // IVs
+
+    // IV Fields
     val hpIv: Int = 31,
     val atkIv: Int = 31,
     val defIv: Int = 31,

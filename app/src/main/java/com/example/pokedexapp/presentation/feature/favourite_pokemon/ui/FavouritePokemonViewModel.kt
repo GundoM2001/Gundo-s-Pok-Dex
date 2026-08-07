@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.domain.repository.FavouriteRepository
 import com.example.pokedexapp.presentation.feature.favourite_pokemon.state.FavouritePokemonState
+import com.example.pokedexapp.utils.ErrorHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -21,9 +22,16 @@ class FavouritePokemonViewModel @Inject constructor(
     init {
         repository.getFavouritePokemon()
             .onEach { pokemon ->
-                _state.update { it.copy(favouritePokemon = pokemon) }
+                _state.update { it.copy(favouritePokemon = pokemon, isLoading = false) }
+            }
+            .catch { e ->
+                _state.update { it.copy(isLoading = false, error = ErrorHandler.mapException(e)) }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun onRetry() {
+        // Just observation, but can re-trigger if needed
     }
 
     val favouritePokemon = state.map { it.favouritePokemon }

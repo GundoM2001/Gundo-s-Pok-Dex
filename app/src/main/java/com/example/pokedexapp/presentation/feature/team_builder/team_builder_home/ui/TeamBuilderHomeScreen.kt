@@ -3,6 +3,7 @@ package com.example.pokedexapp.presentation.feature.team_builder.team_builder_ho
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -17,8 +18,11 @@ import com.example.pokedexapp.R
 import com.example.pokedexapp.data.local.entities.TeamEntity
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.data.local.entities.TeamWithPokemon
+import com.example.pokedexapp.presentation.components.ErrorState
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.feature.team_builder.team_builder_home.ui.components.TeamCard
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
+import com.example.pokedexapp.utils.UiErrorMessage
 
 @Composable
 fun TeamBuilderHomeScreen(
@@ -27,15 +31,24 @@ fun TeamBuilderHomeScreen(
 ) {
     val teamList by viewModel.teams.collectAsState()
     val showDialog by viewModel.showCreateDialog.collectAsState()
+    val teamToDelete by viewModel.teamToDelete.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     TeamBuilderHomeScreenContent(
         teamList = teamList,
         showDialog = showDialog,
+        teamToDelete = teamToDelete,
+        error = state.error,
+        isLoading = state.isLoading,
         onAddClick = { viewModel.onShowDialog() },
         onDismissDialog = { viewModel.onDismissDialog() },
         onCreateTeam = { viewModel.createTeam(it) },
         onTeamClick = onTeamClick,
-        onEditTeam = { /* Rename logic if needed */ }
+        onEditTeam = { /* Rename logic if needed */ },
+        onDeleteTeam = { viewModel.onConfirmDelete(it) },
+        onConfirmDelete = { viewModel.deleteTeam() },
+        onDismissDelete = { viewModel.onDismissDelete() },
+        onRetry = { viewModel.onRetry() }
     )
 }
 
@@ -43,15 +56,22 @@ fun TeamBuilderHomeScreen(
 fun TeamBuilderHomeScreenContent(
     teamList: List<TeamWithPokemon>,
     showDialog: Boolean,
+    teamToDelete: TeamEntity?,
+    error: UiErrorMessage?,
+    isLoading: Boolean,
     onAddClick: () -> Unit,
     onDismissDialog: () -> Unit,
     onCreateTeam: (String) -> Unit,
     onTeamClick: (Int) -> Unit,
-    onEditTeam: (TeamEntity) -> Unit
+    onEditTeam: (TeamEntity) -> Unit,
+    onDeleteTeam: (TeamEntity) -> Unit,
+    onConfirmDelete: () -> Unit,
+    onDismissDelete: () -> Unit,
+    onRetry: () -> Unit
 ) {
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddClick) {
+            FloatingActionButton(onClick = onAddClick, shape = CircleShape, containerColor = MaterialTheme.colorScheme.primary) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_team_desc))
             }
         }
@@ -61,7 +81,13 @@ fun TeamBuilderHomeScreenContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (teamList.isEmpty()) {
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (error != null && teamList.isEmpty()) {
+                ErrorState(error = error, onRetry = onRetry)
+            } else if (teamList.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = stringResource(R.string.no_teams),
@@ -79,7 +105,8 @@ fun TeamBuilderHomeScreenContent(
                         TeamCard(
                             teamWithPokemon = teamWithPokemon,
                             onClick = { onTeamClick(teamWithPokemon.team.id) },
-                            onEditClick = { onEditTeam(teamWithPokemon.team) }
+                            onEditClick = { onEditTeam(teamWithPokemon.team) },
+                            onDeleteClick = { onDeleteTeam(teamWithPokemon.team) }
                         )
                     }
                 }
@@ -93,6 +120,38 @@ fun TeamBuilderHomeScreenContent(
             onConfirm = onCreateTeam
         )
     }
+
+    if (teamToDelete != null) {
+        DeleteTeamConfirmationDialog(
+            onDismiss = onDismissDelete,
+            onConfirm = onConfirmDelete
+        )
+    }
+}
+
+@Composable
+fun DeleteTeamConfirmationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.delete_team_confirm_title)) },
+        text = { Text(stringResource(R.string.delete_team_confirm_msg)) },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text(stringResource(R.string.btn_delete))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.btn_cancel))
+            }
+        }
+    )
 }
 
 @Composable
@@ -163,11 +222,18 @@ fun TeamBuilderHomeScreenContentPreview() {
         TeamBuilderHomeScreenContent(
             teamList = sampleTeams,
             showDialog = false,
+            teamToDelete = null,
+            error = null,
+            isLoading = false,
             onAddClick = {},
             onDismissDialog = {},
             onCreateTeam = {},
             onTeamClick = {},
-            onEditTeam = {}
+            onEditTeam = {},
+            onDeleteTeam = {},
+            onConfirmDelete = {},
+            onDismissDelete = {},
+            onRetry = {}
         )
     }
 }
@@ -179,11 +245,18 @@ fun TeamBuilderHomeScreenContentEmptyPreview() {
         TeamBuilderHomeScreenContent(
             teamList = emptyList(),
             showDialog = false,
+            teamToDelete = null,
+            error = null,
+            isLoading = false,
             onAddClick = {},
             onDismissDialog = {},
             onCreateTeam = {},
             onTeamClick = {},
-            onEditTeam = {}
+            onEditTeam = {},
+            onDeleteTeam = {},
+            onConfirmDelete = {},
+            onDismissDelete = {},
+            onRetry = {}
         )
     }
 }
