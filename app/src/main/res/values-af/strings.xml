@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Gunsteling</string>
     <string name="unknown_error">\'n Onbekende fout het voorgekom</string>
+    <string name="error_network_title">Verbindingsprobleem</string>
+    <string name="error_network_msg">Gaan asseblief u internetverbinding na en probeer weer.</string>
+    <string name="error_server_title">Tegniese probleme</string>
+    <string name="error_server_msg">Iets het aan ons kant foutgegaan. Probeer asseblief later weer.</string>
+    <string name="error_not_found_title">Nie gevind nie</string>
+    <string name="error_not_found_msg">Ons kon nie vind waarna u soek nie.</string>
+    <string name="error_unknown_title">Oeps!</string>
+    <string name="btn_retry">Probeer weer</string>
 </resources>

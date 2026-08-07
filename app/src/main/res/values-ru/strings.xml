@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Избранное</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
+    <string name="error_network_title">Проблема с соединением</string>
+    <string name="error_network_msg">Пожалуйста, проверьте интернет-соединение и попробуйте еще раз.</string>
+    <string name="error_server_title">Технические трудности</string>
+    <string name="error_server_msg">Что-то пошло не так с нашей стороны. Пожалуйста, попробуйте позже.</string>
+    <string name="error_not_found_title">Не найдено</string>
+    <string name="error_not_found_msg">Мы не смогли найти то, что вы искали.</string>
+    <string name="error_unknown_title">Ой!</string>
+    <string name="btn_retry">Повторить</string>
 </resources>

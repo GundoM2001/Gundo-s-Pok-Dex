@@ -1,6 +1,7 @@
 package com.example.pokedexapp.presentation.feature.pokemon_details.state
 
 import com.example.pokedexapp.domain.model.*
+import com.example.pokedexapp.utils.UiErrorMessage
 
 data class PokemonDetailsState(
     val pokemonDetails: PokemonDetails? = null,
@@ -12,5 +13,5 @@ data class PokemonDetailsState(
     val machineDetails: Map<String, MachineDetails> = emptyMap(),
     val selectedTabIndex: Int = 0,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: UiErrorMessage? = null
 )

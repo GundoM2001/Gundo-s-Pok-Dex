@@ -34,29 +34,37 @@ class PokemonRepositoryImpl @Inject constructor(
     private val networkSemaphore = Semaphore(5)
 
     override suspend fun getAllPokemon(url: String?): PokemonListResponse {
-        val response = if (url != null) {
-            service.getPokemonPage(url)
-        } else {
-            service.getAllPokemon()
-        }
+        return try {
+            val response = if (url != null) {
+                service.getPokemonPage(url)
+            } else {
+                service.getAllPokemon()
+            }
 
-        if (response.isSuccessful) {
-            val listResponse = response.body() ?: throw Exception("Response body is null")
-            val filteredResults = listResponse.results.filter { isBaseForm(it.url) }
-            val updatedResults = enrichPokemonList(filteredResults)
-            return listResponse.copy(results = updatedResults)
-        } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+            if (response.isSuccessful) {
+                val listResponse = response.body() ?: throw Exception("Response body is null")
+                val filteredResults = listResponse.results.filter { isBaseForm(it.url) }
+                val updatedResults = enrichPokemonList(filteredResults)
+                listResponse.copy(results = updatedResults)
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
+        } catch (e: Exception) {
+            throw Exception("Failed to fetch Pokemon list: ${e.message ?: "Unknown error"}")
         }
     }
 
     override suspend fun getFullPokemonList(): List<PokemonResults> {
-        val response = service.getAllPokemon(limit = 1500)
-        if (response.isSuccessful) {
-            val results = response.body()?.results ?: emptyList()
-            return results.filter { isBaseForm(it.url) }
-        } else {
-            throw Exception("API Error: ${response.code()} ${response.message()}")
+        return try {
+            val response = service.getAllPokemon(limit = 1500)
+            if (response.isSuccessful) {
+                val results = response.body()?.results ?: emptyList()
+                results.filter { isBaseForm(it.url) }
+            } else {
+                throw Exception("API Error: ${response.code()} ${response.message()}")
+            }
+        } catch (e: Exception) {
+            emptyList() // Fallback to empty list for search/master list
         }
     }
 

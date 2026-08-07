@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Zwine nda zvi funesa</string>
     <string name="unknown_error">Vhukhakhi vhu sa divhei ho vha hone</string>
+    <string name="error_network_title">Thaidzo ya vhukwamani</string>
+    <string name="error_network_msg">Vha khou humbelwa u sedza vhukwamani havho ha inthanethe vha dovha vha lingedza.</string>
+    <string name="error_server_title">Thaidzo ya thikhiniki</string>
+    <string name="error_server_msg">Hu na zwiṅwe zwo yaho nga lwa vhukhakhi ha rine. Vha khou humbelwa u dovha vha lingedza nga u ya ha vhuimo.</string>
+    <string name="error_not_found_title">A zwo ngo wanala</string>
+    <string name="error_not_found_msg">A ro ngo kona u wana zwe vha vha vha khou zwi ṱoḓa.</string>
+    <string name="error_unknown_title">Khakhi!</string>
+    <string name="btn_retry">Dovha u lingedze</string>
 </resources>

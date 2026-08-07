@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">收藏</string>
     <string name="unknown_error">发生了未知错误</string>
+    <string name="error_network_title">网络连接问题</string>
+    <string name="error_network_msg">请检查您的网络连接并重试。</string>
+    <string name="error_server_title">技术故障</string>
+    <string name="error_server_msg">我们这边出了点问题。请稍后再试。</string>
+    <string name="error_not_found_title">未找到</string>
+    <string name="error_not_found_msg">我们找不到您要找的内容。</string>
+    <string name="error_unknown_title">哎呀！</string>
+    <string name="btn_retry">重试</string>
 </resources>

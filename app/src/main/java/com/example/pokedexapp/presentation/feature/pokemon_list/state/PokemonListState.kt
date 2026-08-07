@@ -1,6 +1,7 @@
 package com.example.pokedexapp.presentation.feature.pokemon_list.state
 
 import com.example.pokedexapp.domain.model.PokemonResults
+import com.example.pokedexapp.utils.UiErrorMessage
 
 data class PokemonListState(
     val pokemonList: List<PokemonResults>? = null,
@@ -10,5 +11,5 @@ data class PokemonListState(
     val searchQuery: String = "",
     val isLoading: Boolean = false,
     val isEnriching: Boolean = false,
-    val error: String? = null
+    val error: UiErrorMessage? = null
 )

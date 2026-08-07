@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">مفضل</string>
     <string name="unknown_error">حدث خطأ غير معروف</string>
+    <string name="error_network_title">مشكلة في الاتصال</string>
+    <string name="error_network_msg">يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.</string>
+    <string name="error_server_title">مشكلة فنية</string>
+    <string name="error_server_msg">حدث خطأ ما من جانبنا. يرجى المحاولة مرة أخرى في وقت لاحق.</string>
+    <string name="error_not_found_title">غير موجود</string>
+    <string name="error_not_found_msg">لم نتمكن من العثور على ما كنت تبحث عنه.</string>
+    <string name="error_unknown_title">عذراً!</string>
+    <string name="btn_retry">إعادة المحاولة</string>
 </resources>

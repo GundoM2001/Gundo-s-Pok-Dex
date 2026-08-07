@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">पसंदीदा</string>
     <string name="unknown_error">एक अज्ञात त्रुटि हुई</string>
+    <string name="error_network_title">कनेक्शन की समस्या</string>
+    <string name="error_network_msg">कृपया अपना इंटरनेट कनेक्शन जांचें और फिर से प्रयास करें।</string>
+    <string name="error_server_title">तकनीकी कठिनाई</string>
+    <string name="error_server_msg">हमारी ओर से कुछ गलत हो गया। कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="error_not_found_title">नहीं मिला</string>
+    <string name="error_not_found_msg">हमें वह नहीं मिला जो आप खोज रहे थे।</string>
+    <string name="error_unknown_title">ओह!</string>
+    <string name="btn_retry">पुनः प्रयास करें</string>
 </resources>

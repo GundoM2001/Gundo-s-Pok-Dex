@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">お気に入り</string>
     <string name="unknown_error">不明なエラーが発生しました</string>
+    <string name="error_network_title">接続の問題</string>
+    <string name="error_network_msg">インターネット接続を確認して、もう一度お試しください。</string>
+    <string name="error_server_title">技術的な問題</string>
+    <string name="error_server_msg">サーバー側で問題が発生しました。後でもう一度お試しください。</string>
+    <string name="error_not_found_title">見つかりません</string>
+    <string name="error_not_found_msg">お探しのものは見つかりませんでした。</string>
+    <string name="error_unknown_title">おっと！</string>
+    <string name="btn_retry">再試行</string>
 </resources>

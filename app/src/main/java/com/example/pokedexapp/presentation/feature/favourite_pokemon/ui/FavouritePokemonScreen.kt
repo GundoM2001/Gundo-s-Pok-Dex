@@ -28,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonResults
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.components.PokedexBackground
 import com.example.pokedexapp.presentation.components.PokemonItem
+import com.example.pokedexapp.utils.UiErrorMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,11 +42,14 @@ fun FavoritePokemonScreen(
     val state by viewModel.state.collectAsState()
     val favouritePokemon = state.favouritePokemon
     val isLoading = state.isLoading
+    val error = state.error
 
     FavoritePokemonContent(
         favouritePokemon = favouritePokemon,
         isLoading = isLoading,
-        onPokemonClick = onPokemonClick
+        error = error,
+        onPokemonClick = onPokemonClick,
+        onRetry = { viewModel.onRetry() }
     )
 }
 
@@ -53,7 +58,9 @@ fun FavoritePokemonScreen(
 fun FavoritePokemonContent(
     favouritePokemon: List<PokemonResults>,
     isLoading: Boolean,
-    onPokemonClick: (String) -> Unit
+    error: UiErrorMessage?,
+    onPokemonClick: (String) -> Unit,
+    onRetry: () -> Unit
 ) {
     PokedexBackground {
         Scaffold(
@@ -81,6 +88,11 @@ fun FavoritePokemonContent(
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                } else if (error != null && favouritePokemon.isEmpty()) {
+                    ErrorState(
+                        error = error,
+                        onRetry = onRetry
+                    )
                 } else if (favouritePokemon.isEmpty()) {
                     Text(
                         text = stringResource(R.string.no_favorites),
@@ -119,6 +131,8 @@ fun FavoritePokemonContentPreview() {
             PokemonResults(name = "Venusaur", url = "")
         ),
         isLoading = false,
-        onPokemonClick = {}
+        error = null,
+        onPokemonClick = {},
+        onRetry = {}
     )
 }

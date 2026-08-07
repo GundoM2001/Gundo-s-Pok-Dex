@@ -30,6 +30,7 @@ import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.Nature
 import com.example.pokedexapp.domain.model.PokemonDetails
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.components.PokemonTypeBadge
 import com.example.pokedexapp.presentation.mock.MockData
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
@@ -70,6 +71,11 @@ fun PokemonCustomizationScreen(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
+        } else if (state.error != null && state.pokemonDetails == null) {
+            ErrorState(
+                error = state.error,
+                onRetry = { viewModel.onRetry() }
+            )
         } else {
             Column(
                 modifier = Modifier

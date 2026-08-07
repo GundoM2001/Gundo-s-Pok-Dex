@@ -102,4 +102,12 @@
     <string name="pokemon_id_format">#%03d</string>
     <string name="favorite_content_desc">Favorit</string>
     <string name="unknown_error">Ein unbekannter Fehler ist aufgetreten</string>
+    <string name="error_network_title">Verbindungsproblem</string>
+    <string name="error_network_msg">Bitte überprüfe deine Internetverbindung und versuche es erneut.</string>
+    <string name="error_server_title">Technische Schwierigkeit</string>
+    <string name="error_server_msg">Auf unserer Seite ist etwas schiefgelaufen. Bitte versuche es später noch einmal.</string>
+    <string name="error_not_found_title">Nicht gefunden</string>
+    <string name="error_not_found_msg">Wir konnten nicht finden, wonach du gesucht hast.</string>
+    <string name="error_unknown_title">Hoppla!</string>
+    <string name="btn_retry">Wiederholen</string>
 </resources>

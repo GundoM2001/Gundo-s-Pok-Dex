@@ -7,6 +7,7 @@ import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.domain.repository.FavouriteRepository
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.presentation.feature.pokemon_list.state.PokemonListState
+import com.example.pokedexapp.utils.ErrorHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -61,6 +62,9 @@ class PokemonListViewModel @Inject constructor(
             .onEach { ids ->
                 _state.update { it.copy(favouriteIds = ids) }
             }
+            .catch { e ->
+                Log.e("VM", "Error observing favorites", e)
+            }
             .launchIn(viewModelScope)
     }
 
@@ -93,7 +97,7 @@ class PokemonListViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e("VM", "Error fetching data", e)
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                _state.update { it.copy(isLoading = false, error = ErrorHandler.mapException(e)) }
             }
         }
     }

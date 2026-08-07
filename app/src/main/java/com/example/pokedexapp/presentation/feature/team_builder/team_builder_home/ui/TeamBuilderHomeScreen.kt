@@ -18,8 +18,11 @@ import com.example.pokedexapp.R
 import com.example.pokedexapp.data.local.entities.TeamEntity
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.data.local.entities.TeamWithPokemon
+import com.example.pokedexapp.presentation.components.ErrorState
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.feature.team_builder.team_builder_home.ui.components.TeamCard
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
+import com.example.pokedexapp.utils.UiErrorMessage
 
 @Composable
 fun TeamBuilderHomeScreen(
@@ -29,11 +32,14 @@ fun TeamBuilderHomeScreen(
     val teamList by viewModel.teams.collectAsState()
     val showDialog by viewModel.showCreateDialog.collectAsState()
     val teamToDelete by viewModel.teamToDelete.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     TeamBuilderHomeScreenContent(
         teamList = teamList,
         showDialog = showDialog,
         teamToDelete = teamToDelete,
+        error = state.error,
+        isLoading = state.isLoading,
         onAddClick = { viewModel.onShowDialog() },
         onDismissDialog = { viewModel.onDismissDialog() },
         onCreateTeam = { viewModel.createTeam(it) },
@@ -41,7 +47,8 @@ fun TeamBuilderHomeScreen(
         onEditTeam = { /* Rename logic if needed */ },
         onDeleteTeam = { viewModel.onConfirmDelete(it) },
         onConfirmDelete = { viewModel.deleteTeam() },
-        onDismissDelete = { viewModel.onDismissDelete() }
+        onDismissDelete = { viewModel.onDismissDelete() },
+        onRetry = { viewModel.onRetry() }
     )
 }
 
@@ -50,6 +57,8 @@ fun TeamBuilderHomeScreenContent(
     teamList: List<TeamWithPokemon>,
     showDialog: Boolean,
     teamToDelete: TeamEntity?,
+    error: UiErrorMessage?,
+    isLoading: Boolean,
     onAddClick: () -> Unit,
     onDismissDialog: () -> Unit,
     onCreateTeam: (String) -> Unit,
@@ -57,7 +66,8 @@ fun TeamBuilderHomeScreenContent(
     onEditTeam: (TeamEntity) -> Unit,
     onDeleteTeam: (TeamEntity) -> Unit,
     onConfirmDelete: () -> Unit,
-    onDismissDelete: () -> Unit
+    onDismissDelete: () -> Unit,
+    onRetry: () -> Unit
 ) {
     Scaffold(
         floatingActionButton = {
@@ -71,7 +81,13 @@ fun TeamBuilderHomeScreenContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (teamList.isEmpty()) {
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (error != null && teamList.isEmpty()) {
+                ErrorState(error = error, onRetry = onRetry)
+            } else if (teamList.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = stringResource(R.string.no_teams),
@@ -207,6 +223,8 @@ fun TeamBuilderHomeScreenContentPreview() {
             teamList = sampleTeams,
             showDialog = false,
             teamToDelete = null,
+            error = null,
+            isLoading = false,
             onAddClick = {},
             onDismissDialog = {},
             onCreateTeam = {},
@@ -214,7 +232,8 @@ fun TeamBuilderHomeScreenContentPreview() {
             onEditTeam = {},
             onDeleteTeam = {},
             onConfirmDelete = {},
-            onDismissDelete = {}
+            onDismissDelete = {},
+            onRetry = {}
         )
     }
 }
@@ -227,6 +246,8 @@ fun TeamBuilderHomeScreenContentEmptyPreview() {
             teamList = emptyList(),
             showDialog = false,
             teamToDelete = null,
+            error = null,
+            isLoading = false,
             onAddClick = {},
             onDismissDialog = {},
             onCreateTeam = {},
@@ -234,7 +255,8 @@ fun TeamBuilderHomeScreenContentEmptyPreview() {
             onEditTeam = {},
             onDeleteTeam = {},
             onConfirmDelete = {},
-            onDismissDelete = {}
+            onDismissDelete = {},
+            onRetry = {}
         )
     }
 }

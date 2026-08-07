@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,6 +45,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.domain.model.PokemonSpecies
+import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.components.TabRow
 import com.example.pokedexapp.presentation.components.PokemonTypeBadge
 import com.example.pokedexapp.presentation.components.PokemonTypeUtils
@@ -54,6 +56,10 @@ import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components.StatsTab
 import com.example.pokedexapp.presentation.feature.pokemon_details.ui.components.WeaknessTab
 import com.example.pokedexapp.utils.PokemonNameFormatter
+import com.example.pokedexapp.utils.UiErrorMessage
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,7 +79,7 @@ fun PokemonDetailsScreen(
     val moveDetails = state.moveDetails
     val machineDetails = state.machineDetails
     val selectedTabIndex = state.selectedTabIndex
-
+    
     PokemonDetailsContent(
         details = details,
         species = species,
@@ -87,7 +93,8 @@ fun PokemonDetailsScreen(
         selectedTabIndex = selectedTabIndex,
         onBackClick = onBackClick,
         onVariantChanged = { viewModel.onVariantChanged(it) },
-        onTabSelected = { viewModel.onTabSelected(it) }
+        onTabSelected = { viewModel.onTabSelected(it) },
+        onRetry = { viewModel.retry() }
     )
 }
 
@@ -98,7 +105,7 @@ fun PokemonDetailsContent(
     species: PokemonSpecies?,
     variants: List<PokemonDetails>,
     isLoading: Boolean,
-    error: String?,
+    error: UiErrorMessage?,
     typeAdvantages: Map<String, Double>,
     abilityDetails: List<com.example.pokedexapp.domain.model.AbilityDetails>,
     moveDetails: Map<String, com.example.pokedexapp.domain.model.MoveDetails>,
@@ -106,16 +113,18 @@ fun PokemonDetailsContent(
     selectedTabIndex: Int,
     onBackClick: () -> Unit,
     onVariantChanged: (PokemonDetails) -> Unit,
-    onTabSelected: (Int) -> Unit
+    onTabSelected: (Int) -> Unit,
+    onRetry: () -> Unit
 ) {
     if (isLoading && details == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
-    } else if (error != null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = stringResource(R.string.error_message, error), color = MaterialTheme.colorScheme.error)
-        }
+    } else if (error != null && details == null) {
+        ErrorState(
+            error = error,
+            onRetry = onRetry
+        )
     } else {
         details?.let { activeDetails ->
             val gradient = PokemonTypeUtils.getGradientForType(activeDetails.types.firstOrNull()?.type?.name)
@@ -339,7 +348,8 @@ fun PokemonDetailsScreenPreview() {
             selectedTabIndex = 0,
             onBackClick = {},
             onVariantChanged = {},
-            onTabSelected = {}
+            onTabSelected = {},
+            onRetry = {}
         )
     }
 }

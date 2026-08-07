@@ -10,6 +10,7 @@ import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.state.PokemonCustomizationState
 import com.example.pokedexapp.utils.ApiConfig
+import com.example.pokedexapp.utils.ErrorHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -26,16 +27,20 @@ class PokemonCustomizationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val teamId: Int = checkNotNull(savedStateHandle["teamId"])
-    private val slot: Int = checkNotNull(savedStateHandle["slot"])
-    private val initialPokemonId: Int = checkNotNull(savedStateHandle["pokemonId"])
-    private val memberId: Int = checkNotNull(savedStateHandle["memberId"])
+    private val teamId: Int = savedStateHandle.get<Int>("teamId") ?: 0
+    private val slot: Int = savedStateHandle.get<Int>("slot") ?: 0
+    private val initialPokemonId: Int = savedStateHandle.get<Int>("pokemonId") ?: 1
+    private val memberId: Int = savedStateHandle.get<Int>("memberId") ?: 0
 
     private val _state = MutableStateFlow(PokemonCustomizationState())
     val state = _state.asStateFlow()
 
     init {
-        loadData()
+        if (teamId != 0 || initialPokemonId != 1) {
+            loadData()
+        } else {
+            _state.update { it.copy(error = "Invalid parameters provided") }
+        }
     }
 
     private fun loadData() {
@@ -93,9 +98,13 @@ class PokemonCustomizationViewModel @Inject constructor(
                 
                 fetchMoveDetails(details)
             } catch (e: Exception) {
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                _state.update { it.copy(isLoading = false, error = ErrorHandler.mapException(e)) }
             }
         }
+    }
+
+    fun onRetry() {
+        loadData()
     }
 
     private suspend fun fetchMoveDetails(details: PokemonDetails) {
