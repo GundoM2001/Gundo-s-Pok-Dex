@@ -11,6 +11,8 @@ import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.state.PokemonCustomizationState
 import com.example.pokedexapp.utils.ApiConfig
 import com.example.pokedexapp.utils.ErrorHandler
+import com.example.pokedexapp.utils.UiErrorMessage
+import com.example.pokedexapp.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -39,7 +41,7 @@ class PokemonCustomizationViewModel @Inject constructor(
         if (teamId != 0 || initialPokemonId != 1) {
             loadData()
         } else {
-            _state.update { it.copy(error = "Invalid parameters provided") }
+            _state.update { it.copy(error = UiErrorMessage(R.string.error_unknown_title, R.string.unknown_error)) }
         }
     }
 

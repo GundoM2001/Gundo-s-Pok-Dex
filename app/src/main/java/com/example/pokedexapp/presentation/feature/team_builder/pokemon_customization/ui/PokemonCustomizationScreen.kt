@@ -67,13 +67,14 @@ fun PokemonCustomizationScreen(
             )
         }
     ) { padding ->
+        val error = state.error
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
-        } else if (state.error != null && state.pokemonDetails == null) {
+        } else if (error != null && state.pokemonDetails == null) {
             ErrorState(
-                error = state.error,
+                error = error,
                 onRetry = { viewModel.onRetry() }
             )
         } else {

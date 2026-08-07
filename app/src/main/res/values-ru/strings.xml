@@ -109,5 +109,9 @@
     <string name="error_not_found_title">Не найдено</string>
     <string name="error_not_found_msg">Мы не смогли найти то, что вы искали.</string>
     <string name="error_unknown_title">Ой!</string>
+    <string name="error_timeout_title">Время ожидания запроса истекло</string>
+    <string name="error_timeout_msg">Сервер слишком долго отвечает. Пожалуйста, попробуйте еще раз.</string>
+    <string name="error_data_title">Ошибка данных</string>
+    <string name="error_data_msg">Мы получили непонятные данные. Попробуйте еще раз или обновите приложение.</string>
     <string name="btn_retry">Повторить</string>
 </resources>

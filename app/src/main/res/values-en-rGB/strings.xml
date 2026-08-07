@@ -109,5 +109,9 @@
     <string name="error_not_found_title">Not Found</string>
     <string name="error_not_found_msg">We couldn\'t find what you were looking for.</string>
     <string name="error_unknown_title">Oops!</string>
+    <string name="error_timeout_title">Request Timed Out</string>
+    <string name="error_timeout_msg">The server is taking too long to respond. Please try again.</string>
+    <string name="error_data_title">Data Error</string>
+    <string name="error_data_msg">We received some confusing data. Please try again or update the app.</string>
     <string name="btn_retry">Retry</string>
 </resources>

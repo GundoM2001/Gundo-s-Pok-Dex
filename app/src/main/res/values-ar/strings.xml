@@ -109,5 +109,9 @@
     <string name="error_not_found_title">غير موجود</string>
     <string name="error_not_found_msg">لم نتمكن من العثور على ما كنت تبحث عنه.</string>
     <string name="error_unknown_title">عذراً!</string>
+    <string name="error_timeout_title">انتهت مهلة الطلب</string>
+    <string name="error_timeout_msg">يستغرق الخادم وقتًا طويلاً للرد. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_data_title">خطأ في البيانات</string>
+    <string name="error_data_msg">تلقينا بعض البيانات المحيرة. يرجى المحاولة مرة أخرى أو تحديث التطبيق.</string>
     <string name="btn_retry">إعادة المحاولة</string>
 </resources>

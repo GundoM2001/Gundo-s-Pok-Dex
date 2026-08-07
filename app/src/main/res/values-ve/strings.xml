@@ -109,5 +109,9 @@
     <string name="error_not_found_title">A zwo ngo wanala</string>
     <string name="error_not_found_msg">A ro ngo kona u wana zwe vha vha vha khou zwi ṱoḓa.</string>
     <string name="error_unknown_title">Khakhi!</string>
+    <string name="error_timeout_title">Tshifhinga tsho fhela</string>
+    <string name="error_timeout_msg">Server i khou dzhia tshifhinga tshilapfu u fhindula. Vha khou humbelwa u dovha vha lingedza.</string>
+    <string name="error_data_title">Thaidzo ya data</string>
+    <string name="error_data_msg">Ro ṱanganedza data i no khou fhambana. Vha khou humbelwa u dovha vha lingedza kana u vhuvhadza (update) iṅwe mbeakanyamushumo (app).</string>
     <string name="btn_retry">Dovha u lingedze</string>
 </resources>

@@ -7,6 +7,8 @@ import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.team_detail.state.TeamDetailState
 import com.example.pokedexapp.utils.ErrorHandler
+import com.example.pokedexapp.utils.UiErrorMessage
+import com.example.pokedexapp.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +37,7 @@ class TeamDetailViewModel @Inject constructor(
         if (teamId != 0) {
             fetchTeam()
         } else {
-            _state.update { it.copy(error = "Invalid Team ID") }
+            _state.update { it.copy(error = UiErrorMessage(R.string.error_unknown_title, R.string.unknown_error)) }
         }
     }
 

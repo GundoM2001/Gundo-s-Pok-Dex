@@ -109,5 +109,9 @@
     <string name="error_not_found_title">Nie gevind nie</string>
     <string name="error_not_found_msg">Ons kon nie vind waarna u soek nie.</string>
     <string name="error_unknown_title">Oeps!</string>
+    <string name="error_timeout_title">Versoek het uitgetel</string>
+    <string name="error_timeout_msg">Die bediener neem te lank om te reageer. Probeer asseblief weer.</string>
+    <string name="error_data_title">Datafout</string>
+    <string name="error_data_msg">Ons het verwarrende data ontvang. Probeer asseblief weer of dateer die toepassing op.</string>
     <string name="btn_retry">Probeer weer</string>
 </resources>

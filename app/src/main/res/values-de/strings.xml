@@ -109,5 +109,9 @@
     <string name="error_not_found_title">Nicht gefunden</string>
     <string name="error_not_found_msg">Wir konnten nicht finden, wonach du gesucht hast.</string>
     <string name="error_unknown_title">Hoppla!</string>
+    <string name="error_timeout_title">Zeitüberschreitung der Anforderung</string>
+    <string name="error_timeout_msg">Der Server braucht zu lange, um zu antworten. Bitte versuchen Sie es erneut.</string>
+    <string name="error_data_title">Datenfehler</string>
+    <string name="error_data_msg">Wir haben verwirrende Daten erhalten. Bitte versuchen Sie es erneut oder aktualisieren Sie die App.</string>
     <string name="btn_retry">Wiederholen</string>
 </resources>

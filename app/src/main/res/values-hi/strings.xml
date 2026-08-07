@@ -109,5 +109,9 @@
     <string name="error_not_found_title">नहीं मिला</string>
     <string name="error_not_found_msg">हमें वह नहीं मिला जो आप खोज रहे थे।</string>
     <string name="error_unknown_title">ओह!</string>
+    <string name="error_timeout_title">अनुरोध का समय समाप्त हो गया</string>
+    <string name="error_timeout_msg">सर्वर प्रतिक्रिया देने में बहुत अधिक समय ले रहा है। कृपया पुनः प्रयास करें।</string>
+    <string name="error_data_title">डेटा त्रुटि</string>
+    <string name="error_data_msg">हमें कुछ भ्रमित करने वाला डेटा प्राप्त हुआ है। कृपया पुनः प्रयास करें या ऐप अपडेट करें।</string>
     <string name="btn_retry">पुनः प्रयास करें</string>
 </resources>

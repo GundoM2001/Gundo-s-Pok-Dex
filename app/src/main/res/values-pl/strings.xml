@@ -109,5 +109,9 @@
     <string name="error_not_found_title">Nie znaleziono</string>
     <string name="error_not_found_msg">Nie udało nam się znaleźć tego, czego szukałeś.</string>
     <string name="error_unknown_title">Ups!</string>
+    <string name="error_timeout_title">Przekroczono czas żądania</string>
+    <string name="error_timeout_msg">Serwer zbyt długo nie odpowiada. Spróbuj ponownie.</string>
+    <string name="error_data_title">Błąd danych</string>
+    <string name="error_data_msg">Otrzymaliśmy niejasne dane. Spróbuj ponownie lub zaktualizuj aplikację.</string>
     <string name="btn_retry">Ponów</string>
 </resources>

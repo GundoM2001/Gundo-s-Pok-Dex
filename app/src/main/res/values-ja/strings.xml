@@ -109,5 +109,9 @@
     <string name="error_not_found_title">見つかりません</string>
     <string name="error_not_found_msg">お探しのものは見つかりませんでした。</string>
     <string name="error_unknown_title">おっと！</string>
+    <string name="error_timeout_title">リクエストがタイムアウトしました</string>
+    <string name="error_timeout_msg">サーバーの応答に時間がかかりすぎています。もう一度お試しください。</string>
+    <string name="error_data_title">データエラー</string>
+    <string name="error_data_msg">不明なデータを受信しました。もう一度試すか、アプリを更新してください。</string>
     <string name="btn_retry">再試行</string>
 </resources>
