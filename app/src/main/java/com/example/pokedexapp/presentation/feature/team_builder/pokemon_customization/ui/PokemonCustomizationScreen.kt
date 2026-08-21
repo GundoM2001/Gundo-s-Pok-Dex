@@ -131,11 +131,24 @@ fun PokemonCustomizationScreen(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
+                    
                     AbilitySelector(
                         selectedAbility = state.selectedAbility ?: "",
                         abilities = details.abilities.map { it.ability.name },
                         isEditable = details.abilities.size > 1,
                         onAbilitySelected = { viewModel.onAbilityChanged(it) }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    ItemSelector(
+                        selectedItem = state.heldItem,
+                        itemDetails = state.heldItem?.let { state.itemDetails[it] },
+                        availableItems = state.availableItems,
+                        searchQuery = state.itemSearchQuery,
+                        isLoading = state.isItemsLoading,
+                        onSearchQueryChanged = { viewModel.onItemSearchQueryChanged(it) },
+                        onItemSelected = { viewModel.onItemSelected(it) }
                     )
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
@@ -566,6 +579,115 @@ fun MoveSelector(
                                                 Text(stringResource(R.string.loading_description), style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {}
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ItemSelector(
+    selectedItem: String?,
+    itemDetails: com.example.pokedexapp.domain.model.ItemDetails?,
+    availableItems: List<com.example.pokedexapp.domain.model.NamedApiResource>,
+    searchQuery: String,
+    isLoading: Boolean,
+    onSearchQueryChanged: (String) -> Unit,
+    onItemSelected: (String?) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        OutlinedCard(
+            onClick = { expanded = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (itemDetails?.sprites?.default != null) {
+                    AsyncImage(
+                        model = itemDetails.sprites.default,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp).padding(end = 12.dp)
+                    )
+                }
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = selectedItem?.replace("-", " ")?.uppercase() ?: stringResource(R.string.item_label),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (itemDetails != null) {
+                        val effect = itemDetails.effectEntries.find { it.language.name == "en" }?.shortEffect
+                            ?: itemDetails.effectEntries.firstOrNull()?.shortEffect
+                        
+                        if (effect != null) {
+                            Text(
+                                text = effect,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 2
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (expanded) {
+            AlertDialog(
+                onDismissRequest = { expanded = false },
+                title = { Text(stringResource(R.string.item_label)) },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = onSearchQueryChanged,
+                            placeholder = { Text(stringResource(R.string.search_items_placeholder)) },
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                            singleLine = true
+                        )
+
+                        if (isLoading && availableItems.isEmpty()) {
+                            Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator()
+                            }
+                        } else {
+                            Box(modifier = Modifier.height(400.dp)) {
+                                val filteredItems = remember(availableItems, searchQuery) {
+                                    availableItems.filter {
+                                        it.name.contains(searchQuery, ignoreCase = true)
+                                    }
+                                }
+
+                                LazyColumn {
+                                    item {
+                                        TextButton(
+                                            onClick = { onItemSelected(null); expanded = false },
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Text(stringResource(R.string.none_label), modifier = Modifier.fillMaxWidth())
+                                        }
+                                    }
+                                    items(filteredItems) { itemResource ->
+                                        DropdownMenuItem(
+                                            text = { Text(itemResource.name.replace("-", " ").uppercase()) },
+                                            onClick = {
+                                                onItemSelected(itemResource.name)
+                                                expanded = false
+                                            }
+                                        )
                                     }
                                 }
                             }

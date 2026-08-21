@@ -15,7 +15,7 @@ import com.example.pokedexapp.data.local.entities.UserPreferencesEntity
 
 @Database(
     entities = [FavouritePokemonEntity::class, TeamEntity::class, TeamPokemonEntity::class, UserPreferencesEntity::class],
-    version = 9,
+    version = 10,
     exportSchema = true
 )
 @TypeConverters(PokemonConverters::class)

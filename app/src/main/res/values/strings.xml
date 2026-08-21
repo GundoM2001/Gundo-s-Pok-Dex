@@ -74,6 +74,8 @@
     <string name="increase_desc">Increase</string>
     <string name="empty_slot_index">EMPTY SLOT %d</string>
     <string name="search_moves_placeholder">Search Moves</string>
+    <string name="item_label">Held Item</string>
+    <string name="search_items_placeholder">Search Items</string>
     <string name="none_label">NONE</string>
     <string name="search_pokemon_placeholder">Search Pokemon</string>
     <string name="team_details_title">Team Details</string>
