@@ -1,5 +1,6 @@
 package com.example.pokedexapp.di
 
+import com.example.pokedexapp.data.remote.api.ItemsApiService
 import com.example.pokedexapp.data.remote.api.PokemonApiService
 import com.example.pokedexapp.utils.ApiConfig
 import dagger.Module
@@ -40,4 +41,9 @@ object NetworkModule {
     @Singleton
     fun providePokeDexService(retrofit: Retrofit): PokemonApiService =
         retrofit.create(PokemonApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideItemService(retrofit: Retrofit): ItemsApiService =
+        retrofit.create(ItemsApiService::class.java)
 }
