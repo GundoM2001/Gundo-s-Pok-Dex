@@ -1,6 +1,8 @@
 package com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.state
 
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
+import com.example.pokedexapp.domain.model.ItemDetails
+import com.example.pokedexapp.domain.model.NamedApiResource
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.utils.UiErrorMessage
 
@@ -35,6 +37,12 @@ data class PokemonCustomizationState(
     
     val moveDetails: Map<String, com.example.pokedexapp.domain.model.MoveDetails> = emptyMap(),
     val moveSearchQuery: String = "",
+
+    val heldItem: String? = null,
+    val itemDetails: Map<String, ItemDetails> = emptyMap(),
+    val itemSearchQuery: String = "",
+    val availableItems: List<NamedApiResource> = emptyList(),
+    val isItemsLoading: Boolean = false,
     
     val varieties: List<PokemonDetails> = emptyList(),
     

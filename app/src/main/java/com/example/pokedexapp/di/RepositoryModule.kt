@@ -2,11 +2,14 @@ package com.example.pokedexapp.di
 
 import com.example.pokedexapp.data.local.dao.FavouritePokemonDao
 import com.example.pokedexapp.data.local.dao.TeamDao
+import com.example.pokedexapp.data.remote.api.ItemsApiService
 import com.example.pokedexapp.data.remote.api.PokemonApiService
 import com.example.pokedexapp.data.repository.FavouriteRepositoryImpl
+import com.example.pokedexapp.data.repository.ItemsRepositoryImpl
 import com.example.pokedexapp.data.repository.PokemonRepositoryImpl
 import com.example.pokedexapp.data.repository.TeamRepositoryImpl
 import com.example.pokedexapp.domain.repository.FavouriteRepository
+import com.example.pokedexapp.domain.repository.ItemsRepository
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.data.local.dao.UserPreferencesDao
@@ -42,4 +45,8 @@ object RepositoryModule {
     fun provideSettingsRepository(dao: UserPreferencesDao): SettingsRepository =
         SettingsRepositoryImpl(dao)
 
+    @Provides
+    @Singleton
+    fun provideItemsRepository(api: ItemsApiService): ItemsRepository =
+        ItemsRepositoryImpl(api)
 }

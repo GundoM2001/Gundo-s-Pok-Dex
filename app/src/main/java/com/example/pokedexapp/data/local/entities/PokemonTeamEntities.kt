@@ -40,6 +40,7 @@ data class TeamPokemonEntity(
     val level: Int = 100,
     val nature: String = "Hardy",
     val ability: String? = null,
+    val heldItem: String? = null,
 
     //Move List
     val move1: String? = null,

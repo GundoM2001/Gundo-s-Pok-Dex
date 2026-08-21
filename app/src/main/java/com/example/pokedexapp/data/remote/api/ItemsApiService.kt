@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface ItemsApiService {
 
@@ -15,6 +16,11 @@ interface ItemsApiService {
     suspend fun getAllItems(
         @Query("offset") offset: Int = 0,
         @Query("limit") limit: Int = 20
+    ): Response<ItemListResponse>
+
+    @GET
+    suspend fun getItemPage(
+        @Url url: String
     ): Response<ItemListResponse>
 
     @GET("item/{id_or_name}")

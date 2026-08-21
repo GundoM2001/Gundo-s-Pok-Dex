@@ -192,13 +192,31 @@ fun TeamSlotItem(
                         fontWeight = FontWeight.Bold
                     )
 
-                    if (!member.ability.isNullOrBlank()) {
-                        Text(
-                            text = member.ability.replace("-", " ").uppercase(),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.secondary,
-                            fontWeight = FontWeight.Bold
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (!member.ability.isNullOrBlank()) {
+                            Text(
+                                text = member.ability.replace("-", " ").uppercase(),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        if (!member.heldItem.isNullOrBlank()) {
+                            if (!member.ability.isNullOrBlank()) {
+                                Text(
+                                    text = " • ",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            Text(
+                                text = member.heldItem.replace("-", " ").uppercase(),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                     
                     val moves = listOfNotNull(member.move1, member.move2, member.move3, member.move4)

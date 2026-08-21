@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.example.pokedexapp.data.local.entities.TeamPokemonEntity
 import com.example.pokedexapp.domain.model.Nature
 import com.example.pokedexapp.domain.model.PokemonDetails
+import com.example.pokedexapp.domain.repository.ItemsRepository
 import com.example.pokedexapp.domain.repository.PokemonRepository
 import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.state.PokemonCustomizationState
@@ -25,6 +26,7 @@ import kotlin.math.floor
 @HiltViewModel
 class PokemonCustomizationViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
+    private val itemsRepository: ItemsRepository,
     private val teamRepository: TeamRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -94,11 +96,14 @@ class PokemonCustomizationViewModel @Inject constructor(
                         move2 = currentMember?.move2,
                         move3 = currentMember?.move3,
                         move4 = currentMember?.move4,
+                        heldItem = currentMember?.heldItem,
                         isLoading = false
                     )
                 }
                 
                 fetchMoveDetails(details)
+                fetchAvailableItems()
+                _state.value.heldItem?.let { fetchItemDetails(it) }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false, error = ErrorHandler.mapException(e)) }
             }
@@ -243,6 +248,43 @@ class PokemonCustomizationViewModel @Inject constructor(
         }
     }
 
+    private fun fetchAvailableItems() {
+        viewModelScope.launch {
+            _state.update { it.copy(isItemsLoading = true) }
+            try {
+                // Fetching from "holdable" attribute to be comprehensive
+                val response = itemsRepository.getItemAttribute("holdable")
+                _state.update { it.copy(availableItems = response.items, isItemsLoading = false) }
+            } catch (e: Exception) {
+                _state.update { it.copy(isItemsLoading = false) }
+            }
+        }
+    }
+
+    fun onItemSearchQueryChanged(query: String) {
+        _state.update { it.copy(itemSearchQuery = query) }
+    }
+
+    fun onItemSelected(itemName: String?) {
+        _state.update { it.copy(heldItem = itemName) }
+        itemName?.let { fetchItemDetails(it) }
+    }
+
+    private fun fetchItemDetails(itemName: String) {
+        if (_state.value.itemDetails.containsKey(itemName)) return
+
+        viewModelScope.launch {
+            try {
+                val details = itemsRepository.getItemDetails(itemName)
+                _state.update { s ->
+                    s.copy(itemDetails = s.itemDetails + (itemName to details))
+                }
+            } catch (e: Exception) {
+                // Silent fail
+            }
+        }
+    }
+
     fun save(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val s = _state.value
@@ -258,6 +300,7 @@ class PokemonCustomizationViewModel @Inject constructor(
                 level = s.level,
                 nature = s.selectedNature,
                 ability = s.selectedAbility,
+                heldItem = s.heldItem,
                 hpEv = s.hpEv,
                 atkEv = s.atkEv,
                 defEv = s.defEv,
