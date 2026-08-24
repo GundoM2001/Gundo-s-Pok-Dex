@@ -97,7 +97,10 @@ fun TeamDetailContent(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(count = 6) { index ->
+                    items(
+                        count = 6,
+                        key = { it }
+                    ) { index ->
                         val member = team.pokemon.find { it.slot == index }
                         TeamSlotItem(
                             slotIndex = index,

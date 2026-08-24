@@ -203,7 +203,10 @@ fun PokemonListContent(
                         contentPadding = PaddingValues(16.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(pokemonList ?: emptyList()) { pokemon ->
+                        items(
+                            items = pokemonList ?: emptyList(),
+                            key = { it.url }
+                        ) { pokemon ->
                             PokemonItem(
                                 pokemon = pokemon,
                                 isFavorite = favouriteIds.contains(pokemon.id),
