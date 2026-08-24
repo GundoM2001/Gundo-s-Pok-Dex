@@ -45,6 +45,7 @@ data class PokemonCustomizationState(
     val isItemsLoading: Boolean = false,
     
     val varieties: List<PokemonDetails> = emptyList(),
+    val abilityDetails: List<com.example.pokedexapp.domain.model.AbilityDetails> = emptyList(),
     
     val isLoading: Boolean = false,
     val error: UiErrorMessage? = null

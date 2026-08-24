@@ -28,7 +28,7 @@ object NetworkModule {
         @ApplicationContext context: Context,
         loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
-        val cacheSize = 10L * 1024L * 1024L // 10MB
+        val cacheSize = 10L * 1024L * 1024L
         val cache = Cache(File(context.cacheDir, "http_cache"), cacheSize)
 
         return OkHttpClient.Builder()

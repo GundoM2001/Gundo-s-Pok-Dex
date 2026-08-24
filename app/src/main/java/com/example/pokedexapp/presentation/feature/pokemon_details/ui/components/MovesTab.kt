@@ -42,6 +42,7 @@ import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.presentation.components.PokemonTypeBadge
 import com.example.pokedexapp.presentation.mock.MockData
+import com.example.pokedexapp.utils.PokemonNameFormatter
 
 @Composable
 fun MovesTab(
@@ -55,8 +56,10 @@ fun MovesTab(
     val evolutionHeader = stringResource(R.string.move_learn_evolution)
     val machineHeader = stringResource(R.string.move_learn_machine)
     val tutorHeader = stringResource(R.string.move_learn_tutor)
+    val eggHeader = "Egg Moves"
+    val otherHeader = "Other Moves"
 
-    val groupedMoves = remember(details.moves, moveDetails, machineDetails, levelUpHeader, evolutionHeader, machineHeader, tutorHeader) {
+    val groupedMoves = remember(details.moves, moveDetails, machineDetails, levelUpHeader, evolutionHeader, machineHeader, tutorHeader, eggHeader, otherHeader) {
         val levelUp = details.moves.filter { move ->
             move.versionGroupDetails.any { it.moveLearnMethod.name == "level-up" }
         }.sortedBy { move ->
@@ -66,7 +69,6 @@ fun MovesTab(
         val machine = details.moves.filter { move ->
             move.versionGroupDetails.any { it.moveLearnMethod.name == "machine" }
         }.sortedBy { moveEntry ->
-            // Try to find the TM/HM number for sorting
             val mDetails = moveDetails[moveEntry.move.name]
             val machineUrl = mDetails?.machines?.firstOrNull()?.machine?.url
             val numberStr = machineDetails[machineUrl]?.item?.name?.filter { it.isDigit() }
@@ -81,11 +83,23 @@ fun MovesTab(
             move.versionGroupDetails.any { it.moveLearnMethod.name == "evolution" }
         }.sortedBy { it.move.name }
 
+        val egg = details.moves.filter { move ->
+            move.versionGroupDetails.any { it.moveLearnMethod.name == "egg" }
+        }.sortedBy { it.move.name }
+
+        val other = details.moves.filter { move ->
+            move.versionGroupDetails.any { 
+                it.moveLearnMethod.name !in listOf("level-up", "machine", "tutor", "evolution", "egg") 
+            }
+        }.sortedBy { it.move.name }
+
         listOf(
             levelUpHeader to levelUp,
             evolutionHeader to evolution,
             machineHeader to machine,
-            tutorHeader to tutor
+            tutorHeader to tutor,
+            eggHeader to egg,
+            otherHeader to other
         )
     }
 
@@ -112,7 +126,9 @@ fun MovesTab(
                             header == levelUpHeader -> "level-up"
                             header == evolutionHeader -> "evolution"
                             header == machineHeader -> "machine"
-                            else -> "tutor"
+                            header == eggHeader -> "egg"
+                            header == tutorHeader -> "tutor"
+                            else -> moveEntry.versionGroupDetails.firstOrNull()?.moveLearnMethod?.name ?: ""
                         }
                         val learnDetail = moveEntry.versionGroupDetails.find { it.moveLearnMethod.name == methodKey }
                         val details = moveDetails[moveEntry.move.name]
@@ -140,7 +156,7 @@ fun MovesTab(
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
-                                            text = moveEntry.move.name.replace("-", " ").uppercase(),
+                                            text = PokemonNameFormatter.format(moveEntry.move.name),
                                             style = MaterialTheme.typography.bodyMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.onSurface
@@ -189,9 +205,21 @@ fun MovesTab(
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
-                                        } else if (header == stringResource(R.string.move_learn_evolution)) {
+                                        } else if (header == evolutionHeader) {
                                             Text(
                                                 text = stringResource(R.string.move_evolution_label),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        } else if (header == eggHeader) {
+                                            Text(
+                                                text = "EGG",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        } else if (header == otherHeader) {
+                                            Text(
+                                                text = methodKey.uppercase(),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )

@@ -12,6 +12,7 @@ import com.example.pokedexapp.domain.repository.TeamRepository
 import com.example.pokedexapp.presentation.feature.team_builder.pokemon_customization.state.PokemonCustomizationState
 import com.example.pokedexapp.utils.ApiConfig
 import com.example.pokedexapp.utils.ErrorHandler
+import com.example.pokedexapp.utils.MegaEvolutionUtils
 import com.example.pokedexapp.utils.UiErrorMessage
 import com.example.pokedexapp.R
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,6 +72,12 @@ class PokemonCustomizationViewModel @Inject constructor(
                     currentMember = teamRepository.getTeamMember(memberId).firstOrNull()
                 }
 
+                val isMega = MegaEvolutionUtils.isMega(details.name)
+                val requiredItem = MegaEvolutionUtils.getRequiredItem(details.name)
+                val requiredMove = MegaEvolutionUtils.getRequiredMove(details.name)
+                val initialHeldItem = if (isMega && requiredItem != null) requiredItem else currentMember?.heldItem
+                val initialMove1 = if (requiredMove != null) requiredMove else currentMember?.move1
+
                 _state.update {
                     it.copy(
                         pokemonDetails = details,
@@ -92,18 +99,19 @@ class PokemonCustomizationViewModel @Inject constructor(
                         spaIv = currentMember?.spaIv ?: 31,
                         spdIv = currentMember?.spdIv ?: 31,
                         speIv = currentMember?.speIv ?: 31,
-                        move1 = currentMember?.move1,
+                        move1 = initialMove1,
                         move2 = currentMember?.move2,
                         move3 = currentMember?.move3,
                         move4 = currentMember?.move4,
-                        heldItem = currentMember?.heldItem,
+                        heldItem = initialHeldItem,
                         isLoading = false
                     )
                 }
                 
                 fetchMoveDetails(details)
+                fetchAbilityDetails(details)
                 fetchAvailableItems()
-                _state.value.heldItem?.let { fetchItemDetails(it) }
+                initialHeldItem?.let { fetchItemDetails(it) }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false, error = ErrorHandler.mapException(e)) }
             }
@@ -152,14 +160,40 @@ class PokemonCustomizationViewModel @Inject constructor(
     }
 
     fun onVarietyChanged(details: PokemonDetails) {
+        val isMega = MegaEvolutionUtils.isMega(details.name)
+        val requiredItem = MegaEvolutionUtils.getRequiredItem(details.name)
+        val requiredMove = MegaEvolutionUtils.getRequiredMove(details.name)
+
         _state.update { 
             it.copy(
                 pokemonDetails = details,
-                selectedAbility = details.abilities.firstOrNull()?.ability?.name
+                selectedAbility = details.abilities.firstOrNull()?.ability?.name,
+                heldItem = if (isMega && requiredItem != null) requiredItem else it.heldItem,
+                move1 = if (requiredMove != null) requiredMove else it.move1
             ) 
         }
+
+        if (isMega && requiredItem != null) {
+            fetchItemDetails(requiredItem)
+        }
+
         viewModelScope.launch {
             fetchMoveDetails(details)
+            fetchAbilityDetails(details)
+        }
+    }
+
+    private fun fetchAbilityDetails(details: PokemonDetails) {
+        viewModelScope.launch {
+            try {
+                val abilities = coroutineScope {
+                    details.abilities.map { ability ->
+                        async { pokemonRepository.getAbilityDetails(ability.ability.url) }
+                    }.awaitAll()
+                }
+                _state.update { it.copy(abilityDetails = abilities) }
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -228,6 +262,14 @@ class PokemonCustomizationViewModel @Inject constructor(
     }
 
     fun onMoveSelected(index: Int, moveName: String?) {
+        val currentPokemon = _state.value.pokemonDetails
+        val requiredMove = MegaEvolutionUtils.getRequiredMove(currentPokemon?.name)
+        
+        if (index == 1 && requiredMove != null) {
+            // Cannot change the first move if it's required (e.g., Mega Rayquaza)
+            return
+        }
+
         _state.update { s ->
             // If the move is already selected in another slot, clear that slot
             var nextS = s
@@ -252,9 +294,24 @@ class PokemonCustomizationViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isItemsLoading = true) }
             try {
-                // Fetching from "holdable" attribute to be comprehensive
-                val response = itemsRepository.getItemAttribute("holdable")
-                _state.update { it.copy(availableItems = response.items, isItemsLoading = false) }
+                coroutineScope {
+                    val attributes = listOf("holdable")
+                    val categories = listOf("mega-stones", "held-items", "choice", "plates", "memories", "type-enhancement", "species-specific", "plot-adventure")
+                    
+                    val attributeDeferreds = attributes.map { attr ->
+                        async { try { itemsRepository.getItemAttribute(attr).items } catch (e: Exception) { emptyList() } }
+                    }
+                    val categoryDeferreds = categories.map { cat ->
+                        async { try { itemsRepository.getItemCategory(cat).items } catch (e: Exception) { emptyList() } }
+                    }
+                    
+                    val allItems = (attributeDeferreds.awaitAll() + categoryDeferreds.awaitAll())
+                        .flatten()
+                        .distinctBy { it.name }
+                        .sortedBy { it.name }
+
+                    _state.update { it.copy(availableItems = allItems, isItemsLoading = false) }
+                }
             } catch (e: Exception) {
                 _state.update { it.copy(isItemsLoading = false) }
             }
@@ -266,6 +323,14 @@ class PokemonCustomizationViewModel @Inject constructor(
     }
 
     fun onItemSelected(itemName: String?) {
+        val currentPokemon = _state.value.pokemonDetails
+        if (MegaEvolutionUtils.isMega(currentPokemon?.name)) {
+            val required = MegaEvolutionUtils.getRequiredItem(currentPokemon?.name)
+            if (required != null && itemName != required) {
+                // If it's a mega and needs a specific item, don't allow changing to something else
+                return
+            }
+        }
         _state.update { it.copy(heldItem = itemName) }
         itemName?.let { fetchItemDetails(it) }
     }

@@ -8,22 +8,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.presentation.components.PokemonTypeUtils
 import com.example.pokedexapp.presentation.components.StatBar
 import com.example.pokedexapp.presentation.mock.MockData
+import com.example.pokedexapp.utils.StatFormatter
 
 @Composable
 fun StatsTab(details: PokemonDetails) {
-    val statMap = listOf(
-        stringResource(R.string.stat_hp) to details.stats.find { it.stat.name == "hp" }?.baseStat,
-        stringResource(R.string.stat_atk) to details.stats.find { it.stat.name == "attack" }?.baseStat,
-        stringResource(R.string.stat_def) to details.stats.find { it.stat.name == "defense" }?.baseStat,
-        stringResource(R.string.stat_spa) to details.stats.find { it.stat.name == "special-attack" }?.baseStat,
-        stringResource(R.string.stat_spd) to details.stats.find { it.stat.name == "special-defense" }?.baseStat,
-        stringResource(R.string.stat_spe) to details.stats.find { it.stat.name == "speed" }?.baseStat
-    )
+    val statKeys = listOf("hp", "attack", "defense", "special-attack", "special-defense", "speed")
+    val statMap = statKeys.map { key ->
+        stringResource(StatFormatter.getStatAbbreviationRes(key)) to details.stats.find { it.stat.name == key }?.baseStat
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
