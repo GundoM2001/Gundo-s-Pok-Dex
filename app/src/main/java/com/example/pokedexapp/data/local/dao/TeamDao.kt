@@ -63,4 +63,5 @@ interface TeamDao {
     @Transaction
     @Query("SELECT * FROM teams WHERE id = :teamId")
     fun getTeamWithPokemonByIdFlow(teamId: Int): Flow<TeamWithPokemon?>
+
 }
