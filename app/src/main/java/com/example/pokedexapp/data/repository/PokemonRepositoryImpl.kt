@@ -10,12 +10,12 @@ import com.example.pokedexapp.domain.model.PokemonResults
 import com.example.pokedexapp.domain.model.PokemonSpecies
 import com.example.pokedexapp.domain.model.TypeDetails
 import com.example.pokedexapp.domain.repository.PokemonRepository
+import android.util.LruCache
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import java.util.concurrent.ConcurrentHashMap
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -23,13 +23,13 @@ class PokemonRepositoryImpl @Inject constructor(
     private val service: PokemonApiService
 ) : PokemonRepository {
 
-    // In-memory caches
-    private val detailsCache = ConcurrentHashMap<String, PokemonDetails>()
-    private val speciesCache = ConcurrentHashMap<String, PokemonSpecies>()
-    private val typeCache = ConcurrentHashMap<String, TypeDetails>()
-    private val abilityCache = ConcurrentHashMap<String, AbilityDetails>()
-    private val moveCache = ConcurrentHashMap<String, MoveDetails>()
-    private val machineCache = ConcurrentHashMap<String, MachineDetails>()
+    // In-memory caches with limits to balance memory usage
+    private val detailsCache = LruCache<String, PokemonDetails>(100)
+    private val speciesCache = LruCache<String, PokemonSpecies>(50)
+    private val typeCache = LruCache<String, TypeDetails>(20)
+    private val abilityCache = LruCache<String, AbilityDetails>(50)
+    private val moveCache = LruCache<String, MoveDetails>(100)
+    private val machineCache = LruCache<String, MachineDetails>(50)
 
     // Limit concurrency for batch operations
     private val networkSemaphore = Semaphore(5)
@@ -89,11 +89,11 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPokemonDetails(url: String): PokemonDetails {
-        detailsCache[url]?.let { return it }
+        detailsCache.get(url)?.let { return it }
         return networkSemaphore.withPermit {
             val response = service.getPokemonDetails(url)
             if (response.isSuccessful) {
-                response.body()?.also { detailsCache[url] = it }
+                response.body()?.also { detailsCache.put(url, it) }
                     ?: throw com.google.gson.JsonSyntaxException("Response body is null")
             } else {
                 throw HttpException(response)
@@ -102,11 +102,11 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPokemonSpecies(url: String): PokemonSpecies {
-        speciesCache[url]?.let { return it }
+        speciesCache.get(url)?.let { return it }
         return networkSemaphore.withPermit {
             val response = service.getPokemonSpecies(url)
             if (response.isSuccessful) {
-                response.body()?.also { speciesCache[url] = it }
+                response.body()?.also { speciesCache.put(url, it) }
                     ?: throw Exception("Response body is null")
             } else {
                 throw HttpException(response)
@@ -115,11 +115,11 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTypeDetails(url: String): TypeDetails {
-        typeCache[url]?.let { return it }
+        typeCache.get(url)?.let { return it }
         return networkSemaphore.withPermit {
             val response = service.getTypeDetails(url)
             if (response.isSuccessful) {
-                response.body()?.also { typeCache[url] = it }
+                response.body()?.also { typeCache.put(url, it) }
                     ?: throw Exception("Response body is null")
             } else {
                 throw HttpException(response)
@@ -128,11 +128,11 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAbilityDetails(url: String): AbilityDetails {
-        abilityCache[url]?.let { return it }
+        abilityCache.get(url)?.let { return it }
         return networkSemaphore.withPermit {
             val response = service.getAbilityDetails(url)
             if (response.isSuccessful) {
-                response.body()?.also { abilityCache[url] = it }
+                response.body()?.also { abilityCache.put(url, it) }
                     ?: throw Exception("Response body is null")
             } else {
                 throw HttpException(response)
@@ -141,11 +141,11 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMoveDetails(url: String): MoveDetails {
-        moveCache[url]?.let { return it }
+        moveCache.get(url)?.let { return it }
         return networkSemaphore.withPermit {
             val response = service.getMoveDetails(url)
             if (response.isSuccessful) {
-                response.body()?.also { moveCache[url] = it }
+                response.body()?.also { moveCache.put(url, it) }
                     ?: throw Exception("Response body is null")
             } else {
                 throw HttpException(response)
@@ -154,11 +154,11 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMachineDetails(url: String): MachineDetails {
-        machineCache[url]?.let { return it }
+        machineCache.get(url)?.let { return it }
         return networkSemaphore.withPermit {
             val response = service.getMachineDetails(url)
             if (response.isSuccessful) {
-                response.body()?.also { machineCache[url] = it }
+                response.body()?.also { machineCache.put(url, it) }
                     ?: throw Exception("Response body is null")
             } else {
                 throw HttpException(response)

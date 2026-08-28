@@ -24,6 +24,7 @@ import com.example.pokedexapp.R
 import com.example.pokedexapp.domain.model.AbilityDetails
 import com.example.pokedexapp.domain.model.PokemonDetails
 import com.example.pokedexapp.presentation.mock.MockData
+import com.example.pokedexapp.utils.PokemonNameFormatter
 
 @Composable
 fun AbilitiesTab(
@@ -56,7 +57,7 @@ fun AbilitiesTab(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = abilityEntry.ability.name.replace("-", " ").uppercase(),
+                            text = PokemonNameFormatter.format(abilityEntry.ability.name),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface

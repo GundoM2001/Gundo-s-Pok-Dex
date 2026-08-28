@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.pokedexapp.R
+import com.example.pokedexapp.domain.model.AbilityDetails
 import com.example.pokedexapp.domain.model.MoveDetails
 import com.example.pokedexapp.domain.model.Nature
 import com.example.pokedexapp.domain.model.PokemonDetails
@@ -34,8 +36,10 @@ import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.components.PokemonTypeBadge
 import com.example.pokedexapp.presentation.mock.MockData
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
+import com.example.pokedexapp.utils.MegaEvolutionUtils
 import com.example.pokedexapp.utils.PokemonImageUtils
 import com.example.pokedexapp.utils.PokemonNameFormatter
+import com.example.pokedexapp.utils.StatFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,11 +139,15 @@ fun PokemonCustomizationScreen(
                     AbilitySelector(
                         selectedAbility = state.selectedAbility ?: "",
                         abilities = details.abilities.map { it.ability.name },
+                        abilityDetails = state.abilityDetails,
                         isEditable = details.abilities.size > 1,
                         onAbilitySelected = { viewModel.onAbilityChanged(it) }
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    val isMega = MegaEvolutionUtils.isMega(details.name)
+                    val requiredItem = MegaEvolutionUtils.getRequiredItem(details.name)
 
                     ItemSelector(
                         selectedItem = state.heldItem,
@@ -147,6 +155,7 @@ fun PokemonCustomizationScreen(
                         availableItems = state.availableItems,
                         searchQuery = state.itemSearchQuery,
                         isLoading = state.isItemsLoading,
+                        isEditable = !(isMega && requiredItem != null),
                         onSearchQueryChanged = { viewModel.onItemSearchQueryChanged(it) },
                         onItemSelected = { viewModel.onItemSelected(it) }
                     )
@@ -160,8 +169,9 @@ fun PokemonCustomizationScreen(
                     )
                     
                     val allMoveEntries = details.moves
+                    val requiredMove = MegaEvolutionUtils.getRequiredMove(details.name)
                     
-                    MoveSelector(1, state.move1, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(1, it) }
+                    MoveSelector(1, state.move1, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }, requiredMove != null) { viewModel.onMoveSelected(1, it) }
                     MoveSelector(2, state.move2, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(2, it) }
                     MoveSelector(3, state.move3, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(3, it) }
                     MoveSelector(4, state.move4, allMoveEntries, state.moveDetails, state.moveSearchQuery, { viewModel.onMoveSearchQueryChanged(it) }) { viewModel.onMoveSelected(4, it) }
@@ -175,14 +185,14 @@ fun PokemonCustomizationScreen(
                         modifier = Modifier.align(Alignment.Start).padding(bottom = 16.dp)
                     )
 
-                    val stats = listOf(
-                        Triple(stringResource(R.string.stat_hp), details.stats.find { it.stat.name == "hp" }?.baseStat ?: 0, "hp"),
-                        Triple(stringResource(R.string.stat_atk), details.stats.find { it.stat.name == "attack" }?.baseStat ?: 0, "attack"),
-                        Triple(stringResource(R.string.stat_def), details.stats.find { it.stat.name == "defense" }?.baseStat ?: 0, "defense"),
-                        Triple(stringResource(R.string.stat_spa), details.stats.find { it.stat.name == "special-attack" }?.baseStat ?: 0, "special-attack"),
-                        Triple(stringResource(R.string.stat_spd), details.stats.find { it.stat.name == "special-defense" }?.baseStat ?: 0, "special-defense"),
-                        Triple(stringResource(R.string.stat_spe), details.stats.find { it.stat.name == "speed" }?.baseStat ?: 0, "speed")
-                    )
+                    val statKeys = listOf("hp", "attack", "defense", "special-attack", "special-defense", "speed")
+                    val stats = statKeys.map { key ->
+                        Triple(
+                            stringResource(StatFormatter.getStatAbbreviationRes(key)),
+                            details.stats.find { it.stat.name == key }?.baseStat ?: 0,
+                            key
+                        )
+                    }
 
                     val currentNature = Nature.fromName(state.selectedNature)
 
@@ -310,8 +320,10 @@ fun NatureSelector(selectedNature: String, onNatureSelected: (String) -> Unit) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(nature.displayName, modifier = Modifier.weight(1f))
                             if (nature.boostedStat != null && nature.hinderedStat != null) {
+                                val boosted = stringResource(StatFormatter.getStatAbbreviationRes(nature.boostedStat))
+                                val hindered = stringResource(StatFormatter.getStatAbbreviationRes(nature.hinderedStat))
                                 Text(
-                                    text = "(+${nature.boostedStat.take(3).uppercase()} / -${nature.hinderedStat.take(3).uppercase()})",
+                                    text = "(+$boosted / -$hindered)",
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -332,44 +344,81 @@ fun NatureSelector(selectedNature: String, onNatureSelected: (String) -> Unit) {
 fun AbilitySelector(
     selectedAbility: String,
     abilities: List<String>,
+    abilityDetails: List<AbilityDetails>,
     isEditable: Boolean,
     onAbilitySelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+    val currentLanguage = configuration.locales[0].language
 
-    Box(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = selectedAbility.replace("-", " ").uppercase(),
-            onValueChange = {},
-            label = { Text(stringResource(R.string.ability_label)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .then(if (isEditable) Modifier.clickable { expanded = true } else Modifier),
-            readOnly = true,
-            enabled = false,
-            colors = OutlinedTextFieldDefaults.colors(
-                disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledBorderColor = MaterialTheme.colorScheme.outline
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value = PokemonNameFormatter.format(selectedAbility),
+                onValueChange = {},
+                label = { Text(stringResource(R.string.ability_label)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(if (isEditable) Modifier.clickable { expanded = true } else Modifier),
+                readOnly = true,
+                enabled = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline
+                )
             )
-        )
 
-        if (isEditable) {
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth(0.9f)
-            ) {
-                abilities.forEach { ability ->
-                    DropdownMenuItem(
-                        text = { Text(ability.replace("-", " ").uppercase()) },
-                        onClick = {
-                            onAbilitySelected(ability)
-                            expanded = false
-                        }
-                    )
+            if (isEditable) {
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.fillMaxWidth(0.9f)
+                ) {
+                    abilities.forEach { ability ->
+                        val detail = abilityDetails.find { it.name == ability }
+                        val description = detail?.effectEntries?.find { it.language.name == currentLanguage }?.shortEffect
+                            ?: detail?.effectEntries?.find { it.language.name == "en" }?.shortEffect
+
+                        DropdownMenuItem(
+                            text = {
+                                Column {
+                                    Text(
+                                        text = PokemonNameFormatter.format(ability),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    if (description != null) {
+                                        Text(
+                                            text = description,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            },
+                            onClick = {
+                                onAbilitySelected(ability)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
+        }
+
+        val selectedDetail = abilityDetails.find { it.name == selectedAbility }
+        val selectedDescription = selectedDetail?.effectEntries?.find { it.language.name == currentLanguage }?.shortEffect
+            ?: selectedDetail?.effectEntries?.find { it.language.name == "en" }?.shortEffect
+
+        if (selectedDescription != null) {
+            Text(
+                text = selectedDescription,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+            )
         }
     }
 }
@@ -478,14 +527,16 @@ fun MoveSelector(
     moveDetailsMap: Map<String, MoveDetails>,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
+    isFixed: Boolean = false,
     onMoveSelected: (String?) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         OutlinedCard(
-            onClick = { expanded = true },
-            modifier = Modifier.fillMaxWidth()
+            onClick = { if (!isFixed) expanded = true },
+            modifier = Modifier.fillMaxWidth(),
+            colors = if (isFixed) CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)) else CardDefaults.outlinedCardColors()
         ) {
             val details = currentMove?.let { moveDetailsMap[it] }
             Row(
@@ -493,11 +544,28 @@ fun MoveSelector(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = currentMove?.replace("-", " ")?.uppercase() ?: stringResource(R.string.empty_slot_index, index),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = currentMove?.let { PokemonNameFormatter.format(it) } ?: stringResource(R.string.empty_slot_index, index),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        if (isFixed) {
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {
+                                Text(
+                                    text = "FIXED",
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
                     if (details != null) {
                         Row(
                             modifier = Modifier.padding(top = 4.dp),
@@ -516,7 +584,7 @@ fun MoveSelector(
             }
         }
 
-        if (expanded) {
+        if (expanded && !isFixed) {
             AlertDialog(
                 onDismissRequest = { expanded = false },
                 title = { Text(stringResource(R.string.tab_moves)) },
@@ -533,9 +601,14 @@ fun MoveSelector(
                         
                         Box(modifier = Modifier.height(400.dp)) {
                             val filteredMoves = remember(allMoveEntries, searchQuery) {
-                                allMoveEntries.filter { 
-                                    it.move.name.contains(searchQuery, ignoreCase = true) 
-                                }
+                                val queryParts = searchQuery.lowercase().split(" ").filter { it.isNotBlank() }
+                                allMoveEntries.filter { moveEntry ->
+                                    if (queryParts.isEmpty()) true
+                                    else {
+                                        val moveName = moveEntry.move.name.lowercase()
+                                        queryParts.all { part -> moveName.contains(part) }
+                                    }
+                                }.distinctBy { it.move.name }
                             }
                             
                             LazyColumn {
@@ -558,7 +631,7 @@ fun MoveSelector(
                                     ) {
                                         Column(modifier = Modifier.padding(12.dp)) {
                                             Text(
-                                                text = moveName.replace("-", " ").uppercase(),
+                                                text = PokemonNameFormatter.format(moveName),
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 fontWeight = FontWeight.Bold
                                             )
@@ -599,6 +672,7 @@ fun ItemSelector(
     availableItems: List<com.example.pokedexapp.domain.model.NamedApiResource>,
     searchQuery: String,
     isLoading: Boolean,
+    isEditable: Boolean = true,
     onSearchQueryChanged: (String) -> Unit,
     onItemSelected: (String?) -> Unit
 ) {
@@ -606,8 +680,9 @@ fun ItemSelector(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedCard(
-            onClick = { expanded = true },
-            modifier = Modifier.fillMaxWidth()
+            onClick = { if (isEditable) expanded = true },
+            modifier = Modifier.fillMaxWidth(),
+            colors = if (isEditable) CardDefaults.outlinedCardColors() else CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
         ) {
             Row(
                 modifier = Modifier.padding(16.dp),
@@ -622,11 +697,28 @@ fun ItemSelector(
                 }
                 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = selectedItem?.replace("-", " ")?.uppercase() ?: stringResource(R.string.item_label),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = selectedItem?.let { PokemonNameFormatter.format(it) } ?: stringResource(R.string.item_label),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        if (!isEditable) {
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {
+                                Text(
+                                    text = "FIXED",
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
                     if (itemDetails != null) {
                         val effect = itemDetails.effectEntries.find { it.language.name == "en" }?.shortEffect
                             ?: itemDetails.effectEntries.firstOrNull()?.shortEffect
@@ -639,12 +731,18 @@ fun ItemSelector(
                                 maxLines = 2
                             )
                         }
+                    } else if (!isEditable) {
+                        Text(
+                            text = "Required for this form",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             }
         }
 
-        if (expanded) {
+        if (expanded && isEditable) {
             AlertDialog(
                 onDismissRequest = { expanded = false },
                 title = { Text(stringResource(R.string.item_label)) },
@@ -666,8 +764,10 @@ fun ItemSelector(
                         } else {
                             Box(modifier = Modifier.height(400.dp)) {
                                 val filteredItems = remember(availableItems, searchQuery) {
-                                    availableItems.filter {
-                                        it.name.contains(searchQuery, ignoreCase = true)
+                                    val queryParts = searchQuery.lowercase().split(" ").filter { it.isNotBlank() }
+                                    availableItems.filter { item ->
+                                        if (queryParts.isEmpty()) true
+                                        else queryParts.all { part -> item.name.contains(part) }
                                     }
                                 }
 
@@ -682,7 +782,7 @@ fun ItemSelector(
                                     }
                                     items(filteredItems) { itemResource ->
                                         DropdownMenuItem(
-                                            text = { Text(itemResource.name.replace("-", " ").uppercase()) },
+                                            text = { Text(PokemonNameFormatter.format(itemResource.name)) },
                                             onClick = {
                                                 onItemSelected(itemResource.name)
                                                 expanded = false

@@ -58,7 +58,7 @@ class PokemonDetailsViewModel @Inject constructor(
             val methods = if (essentialOnly) {
                 listOf("level-up")
             } else {
-                listOf("level-up", "machine", "tutor", "evolution")
+                listOf("level-up", "machine", "tutor", "evolution", "form-change", "egg")
             }
 
             val movesToFetch = details.moves.filter { move ->

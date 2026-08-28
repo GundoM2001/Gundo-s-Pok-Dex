@@ -31,6 +31,7 @@ import com.example.pokedexapp.data.local.entities.TeamWithPokemon
 import com.example.pokedexapp.presentation.components.ErrorState
 import com.example.pokedexapp.presentation.theme.PokeDexAppTheme
 import com.example.pokedexapp.utils.PokemonImageUtils
+import com.example.pokedexapp.utils.PokemonNameFormatter
 import com.example.pokedexapp.utils.UiErrorMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,7 +98,10 @@ fun TeamDetailContent(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(count = 6) { index ->
+                    items(
+                        count = 6,
+                        key = { it }
+                    ) { index ->
                         val member = team.pokemon.find { it.slot == index }
                         TeamSlotItem(
                             slotIndex = index,
@@ -132,7 +136,7 @@ fun TeamSlotItem(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp),
+            .heightIn(min = 100.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (member == null) 
@@ -184,7 +188,7 @@ fun TeamSlotItem(
                     val displayName = if (!member.nickname.isNullOrBlank()) {
                         member.nickname
                     } else {
-                        com.example.pokedexapp.utils.PokemonNameFormatter.format(member.pokemonName)
+                        PokemonNameFormatter.format(member.pokemonName)
                     }
                     Text(
                         text = displayName,
@@ -195,7 +199,7 @@ fun TeamSlotItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (!member.ability.isNullOrBlank()) {
                             Text(
-                                text = member.ability.replace("-", " ").uppercase(),
+                                text = PokemonNameFormatter.format(member.ability),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.secondary,
                                 fontWeight = FontWeight.Bold
@@ -211,7 +215,7 @@ fun TeamSlotItem(
                                 )
                             }
                             Text(
-                                text = member.heldItem.replace("-", " ").uppercase(),
+                                text = PokemonNameFormatter.format(member.heldItem),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.tertiary,
                                 fontWeight = FontWeight.Bold
@@ -220,12 +224,14 @@ fun TeamSlotItem(
                     }
                     
                     val moves = listOfNotNull(member.move1, member.move2, member.move3, member.move4)
+                        .map { PokemonNameFormatter.format(it) }
                     if (moves.isNotEmpty()) {
                         Text(
                             text = moves.joinToString(" • "),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary,
-                            maxLines = 1
+                            maxLines = 2,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
                     }
                 } else {
